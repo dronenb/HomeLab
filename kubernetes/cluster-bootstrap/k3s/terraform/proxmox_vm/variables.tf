@@ -53,12 +53,12 @@ variable "vm_hostname" {
 }
 
 variable "vm_memory_mb" {
-  type = number
+  type    = number
   default = 1024
 }
 
 variable "vm_disksize" {
-  type = string
+  type    = string
   default = "5G"
 }
 
@@ -67,7 +67,7 @@ variable "vmid" {
 }
 
 variable "vm_tags" {
-  type    = list(string)
+  type = list(string)
 }
 
 variable "vm_os" {
@@ -75,6 +75,6 @@ variable "vm_os" {
 }
 
 variable "ansible_groups" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
