@@ -1,3 +1,7 @@
+data "http" "ssh_keys" {
+  url = "https://github.com/dronenb.keys"
+}
+
 resource "proxmox_vm_qemu" "vm" {
   agent      = 1
   bios       = "ovmf"
@@ -23,7 +27,7 @@ resource "proxmox_vm_qemu" "vm" {
   os_type = "cloud-init"
   qemu_os = "l26"
   scsihw  = "virtio-scsi-pci"
-  sshkeys = file("~/.ssh/id_rsa.pub")
+  sshkeys = data.http.ssh_keys.response_body
   tags = join(
     ";",
     sort(

@@ -9,6 +9,4 @@ TF_VAR_cloudinit_password=$(echo "$cloudinit_entry" | jq -r '.login.password'); 
 export TF_VAR_k3s_master_count=3
 export TF_VAR_k3s_node_count=2
 cd terraform || exit 1
-terraform apply
-cd "$HOME/workspace/Homelab/ansible-global" || exit 1
-ansible-inventory -i inventory/ --graph --vars
+terraform destroy

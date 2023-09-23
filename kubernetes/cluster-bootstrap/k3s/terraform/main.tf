@@ -1,9 +1,9 @@
 resource "ansible_group" "k3s-master" {
-  name = "k3s-master"
+  name = "k3s_master"
 }
 
 resource "ansible_group" "k3s-node" {
-  name = "k3s-node"
+  name = "k3s_node"
 }
 
 module k3s-master {
