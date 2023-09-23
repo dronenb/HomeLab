@@ -20,3 +20,11 @@ repos:
     rev: v0.37.0
     hooks:
       - id: markdownlint
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v6.20.0
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$
+        name: Ansible Lint
+        description: Run configurations on .ansible-lint file
+        verbose: true
