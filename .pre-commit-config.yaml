@@ -12,3 +12,7 @@ repos:
     rev: v1.32.0
     hooks:
       - id: yamllint
+  - repo: https://github.com/bridgecrewio/checkov.git
+    rev: '2.4.48' # change to tag or sha
+    hooks:
+      - id: checkov
