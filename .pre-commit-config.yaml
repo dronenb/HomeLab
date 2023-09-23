@@ -13,6 +13,10 @@ repos:
     hooks:
       - id: yamllint
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: '2.4.48' # change to tag or sha
+    rev: '2.4.48'
     hooks:
       - id: checkov
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.37.0
+    hooks:
+      - id: markdownlint
