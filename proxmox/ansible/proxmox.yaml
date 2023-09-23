@@ -1,0 +1,5 @@
+---
+- name: Configure proxmox hosts
+  hosts: proxmox
+  roles:
+    - role: dronenb.proxmox

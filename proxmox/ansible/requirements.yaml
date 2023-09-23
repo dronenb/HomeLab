@@ -1,0 +1,21 @@
+---
+- name: dronenb.bash
+  src: git@github.com:dronenb/ansible-role-bash.git
+  scm: git
+  version: main
+- name: dronenb.debian
+  src: git@github.com:dronenb/ansible-role-debian.git
+  scm: git
+  version: main
+- name: dronenb.vim
+  src: git@github.com:dronenb/ansible-role-vim.git
+  scm: git
+  version: main
+- name: dronenb.ssh
+  src: git@github.com:dronenb/ansible-role-ssh.git
+  scm: git
+  version: main
+- name: dronenb.proxmox
+  src: git@github.com:dronenb/ansible-role-proxmox.git
+  scm: git
+  version: main

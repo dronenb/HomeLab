@@ -1,0 +1,20 @@
+---
+steamdeck:
+  hosts:
+    deck:
+      ansible_user: deck
+      ansible_host: 192.168.1.216
+      ansible_become_pass: >-
+            {{
+              lookup(
+                'community.general.bitwarden',
+                'deck_become_pass',
+                field='password'
+              ) |
+              first
+            }}
+      pacman_packages:
+        - fuseiso`
+      flatpaks:
+        - net.lutris.Lutris
+        - org.prismlauncher.PrismLauncher

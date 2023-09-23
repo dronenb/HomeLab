@@ -1,0 +1,5 @@
+---
+- name: Configure Steam Deck
+  hosts: steamdeck
+  roles:
+    - role: dronenb.steamdeck

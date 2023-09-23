@@ -1,0 +1,50 @@
+---
+proxmox:
+  hosts:
+    fh-proxmox0:
+      ansible_user: root
+      ansible_host: 10.91.1.2
+      proxmox_roles:
+        - name: TerraformProv
+          privileges:
+            - Datastore.AllocateSpace
+            - Datastore.Audit
+            - Pool.Allocate
+            - Sys.Audit
+            - Sys.Console
+            - Sys.Modify
+            - VM.Allocate
+            - VM.Audit
+            - VM.Clone
+            - VM.Config.CDROM
+            - VM.Config.Cloudinit
+            - VM.Config.CPU
+            - VM.Config.Disk
+            - VM.Config.HWType
+            - VM.Config.Memory
+            - VM.Config.Network
+            - VM.Config.Options
+            - VM.Migrate
+            - VM.Monitor
+            - VM.PowerMgmt
+      proxmox_users:
+        - username: >-
+            {{
+              lookup(
+                'community.general.bitwarden',
+                'proxmox0_terraform',
+                field='username'
+              ) |
+              first
+            }}
+          password: >-
+            {{
+              lookup(
+                'community.general.bitwarden',
+                'proxmox0_terraform',
+                field='password'
+              ) |
+              first
+            }}
+          roles:
+            - TerraformProv
