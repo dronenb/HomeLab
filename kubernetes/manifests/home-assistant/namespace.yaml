@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: home-assistant
+    app.kubernetes.io/instance: home-assistant
+  name: home-assistant

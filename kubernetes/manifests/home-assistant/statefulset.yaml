@@ -1,0 +1,61 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+    app.kubernetes.io/instance: home-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      hostNetwork: true
+      serviceAccountName: home-assistant-sa
+      containers:
+        - name: home-assistant
+          image: homeassistant/home-assistant:2023.10.3
+          securityContext:
+            privileged: false
+          resources:
+            limits:
+              cpu: 300m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 384Mi
+          livenessProbe:
+            httpGet:
+              path: /manifest.json
+              port: 8123
+            timeoutSeconds: 1
+            periodSeconds: 10
+            initialDelaySeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /manifest.json
+              port: 8123
+            timeoutSeconds: 1
+            periodSeconds: 10
+            initialDelaySeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /manifest.json
+              port: 8123
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            initialDelaySeconds: 3
+            failureThreshold: 30
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      hostname: home-assistant
