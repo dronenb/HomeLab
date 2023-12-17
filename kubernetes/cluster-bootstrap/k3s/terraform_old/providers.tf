@@ -1,12 +1,19 @@
 terraform {
+  # Workspace set to run locally. Configured in Terraform Cloud
+  cloud {
+    organization = "ben-dronen"
+    workspaces {
+      name = "k3s"
+    }
+  }
   required_providers {
     ansible = {
       source  = "ansible/ansible"
       version = "1.1.0"
     }
     proxmox = {
-      source = "bpg/proxmox"
-      version = "0.40.0"
+      source  = "Telmate/proxmox"
+      version = "2.9.14"
     }
     http = {
       source  = "hashicorp/http"
@@ -15,10 +22,6 @@ terraform {
   }
 }
 provider "proxmox" {
-  endpoint = "https://10.91.1.2:8006/"
-  insecure = true
-  ssh {
-    agent = true
-  }
+  pm_tls_insecure = true
 }
 provider "http" {}

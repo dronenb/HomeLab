@@ -1,8 +1,15 @@
+---
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: home-assistant
   namespace: home-assistant
+  # yamllint disable rule:line-length
+  annotations:
+    checkov.io/skip1: CKV2_K8S_6=Skip NetworkPolicy for now...
+    checkov.io/skip2: CKV_K8S_19=Need host networking for Home Assistant until Multus is setup
+    checkov.io/skip3: CKV_K8S_22=Home Assistant can't run as readonly
+  # yamllint enable rule:line-length
   labels:
     app: home-assistant
     app.kubernetes.io/instance: home-assistant
@@ -16,13 +23,18 @@ spec:
       labels:
         app: home-assistant
     spec:
+      automountServiceAccountToken: false
       hostNetwork: true
       serviceAccountName: home-assistant-sa
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: home-assistant
-          image: homeassistant/home-assistant:2023.10.3
-          securityContext:
-            privileged: false
+          # https://github.com/home-assistant/core/pkgs/container/home-assistant
+          # yamllint disable-line rule:line-length
+          image: homeassistant/home-assistant:2023.12.3@sha256:128abdfe0b0a82df32a0a192032a86d113564ce2ce5ad470c47d551a53bf5db4
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: 300m
@@ -30,6 +42,15 @@ spec:
             requests:
               cpu: 100m
               memory: 384Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 10001
           livenessProbe:
             httpGet:
               path: /manifest.json
@@ -55,7 +76,6 @@ spec:
             successThreshold: 1
             initialDelaySeconds: 3
             failureThreshold: 30
-          imagePullPolicy: IfNotPresent
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       hostname: home-assistant

@@ -3,3 +3,4 @@
   hosts: proxmox
   roles:
     - role: dronenb.proxmox
+    # - role: ansible-role-proxmox # For testing
