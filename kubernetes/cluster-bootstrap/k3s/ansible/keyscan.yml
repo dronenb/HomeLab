@@ -1,0 +1,24 @@
+---
+- name: Wait for {{ item }} to come up and be available via SSH
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[item]['ansible_host'] }}"
+    port: 22
+    connect_timeout: 5
+    sleep: 3
+
+- name: "Scan keys for {{ item }}"
+  ansible.builtin.command:
+    cmd: "ssh-keyscan {{ hostvars[item]['ansible_host'] }}"
+  changed_when: false
+  register: keyscan_output
+
+- name: "Add keys for {{ item }} to known_hosts"
+  loop: "{{ keyscan_output.stdout_lines }}"
+  loop_control:
+    loop_var: line
+  ansible.builtin.lineinfile:
+    dest: ~/.ssh/known_hosts
+    create: true
+    state: present
+    line: "{{ line }}"
+    mode: "600"

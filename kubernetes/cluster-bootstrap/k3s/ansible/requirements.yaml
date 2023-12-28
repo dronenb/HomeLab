@@ -1,3 +1,7 @@
 ---
 collections:
   - name: cloud.terraform
+  - name: community.general
+roles:
+  - name: dronenb.k3s_server
+  - name: dronenb.debian

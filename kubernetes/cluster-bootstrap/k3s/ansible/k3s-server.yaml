@@ -1,0 +1,23 @@
+---
+
+- name: Perform SSH keyscan on new k3s servers
+  serial: 1
+  any_errors_fatal: true
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_connection: local
+  tasks:
+    - name: "SSH keyscan host {{ hostvars[item]['ansible_host'] }}"
+      loop: "{{ groups['k3s_server'] }}"
+      ansible.builtin.include_tasks: keyscan.yml
+
+- name: Install k3s
+  hosts: k3s_server
+  vars:
+    apt_packages:
+      - qemu-guest-agent
+  roles:
+    - role: dronenb.debian
+    - role: dronenb.k3s_server
+    # - role: ansible-role-k3s-server # For testing

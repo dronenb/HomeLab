@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../ansible-roles"
+		},
+		{
+			"path": "../notes"
+		}
+	],
+	"settings": {}
+}

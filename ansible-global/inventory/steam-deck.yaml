@@ -18,3 +18,4 @@ steamdeck:
       flatpaks:
         - net.lutris.Lutris
         - org.prismlauncher.PrismLauncher
+        - com.heroicgameslauncher.hgl
