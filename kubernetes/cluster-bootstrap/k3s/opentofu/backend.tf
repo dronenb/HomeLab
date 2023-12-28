@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
     bucket = "homelab-state"
-    prefix = "terraform/k3s/state"
+    prefix = "opentofu/k3s/state"
   }
 }

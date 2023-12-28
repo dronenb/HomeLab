@@ -1,7 +1,7 @@
-# This file is maintained automatically by "terraform init".
+# This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/ansible/ansible" {
+provider "registry.opentofu.org/ansible/ansible" {
   version     = "1.1.0"
   constraints = "1.1.0"
   hashes = [
@@ -24,7 +24,7 @@ provider "registry.terraform.io/ansible/ansible" {
   ]
 }
 
-provider "registry.terraform.io/bpg/proxmox" {
+provider "registry.opentofu.org/bpg/proxmox" {
   version     = "0.41.0"
   constraints = "0.41.0"
   hashes = [
@@ -46,27 +46,25 @@ provider "registry.terraform.io/bpg/proxmox" {
   ]
 }
 
-provider "registry.terraform.io/hashicorp/http" {
+provider "registry.opentofu.org/hashicorp/http" {
   version     = "3.4.1"
   constraints = "3.4.1"
   hashes = [
-    "h1:RLJ1zsc2ScUFapTANM91XHyAY7715gP3yPlBOcaBKuk=",
-    "zh:2a79832069a34e88ec997fb8d2c2bdad6f40bfe93a4ae5e6e7f0caf4eea2a9e5",
-    "zh:37d3611857ab207e1565e441a2df9020b1326b7df31e5656165cb6817306494b",
-    "zh:48cc974b12544be18c18bfcb5ea21a4818d03b897e96fb9b4d0d9303883cb3fa",
-    "zh:4b8da2ffe868082830173fdcc8632e2705918e0396c72158d7822650bb1d3bf6",
-    "zh:78d5eefdd9e494defcb3c68d282b8f96630502cac21d1ea161f53cfe9bb483b3",
-    "zh:8148614299a21be04dd11268047e110df3ce9ef585d6240bed2f196839946efa",
-    "zh:a6d583cb70b1355fbc7b1c2cffaa53e4703b04ced9d0ecf78708129ce7072128",
-    "zh:a95f770e8913dd48fde8836cf993fafdbf7da5308a6fbd3d455cb10737742990",
-    "zh:b36784e6602e6ae7ba67560ebcfd055b4448cb0edf9bf35744c2f32ddbd8fa2d",
-    "zh:c23b37fd9e481269fc55735b24c7e8877057c08b42671c796816409d54486a1c",
-    "zh:df07252b27120020d91d7ad11f7ea92832d8df2e81b55a658ac1eb93dc6b8d18",
-    "zh:e44dc5a1fd5995bfd21d385949d539c619e8b37b69875bd92ad4aa18e2435722",
+    "h1:0cJi3QALVjMNY2VCkKL5jBY+AoA8WsfLt+tLrFS+K/E=",
+    "zh:16b0cdfaf3fadd23ead424fbb7fcc003d5825cfc9b71f604e74a95042d105178",
+    "zh:291e1367f7618680186bbe96500ac8cdf01706b49013d6d5ec1e2106c5e1c83f",
+    "zh:3e62fb155ef95aafff213cd5c168e6106beb45a31700c93871e3bcbe189a5662",
+    "zh:7778584c0d8f7172edf20ee866ddd8095f9d4501c191ad590afc0b62f0a5ac11",
+    "zh:9258ad49c2e0c2e71ee0456974fa574beb3d970b7f0bff038f6788b53b186e16",
+    "zh:bacbf3d49370d1d295685b41900d172cec36c4df361224bd2d15102f7f673023",
+    "zh:ca066fa3fcd8781ec01ac7898e0927ae7f92e9ab2973544bce0055c8466d2ea0",
+    "zh:d203a88121d7afd59bcdca2377ba2ced0083ec5906c628e53ab4b9b2e4121f24",
+    "zh:d6f5f292162ce766877ae3f53bf1504dcfc2ea4344ec8eb52348b32ae15cfff2",
+    "zh:ecaee3f79bfd59a9b898379c96098aafbd8f021a901a2e705cf7b753faf0759d",
   ]
 }
 
-provider "registry.terraform.io/maxlaverse/bitwarden" {
+provider "registry.opentofu.org/maxlaverse/bitwarden" {
   version     = "0.7.2"
   constraints = "0.7.2"
   hashes = [

@@ -41,6 +41,6 @@ export TF_VAR_homelab_project_id
 # Target the project
 gcloud config set project "${TF_VAR_homelab_project_id}"
 
-pushd terraform || exit 1
-terraform plan -var-file=variables.tfvars -out /tmp/plan
-terraform apply /tmp/plan
+pushd opentofu || exit 1
+tofu plan -var-file=variables.tfvars -out /tmp/plan
+tofu apply /tmp/plan
