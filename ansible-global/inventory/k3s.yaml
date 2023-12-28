@@ -1,5 +1,5 @@
 ---
 plugin: cloud.terraform.terraform_provider
-project_path: "../kubernetes/cluster-bootstrap/k3s/terraform"
+project_path: "../kubernetes/cluster-bootstrap/k3s/opentofu"
 state_file: ""
 search_child_modules: true

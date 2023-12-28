@@ -18,9 +18,9 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
       username = var.cloudinit_username
     }
   }
-  # agent {
-  #   enabled = true
-  # }
+  agent {
+    enabled = false # TODO: enable this
+  }
   name      = var.vm_hostname
   tags      =     sort(
     concat(

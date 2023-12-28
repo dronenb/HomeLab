@@ -1,4 +1,4 @@
-# This file is maintained automatically by "tofu init".
+# This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/ansible/ansible" {
@@ -65,6 +65,93 @@ provider "registry.opentofu.org/hashicorp/http" {
 }
 
 provider "registry.opentofu.org/maxlaverse/bitwarden" {
+  version     = "0.7.2"
+  constraints = "0.7.2"
+  hashes = [
+    "h1:aYejAePnD5JpcI6mfr6ZZsuaqphwVedUTv/34wblVjI=",
+    "zh:0ac65c6f8a89a2879d2deae4e34f8ca059d9c77e73396564273f3e902b10fdd9",
+    "zh:3b4a81835b83f0ec64c0d9770acabc095a0e3562d394dcc737133aa31ad507ff",
+    "zh:5591ab3f6104e9eab220bdffbee013575e34fefdd4b269de3093313690007725",
+    "zh:607a8027bc256ee5490e6dd35fde402d22f69bb3abd9515a30dc04cf328dbf3f",
+    "zh:6543f58821358994c9997ac55bb6a8c999c3e0060f65c54cf775f49251cb2907",
+    "zh:67c65a568fb3db46f1d67a0247e45b0c57a0550a9e47a97678ce984ac1f80cd6",
+    "zh:72591194ae518ebc69b347d96b492c0bae267ebaf0d27bb0bd0bd606fe0c7d6c",
+    "zh:863adcb6d0f29d8dcd43f2748de6bffada3bba8f10f2870a1ba6213e608392b8",
+    "zh:a9285432e89476a987b014d1179b859a8daf782304dd9f4aa6a8af256123292d",
+    "zh:b21602fce88a65cddc1e6e091f4085b35471bbab7e76163c8d68e94378f582b1",
+    "zh:b666e9a5441185945b6a2a1b23702ca96e9dedcdc46f0ad12f27417129079fed",
+    "zh:e1336f3077ec9d915cff24e75238af8cb4b4bc7cb4d265afbb2c14719405365c",
+    "zh:ecceaea5c97cf349263e3c32751cc95e0bb37b03f29e9cc4cc43e68456518bb8",
+    "zh:f8e2863eabaf0199eadd86764b1a96ce5f5aaf4b19ad871f0e18245664a1dbcd",
+  ]
+}
+
+provider "registry.terraform.io/ansible/ansible" {
+  version     = "1.1.0"
+  constraints = "1.1.0"
+  hashes = [
+    "h1:HCfdAL7ACDRWRc+vyRY9m9zagfm2V7oBe5g/LqBHKno=",
+    "zh:183fe9fabb56454f776b6b433bbeba5dc5e91fbab0afd53c4ccf1f7c3afe02a5",
+    "zh:1eda7c6051cd3d8e25865e3ec0d2923937d2c686db86e6e4c87d140a86a77a95",
+    "zh:26000eb225ce18d565b94db7dc51171b4b034fa9cc29cf7a356e3f17c365c76e",
+    "zh:333c6a6d613fdab7bd4deb179dd288f730f56168a5858867cf1b89ae89b39d10",
+    "zh:4698cc0ba2344e9897b77aba6338a98a554cdea8acef0ec19a5d0d5240eb0960",
+    "zh:89229350c6e4d77513a3f3fc3c42440dda8f9bf3cd0d76c99a2928742d4eef2c",
+    "zh:913e18aba90364d580a441d88e5b8268f644aabb6cf552394471e049b6f42f3f",
+    "zh:935ecc86328c5462d019eb9d6687065f5f81943a29173c61b0af835ca72b80d7",
+    "zh:9d2c2c198a41f09a943299c76d175522cc0c834af46ed3a5abc8db74c114bb76",
+    "zh:bd92445042d1217eb377c9101bfefdbd9cdf1c59a11c93a16d2385c253bc56d4",
+    "zh:d3e140cec9134007bf19c71c50e9ef0295ce30ea1015004802bcf21eb05dad4e",
+    "zh:d62617f738180368f86e762e26ebf22e538309d7850ef17d92da8b38b4520645",
+    "zh:d833fe94bdacbcc412d36deb768530a01ccf7654f7007530683208211ac479a9",
+    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "zh:f63ed6016d237e177f5a7d2a6a485ef7094a97b44944cbdf9428b30b0c7c76b8",
+  ]
+}
+
+provider "registry.terraform.io/bpg/proxmox" {
+  version     = "0.41.0"
+  constraints = "0.41.0"
+  hashes = [
+    "h1:HcilWRdUu/gfH86OcRkciwEqxlz4K/t1ctf7CVI5wwU=",
+    "zh:20d2ee62f30972bd3a94db0562e001ce7f9c8101672e0bb451c5e22171e71736",
+    "zh:2e220e17141f47cbf79b99f43dee9259c50278446722dc77765bda177ec0e9f1",
+    "zh:3ccfa74731ba367d3c3673231ef565374696b914cfe2d4fdfe12d791d94761c1",
+    "zh:3ec763c2f21c3151e7412626f2fff3f13ac2c2d3d1b4a18910e6311c2234d8b2",
+    "zh:44e528e0d8d30d6ee0095f378306bead29cc9df636af98e540ebedba23480b8b",
+    "zh:4cf3d9efcd0edb21f22c0e83de04c8b8a7b59b2c682d6e3392211121e03ba530",
+    "zh:59b1dcc6121ab04a5f7190699464e6748e9067efc9e365367392966c5141e4a6",
+    "zh:5bd83d129daededb067bd14301d6610a4063dea22a48d8e119375ec83b66b44d",
+    "zh:7019b812bafddc3496380a18073d0bce7e299e60b007f3f4b8669ca767049cf8",
+    "zh:87d901eb6eb3d7238b2f9889fb99b0c9626fa773e2982ee13b1e53bc322dba19",
+    "zh:91ff7b4566dd99ea6a4ad55be9061be92791ae7728fbd33f0b7a2abd6b4a0ef7",
+    "zh:9b39581be3586f4f8ec6e314d21a930bb53bb775578fe0a498a0547d16b5909f",
+    "zh:ad05bb985a888f3a111eca6542283a57dd90b4e2b7501128f678b55c59eed817",
+    "zh:efb67f4d4eeefd4385349cdd2b690411cd9271412579d7aeb492f05580c5e6cb",
+  ]
+}
+
+provider "registry.terraform.io/hashicorp/http" {
+  version     = "3.4.1"
+  constraints = "3.4.1"
+  hashes = [
+    "h1:RLJ1zsc2ScUFapTANM91XHyAY7715gP3yPlBOcaBKuk=",
+    "zh:2a79832069a34e88ec997fb8d2c2bdad6f40bfe93a4ae5e6e7f0caf4eea2a9e5",
+    "zh:37d3611857ab207e1565e441a2df9020b1326b7df31e5656165cb6817306494b",
+    "zh:48cc974b12544be18c18bfcb5ea21a4818d03b897e96fb9b4d0d9303883cb3fa",
+    "zh:4b8da2ffe868082830173fdcc8632e2705918e0396c72158d7822650bb1d3bf6",
+    "zh:78d5eefdd9e494defcb3c68d282b8f96630502cac21d1ea161f53cfe9bb483b3",
+    "zh:8148614299a21be04dd11268047e110df3ce9ef585d6240bed2f196839946efa",
+    "zh:a6d583cb70b1355fbc7b1c2cffaa53e4703b04ced9d0ecf78708129ce7072128",
+    "zh:a95f770e8913dd48fde8836cf993fafdbf7da5308a6fbd3d455cb10737742990",
+    "zh:b36784e6602e6ae7ba67560ebcfd055b4448cb0edf9bf35744c2f32ddbd8fa2d",
+    "zh:c23b37fd9e481269fc55735b24c7e8877057c08b42671c796816409d54486a1c",
+    "zh:df07252b27120020d91d7ad11f7ea92832d8df2e81b55a658ac1eb93dc6b8d18",
+    "zh:e44dc5a1fd5995bfd21d385949d539c619e8b37b69875bd92ad4aa18e2435722",
+  ]
+}
+
+provider "registry.terraform.io/maxlaverse/bitwarden" {
   version     = "0.7.2"
   constraints = "0.7.2"
   hashes = [
