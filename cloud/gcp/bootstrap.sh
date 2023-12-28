@@ -12,10 +12,10 @@ if [[ ! -x $(which gcloud) ]]; then
         "...or install using Google's documentation" \
         1>&2
     exit 1
-elif [[ ! -x $(which terraform) ]]; then
+elif [[ ! -x $(which tofu) ]]; then
     echo -e \
-        "terraform CLI not installed! Please install on macOS with:\n" \
-        "\tbrew install hashicorp/tap/terraform\n" \
+        "opentofu CLI not installed! Please install on macOS with:\n" \
+        "\tbrew install opentofu\n" \
         "...or install using HashiCorp's documentation" \
         1>&2
     exit 1
