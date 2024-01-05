@@ -1,9 +1,38 @@
 data "proxmox_virtual_environment_vms" "existing_vms" {}
+
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = var.proxmox_node
+
+  source_raw {
+    data = <<EOF
+#cloud-config
+chpasswd:
+  list: |
+    ${var.cloudinit_username}:${var.cloudinit_password}
+  expire: false
+hostname: ${var.vm_hostname}
+packages:
+  - qemu-guest-agent
+users:
+  - name: ${var.cloudinit_username}
+    groups: sudo
+    shell: /bin/bash
+    ssh_authorized_keys:
+      ${yamlencode(var.cloudinit_ssh_keys)}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+runcmd:
+  - ["/usr/sbin/reboot"]
+EOF
+# The runcmd to reboot is there to make the machine reboot after installation of qemu-guest-agent, otherwise terraform may hang since proxmox may not detect the agent is functional
+    file_name = "${var.vm_hostname}.cloud-config.yaml"
+  }
+}
 resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
   initialization {
     dns {
-      # servers = [var.nameserver] # This is new and isn't working as expected: https://github.com/bpg/terraform-provider-proxmox/issues/841
-      server = var.nameserver
+      servers = [var.nameserver]
     }
     ip_config {
       ipv4 {
@@ -12,14 +41,10 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
       }
     }
 
-    user_account {
-      keys     = var.cloudinit_ssh_keys
-      password = var.cloudinit_password
-      username = var.cloudinit_username
-    }
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
   }
   agent {
-    enabled = false # TODO: enable this
+    enabled = true # this will cause terraform operations to hang if not set
   }
   name      = var.vm_hostname
   tags      =     sort(
@@ -74,11 +99,11 @@ resource "ansible_host" "host" {
   name   = var.vm_hostname
   groups = var.ansible_groups
   variables = {
-    ansible_host        = "${var.ipv4_addr.addr}"
-    netplan_netmask     = "${var.ipv4_addr.mask}"
-    netplan_nameserver  = "${var.nameserver}"
-    netplan_gateway     = "${var.ipv4_gw}"
-    k3s_version         = "${var.k3s_version}"
+    ansible_host        = var.ipv4_addr.addr
+    netplan_netmask     = var.ipv4_addr.mask
+    netplan_nameserver  = var.nameserver
+    netplan_gateway     = var.ipv4_gw
+    k3s_node_ip         = var.ipv4_addr.addr
     # netplan_macaddr     = "${proxmox_vm_qemu.vm.network[0].macaddr}"
     ansible_user        = "{{ lookup('community.general.bitwarden','k3s_cloudinit',field='username')|first }}"
     ansible_become_pass = "{{ lookup('community.general.bitwarden','k3s_cloudinit',field='password')|first }}"

@@ -12,12 +12,17 @@
       loop: "{{ groups['k3s_server'] }}"
       ansible.builtin.include_tasks: keyscan.yml
 
-- name: Install k3s
+- name: Apply roles
   hosts: k3s_server
   vars:
     apt_packages:
       - qemu-guest-agent
   roles:
     - role: dronenb.debian
-    - role: dronenb.k3s_server
-    # - role: ansible-role-k3s-server # For testing
+    - role: dronenb.ssh
+    - role: prereq
+      become: true
+    - role: download
+      become: true
+    - role: k3s_server
+      become: true

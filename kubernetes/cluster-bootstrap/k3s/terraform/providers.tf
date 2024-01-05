@@ -10,11 +10,15 @@ terraform {
     }
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.41.0"
+      version = "0.43.0"
     }
     http = {
       source  = "hashicorp/http"
       version = "3.4.1"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.6.0"
     }
   }
 }

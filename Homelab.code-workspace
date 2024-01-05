@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../notes"
+		},
+		{
+			"path": "../ansible-collections"
 		}
 	],
 	"settings": {}
