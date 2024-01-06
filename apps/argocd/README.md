@@ -9,7 +9,7 @@
 ## Apply
 
 ```bash
-kubectl kustomize base/ | kubectl apply -f -
+kubectl kustomize manifests/base/ | kubectl apply -f -
 ```
 
 ## Links

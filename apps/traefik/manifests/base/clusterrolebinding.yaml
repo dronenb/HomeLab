@@ -1,0 +1,19 @@
+---
+# yamllint disable rule:line-length
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik-traefik-v2
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-traefik-v2
+    helm.sh/chart: traefik-26.0.0
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-traefik-v2
+subjects:
+  - kind: ServiceAccount
+    name: traefik
+    namespace: traefik-v2
