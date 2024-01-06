@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../ansible-collections"
+		},
+		{
+			"path": "../mac-setup-playbook"
 		}
 	],
 	"settings": {}
