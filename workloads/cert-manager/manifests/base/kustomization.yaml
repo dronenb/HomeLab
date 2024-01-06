@@ -2,18 +2,17 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
-  - certificate.yaml
+  - clusterissuer.yaml
   - clusterrole.yaml
   - clusterrolebinding.yaml
   - configmap.yaml
   - customresourcedefinition.yaml
   - deployment.yaml
-  - ingressroute.yaml
+  - mutatingwebhookconfiguration.yaml
   - namespace.yaml
-  - networkpolicy.yaml
   - role.yaml
   - rolebinding.yaml
   - secret.yaml
   - service.yaml
   - serviceaccount.yaml
-  - statefulset.yaml
+  - validatingwebhookconfiguration.yaml

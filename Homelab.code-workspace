@@ -16,5 +16,9 @@
 			"path": "../mac-setup-playbook"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"yaml.schemas": {
+			"https://json.schemastore.org/yamllint.json": "file:///Users/dronenb/workspace/Homelab/workloads/cert-manager/manifests/base/clusterissuer.yaml"
+		}
+	}
 }

@@ -1,7 +1,13 @@
 #!/bin/bash
 
 set -e
-# set -x
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/../../bash/bitwarden_env.sh"
+
+arg="${1:-pre}"
+
+pushd "terraform/${arg}" > /dev/null || exit 1
 
 PROJECT_NAME="Ben-HomeLab"
 
@@ -40,7 +46,4 @@ export TF_VAR_homelab_project_id
 
 # Target the project
 gcloud config set project "${TF_VAR_homelab_project_id}"
-
-pushd opentofu || exit 1
-terraform plan -var-file=variables.tfvars -out /tmp/plan
-terraform apply /tmp/plan
+terraform apply
