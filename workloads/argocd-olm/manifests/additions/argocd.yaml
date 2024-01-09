@@ -1,0 +1,10 @@
+---
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  name: argocd
+spec:
+  server:
+    ingress:
+      enabled: false
+    insecure: true

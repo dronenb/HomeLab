@@ -57,7 +57,7 @@ module "k3s-server" {
   ipv4_addr          = { addr = format("%s%s", "10.91.1.", tostring(sum([5, count.index]))), mask = 24 }
   ipv4_gw            = "10.91.1.1"
   nameserver         = "10.91.1.1"
-  vm_memory_mb       = 2048
+  vm_memory_mb       = 4096
   vm_disksize        = 20
   vm_tags            = ["k3s", "k3s-server"]
   vm_os              = "debian"

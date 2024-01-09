@@ -45,7 +45,5 @@ spec:
         - name: traefik-dashboard
           port: 9000
           scheme: http
-      middlewares:
-        - name: https-redirect
   tls:
     secretName: traefik-cert

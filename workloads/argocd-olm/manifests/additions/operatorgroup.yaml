@@ -1,6 +1,7 @@
 ---
+# yamllint disable rule:line-length
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
+  name: argocd-operator
   namespace: argocd
-  name: cert-manager

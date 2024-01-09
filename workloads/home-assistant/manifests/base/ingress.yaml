@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  annotations:
+    haproxy.org/ssl-passthrough: "false"
+    haproxy.org/ssl-redirect: "true"
+spec:
+  ingressClassName: haproxy
+  tls:
+    - secretName: home-assistant-cert
+      hosts:
+        - "home-assistant.fh.dronen.house"
+  rules:
+    - host: "home-assistant.fh.dronen.house"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 8123
