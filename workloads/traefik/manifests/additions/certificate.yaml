@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: traefik
+  namespace: traefik-v2
+spec:
+  secretName: traefik-cert
+  dnsNames:
+    - "traefik.fh.dronen.house"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-cloudflare

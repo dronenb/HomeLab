@@ -46,4 +46,4 @@ export TF_VAR_homelab_project_id
 
 # Target the project
 gcloud config set project "${TF_VAR_homelab_project_id}"
-terraform apply
+terraform apply -auto-approve

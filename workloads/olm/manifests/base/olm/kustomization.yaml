@@ -1,0 +1,13 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  - catalogsource.yaml
+  - clusterrole.yaml
+  - clusterrolebinding.yaml
+  - clusterserviceversion.yaml
+  - deployment.yaml
+  - namespace.yaml
+  - olmconfig.yaml
+  - operatorgroup.yaml
+  - serviceaccount.yaml

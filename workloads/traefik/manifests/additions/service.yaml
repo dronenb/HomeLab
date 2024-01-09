@@ -1,0 +1,21 @@
+---
+# yamllint disable rule:line-length
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-dashboard
+  namespace: traefik-v2
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-traefik-v2
+  annotations:
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-traefik-v2
+  ports:
+    - port: 9000
+      name: "traefik"
+      targetPort: traefik
+      protocol: TCP

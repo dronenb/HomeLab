@@ -1,19 +1,20 @@
-#!/bin/bash
-NAMESPACE=traefik-v2
+#!/usr/bin/env bash
+
+NAMESPACE="cert-manager"
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
+
 
 # Create namespace object
 kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
     yq eval 'del(.metadata.creationTimestamp) | del(.spec) | del(.status)' \
     > namespace.yaml
 
-helm repo add traefik https://traefik.github.io/charts
-helm repo update
-helm template --namespace="${NAMESPACE}" --include-crds traefik traefik/traefik | \
-    grep -v '# Source' | \
-    kubectl-slice -o . --template "{{ .kind | lower }}.yaml" -f -
+# Download manifests and separate into separate files
+curl -sL https://operatorhub.io/install/cert-manager.yaml | \
+    grep -v "# Source: " | \
+    kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
 # Iterate over each yaml file
 files=()
@@ -24,6 +25,11 @@ for file in *.yaml; do
     files+=("${file}")
     # Prepend ---
     echo -e "---\n# yamllint disable rule:line-length\n$(cat "${file}")" > "${file}"
+    # Add namespace to namespace scoped objects
+    regex="^clusterrole|clusterrolebinding|clusterissuer|namespace|customresourcedefinition"
+    if [[ ! "${file}" =~ $regex ]]; then
+        yq eval -i ".metadata.namespace = \"${NAMESPACE}\"" "${file}"
+    fi
 done
 
 # Create kustomize file
