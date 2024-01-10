@@ -15,6 +15,6 @@ ansible-playbook "${local_ansible_dir}/k3s-server.yaml"
 scp 10.91.1.5:~/.kube/config ~/.kube/config
 chmod 600 ~/.kube/config
 for folder in kube-vip olm cert-manager-olm ingress-nginx argocd-olm; do
-    cd "${SCRIPT_DIR}/../../../workloads/${folder}"
+    cd "${SCRIPT_DIR}/../../workloads/${folder}"
     ./apply.sh
 done
