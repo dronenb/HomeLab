@@ -15,10 +15,10 @@
 - name: Apply roles
   hosts: k3s_server
   vars:
-    apt_packages:
+    dnf_packages:
       - qemu-guest-agent
   roles:
-    - role: dronenb.debian
+    - role: dronenb.rocky
     - role: dronenb.ssh
     - role: prereq
       become: true

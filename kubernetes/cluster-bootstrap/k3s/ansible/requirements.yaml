@@ -2,6 +2,9 @@
 collections:
   - name: cloud.terraform
   - name: community.general
+  # - name: dronenb.k3s
 roles:
-  - name: dronenb.k3s_server
-  - name: dronenb.debian
+  - name: dronenb.rocky
+  - name: dronenb.bash
+  - name: dronenb.vim
+  - name: dronenb.ssh

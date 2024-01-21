@@ -10,7 +10,7 @@ popd || exit 1
 pushd ansible || exit 1
 local_ansible_dir="${PWD}"
 pushd "${SCRIPT_DIR}/../../../ansible-global" || exit 1
-# ansible-galaxy install --force -r "${local_ansible_dir}/requirements.yaml"
+ansible-galaxy install --force -r "${local_ansible_dir}/requirements.yaml"
 ansible-playbook "${local_ansible_dir}/k3s-server.yaml"
 scp 10.91.1.5:~/.kube/config ~/.kube/config
 chmod 600 ~/.kube/config

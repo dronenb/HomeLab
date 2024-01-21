@@ -60,7 +60,7 @@ module "k3s-server" {
   vm_memory_mb       = 4096
   vm_disksize        = 20
   vm_tags            = ["k3s", "k3s-server"]
-  vm_os              = "debian"
+  vm_os              = "rocky"
   ansible_groups     = [ansible_group.k3s-server.name, ansible_group.k3s-cluster.name]
 }
 

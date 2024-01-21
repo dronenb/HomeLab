@@ -6,6 +6,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   node_name    = var.proxmox_node
 
   source_raw {
+# Doing it this way because we need to install qemu-guest-agent, 
     data = <<EOF
 #cloud-config
 chpasswd:
@@ -17,15 +18,12 @@ packages:
   - qemu-guest-agent
 users:
   - name: ${var.cloudinit_username}
-    groups: sudo
+    groups: wheel
     shell: /bin/bash
     ssh_authorized_keys:
       ${yamlencode(var.cloudinit_ssh_keys)}
     sudo: ALL=(ALL) NOPASSWD:ALL
-runcmd:
-  - ["/usr/sbin/reboot"]
 EOF
-# The runcmd to reboot is there to make the machine reboot after installation of qemu-guest-agent, otherwise terraform may hang since proxmox may not detect the agent is functional
     file_name = "${var.vm_hostname}.cloud-config.yaml"
   }
 }
@@ -44,12 +42,12 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
   }
   agent {
-    enabled = true # this will cause terraform operations to hang if not set
+    enabled = true # this will cause terraform operations to hang if the Qemu agent doesn't install correctly!
   }
   name      = var.vm_hostname
   tags      =     sort(
     concat(
-      ["${var.vm_os}", "opentofu"],
+      ["${var.vm_os}", "terraform"],
       var.vm_tags,
     )
   )
@@ -58,6 +56,11 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
   machine   = "q35"
   memory {
     dedicated = var.vm_memory_mb
+  }
+
+  cpu {
+    type = "x86-64-v2-AES"
+    cores = "2"
   }
 
   disk {
