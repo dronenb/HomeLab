@@ -1,9 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "."
-		},
-		{
 			"path": "../ansible-roles"
 		},
 		{
@@ -14,6 +11,9 @@
 		},
 		{
 			"path": "../mac-setup-playbook"
+		},
+		{
+			"path": "../HomeLab"
 		}
 	],
 	"settings": {
