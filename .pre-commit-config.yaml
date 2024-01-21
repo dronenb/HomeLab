@@ -12,15 +12,22 @@ repos:
     rev: v1.33.0
     hooks:
       - id: yamllint
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: 07fd005463366385a8b0fa97c8d2a25b5bac19e0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
   # - repo: https://github.com/bridgecrewio/checkov.git
   #   rev: '3.1.38'
   #   hooks:
   #     - id: checkov
   #       verbose: false
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.38.0
-    hooks:
-      - id: markdownlint
+  # v3.1.0 https://api.github.com/repos/compilerla/conventional-pre-commit/tags
   # - repo: https://github.com/ansible/ansible-lint.git
   #   rev: v6.22.1
   #   hooks:
