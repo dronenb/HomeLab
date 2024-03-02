@@ -13,14 +13,14 @@ terraform {
     # https://registry.terraform.io/providers/bpg/proxmox/latest
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.44.0"
+      version = "0.46.3"
     }
     # https://registry.terraform.io/providers/hashicorp/http/latest
     http = {
       source  = "hashicorp/http"
       version = "3.4.1"
     }
-    # https://registry.terraform.io/providers/hashicorp/http/latest
+    # https://registry.terraform.io/providers/hashicorp/random/latest
     random = {
       source  = "hashicorp/random"
       version = "3.6.0"

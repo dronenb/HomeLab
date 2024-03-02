@@ -8,7 +8,7 @@ terraform {
     # https://registry.terraform.io/providers/bpg/proxmox/latest
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.44.0"
+      version = "0.46.3"
     }
   }
 }

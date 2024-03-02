@@ -1,6 +1,8 @@
 ---
 - name: Configure proxmox hosts
   hosts: proxmox
+  vars:
+    proxmox_template_datastore: local-lvm
   roles:
     - role: dronenb.proxmox
     # - role: ansible-role-proxmox # For testing

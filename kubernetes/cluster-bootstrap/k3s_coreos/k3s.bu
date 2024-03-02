@@ -1,0 +1,24 @@
+# https://coreos.github.io/butane/config-fcos-v1_5/
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: dronenb
+      groups:
+        - sudo
+        - wheel
+      password_hash: patchme
+      shell: /bin/bash
+      should_exist: true
+      ssh_authorized_keys_local:
+        - .ssh/id_rsa.pub
+      no_create_home: false
+storage:
+  files:
+    - path: /usr/local/bin/k3s
+      overwrite: true
+      mode: 0755
+      contents:
+        source: "https://github.com/k3s-io/k3s/releases/download/v1.29.1%2Bk3s2/k3s"
+        verification:
+          hash: "sha256-61eff558f5273d1b18059b978545c099c2fb7ff5b2074dee09f5989dad41fcb8"

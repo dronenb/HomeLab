@@ -12,11 +12,10 @@ if [[ ! -x $(which gcloud) ]]; then
         "...or install using Google's documentation" \
         1>&2
     exit 1
-elif [[ ! -x $(which terraform) ]]; then
+elif ! command -v tofu > /dev/null; then
     echo -e \
-        "terraform CLI not installed! Please install on macOS with:\n" \
-        "\tbrew install terraform\n" \
-        "...or install using HashiCorp's documentation" \
+        "OpenTofu CLI not installed! Please install on macOS with:\n" \
+        "\tbrew install opentofu\n" \
         1>&2
     exit 1
 fi
@@ -41,6 +40,6 @@ export TF_VAR_homelab_project_id
 # Target the project
 gcloud config set project "${TF_VAR_homelab_project_id}"
 
-pushd opentofu || exit 1
-terraform plan -var-file=variables.tfvars -out /tmp/plan
-terraform apply /tmp/plan
+pushd tofu || exit 1
+tofu plan -var-file=variables.tfvars -out /tmp/plan
+tofu apply /tmp/plan
