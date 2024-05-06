@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: gitleaks
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: 4de1378e4cd853bfc2b111b05fff35e2dbf809a3  # frozen: v0.9.0.6
+    rev: a23f6b85d0fdd5bb9d564e2579e678033debbdff  # frozen: v0.10.0.1
     hooks:
       - id: shellcheck
   - repo: https://github.com/adrienverge/yamllint.git
@@ -13,13 +13,13 @@ repos:
     hooks:
       - id: yamllint
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: cdffa5192782a992f5728a67482535b0b3bc42fa  # frozen: v3.1.0
+    rev: 4efeb931d635ed3e57749de4326b752b345c8372  # frozen: v3.2.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: []
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: c9ea83146232fb263effdfe6f222d87f5395b27a  # frozen: v0.39.0
+    rev: 88f5e62afbc373fb23bdf78010adab5e8b37ee98  # frozen: v0.40.0
     hooks:
       - id: markdownlint
   # - repo: https://github.com/bridgecrewio/checkov.git

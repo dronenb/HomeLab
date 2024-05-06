@@ -9,7 +9,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source "${SCRIPT_DIR}/../bash/bitwarden_env.sh"
 
 cd ansible || exit 1
-local_ansible_dir=$PWD
+local_ansible_dir="${PWD}"
 cd "${SCRIPT_DIR}/../ansible-global" || exit 1
-ansible-galaxy install --force -r "$local_ansible_dir/requirements.yaml"
-ansible-playbook "$local_ansible_dir/proxmox.yaml"
+ansible-galaxy install --force -r "${local_ansible_dir}/requirements.yaml"
+ansible-playbook "${local_ansible_dir}/proxmox.yaml"

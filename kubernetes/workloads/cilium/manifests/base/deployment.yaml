@@ -1,0 +1,307 @@
+---
+# yamllint disable rule:line-length
+# Source: cilium/templates/cilium-operator/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cilium-operator
+  namespace: kube-system
+  labels:
+    io.cilium/app: operator
+    name: cilium-operator
+    app.kubernetes.io/part-of: cilium
+    app.kubernetes.io/name: cilium-operator
+spec:
+  # See docs on ServerCapabilities.LeasesResourceLock in file pkg/k8s/version/version.go
+  # for more details.
+  replicas: 1
+  selector:
+    matchLabels:
+      io.cilium/app: operator
+      name: cilium-operator
+  # ensure operator update on single node k8s clusters, by using rolling update with maxUnavailable=100% in case
+  # of one replica and no user configured Recreate strategy.
+  # otherwise an update might get stuck due to the default maxUnavailable=50% in combination with the
+  # podAntiAffinity which prevents deployments of multiple operator replicas on the same node.
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9963"
+        prometheus.io/scrape: "true"
+      labels:
+        io.cilium/app: operator
+        name: cilium-operator
+        app.kubernetes.io/part-of: cilium
+        app.kubernetes.io/name: cilium-operator
+    spec:
+      containers:
+        - name: cilium-operator
+          image: quay.io/cilium/operator-generic:v1.15.4@sha256:404890a83cca3f28829eb7e54c1564bb6904708cdb7be04ebe69c2b60f164e9a
+          imagePullPolicy: IfNotPresent
+          command:
+            - cilium-operator-generic
+          args:
+            - --config-dir=/tmp/cilium/config-map
+            - --debug=$(CILIUM_DEBUG)
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CILIUM_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CILIUM_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: debug
+                  name: cilium-config
+                  optional: true
+            - name: KUBERNETES_SERVICE_HOST
+              value: patchme
+            - name: KUBERNETES_SERVICE_PORT
+              value: "6443"
+          ports:
+            - name: prometheus
+              containerPort: 9963
+              hostPort: 9963
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              host: 127.0.0.1
+              path: /healthz
+              port: 9234
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              host: 127.0.0.1
+              path: /healthz
+              port: 9234
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          volumeMounts:
+            - name: cilium-config-path
+              mountPath: /tmp/cilium/config-map
+              readOnly: true
+          terminationMessagePolicy: FallbackToLogsOnError
+      hostNetwork: true
+      restartPolicy: Always
+      priorityClassName: system-cluster-critical
+      serviceAccount: cilium-operator
+      serviceAccountName: cilium-operator
+      automountServiceAccountToken: true
+      # In HA mode, cilium-operator pods must not be scheduled on the same
+      # node as they will clash with each other.
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  io.cilium/app: operator
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - operator: Exists
+      volumes:
+        # To read the configuration from the config map
+        - name: cilium-config-path
+          configMap:
+            name: cilium-config
+---
+# Source: cilium/templates/hubble-relay/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hubble-relay
+  namespace: kube-system
+  labels:
+    k8s-app: hubble-relay
+    app.kubernetes.io/name: hubble-relay
+    app.kubernetes.io/part-of: cilium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-relay
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+      labels:
+        k8s-app: hubble-relay
+        app.kubernetes.io/name: hubble-relay
+        app.kubernetes.io/part-of: cilium
+    spec:
+      securityContext:
+        fsGroup: 65532
+      containers:
+        - name: hubble-relay
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+          image: quay.io/cilium/hubble-relay:v1.15.4@sha256:03ad857feaf52f1b4774c29614f42a50b370680eb7d0bfbc1ae065df84b1070a
+          imagePullPolicy: IfNotPresent
+          command:
+            - hubble-relay
+          args:
+            - serve
+          ports:
+            - name: grpc
+              containerPort: 4245
+          readinessProbe:
+            grpc:
+              port: 4222
+            timeoutSeconds: 3
+          livenessProbe:
+            grpc:
+              port: 4222
+            timeoutSeconds: 3
+          startupProbe:
+            # give the relay one minute to start up
+            grpc:
+              port: 4222
+            timeoutSeconds: 3
+            failureThreshold: 20
+            periodSeconds: 3
+          volumeMounts:
+            - name: config
+              mountPath: /etc/hubble-relay
+              readOnly: true
+            - name: tls
+              mountPath: /var/lib/hubble-relay/tls
+              readOnly: true
+          terminationMessagePolicy: FallbackToLogsOnError
+      restartPolicy: Always
+      priorityClassName:
+      serviceAccount: hubble-relay
+      serviceAccountName: hubble-relay
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 1
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  k8s-app: cilium
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: config
+          configMap:
+            name: hubble-relay-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: tls
+          projected:
+            # note: the leading zero means this number is in octal representation: do not remove it
+            defaultMode: 0400
+            sources:
+              - secret:
+                  name: hubble-relay-client-certs
+                  items:
+                    - key: tls.crt
+                      path: client.crt
+                    - key: tls.key
+                      path: client.key
+                    - key: ca.crt
+                      path: hubble-server-ca.crt
+---
+# Source: cilium/templates/hubble-ui/deployment.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hubble-ui
+  namespace: kube-system
+  labels:
+    k8s-app: hubble-ui
+    app.kubernetes.io/name: hubble-ui
+    app.kubernetes.io/part-of: cilium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-ui
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+      labels:
+        k8s-app: hubble-ui
+        app.kubernetes.io/name: hubble-ui
+        app.kubernetes.io/part-of: cilium
+    spec:
+      priorityClassName:
+      serviceAccount: hubble-ui
+      serviceAccountName: hubble-ui
+      automountServiceAccountToken: true
+      containers:
+        - name: frontend
+          image: quay.io/cilium/hubble-ui:v0.13.0@sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8081
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8081
+          volumeMounts:
+            - name: hubble-ui-nginx-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: nginx.conf
+            - name: tmp-dir
+              mountPath: /tmp
+          terminationMessagePolicy: FallbackToLogsOnError
+        - name: backend
+          image: quay.io/cilium/hubble-ui-backend:v0.13.0@sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: EVENTS_SERVER_PORT
+              value: "8090"
+            - name: FLOWS_API_ADDR
+              value: hubble-relay:80
+          ports:
+            - name: grpc
+              containerPort: 8090
+          volumeMounts:
+          terminationMessagePolicy: FallbackToLogsOnError
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: hubble-ui-nginx
+          name: hubble-ui-nginx-conf
+        - emptyDir: {}
+          name: tmp-dir

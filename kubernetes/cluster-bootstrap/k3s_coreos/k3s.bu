@@ -1,24 +1,34 @@
 # https://coreos.github.io/butane/config-fcos-v1_5/
 variant: fcos
 version: 1.5.0
-passwd:
-  users:
-    - name: dronenb
-      groups:
-        - sudo
-        - wheel
-      password_hash: patchme
-      shell: /bin/bash
-      should_exist: true
-      ssh_authorized_keys_local:
-        - .ssh/id_rsa.pub
-      no_create_home: false
 storage:
   files:
     - path: /usr/local/bin/k3s
       overwrite: true
       mode: 0755
       contents:
-        source: "https://github.com/k3s-io/k3s/releases/download/v1.29.1%2Bk3s2/k3s"
+        source: "https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s"
         verification:
-          hash: "sha256-61eff558f5273d1b18059b978545c099c2fb7ff5b2074dee09f5989dad41fcb8"
+          hash: "sha256-2bcc3f7ba201e219575c6b7c3663af409e6dde691903b9d049302134816cf0e6"
+systemd:
+  units:
+    - name: setup-qemu-guest-agent.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Setup Qemu Guest Agent
+        After=systemd-machine-id-commit.service
+        After=network-online.target
+        Require=network-online.target
+        ConditionKernelCommandLine=ignition.platform.id=qemu
+        ConditionPathExists=!/var/lib/qemu-guest-agent.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/bin/rpm-ostree install qemu-guest-agent
+        ExecStart=/bin/touch /var/lib/qemu-guest-agent.stamp
+        ExecStart=/bin/systemctl --no-block reboot
+
+        [Install]
+        WantedBy=multi-user.target

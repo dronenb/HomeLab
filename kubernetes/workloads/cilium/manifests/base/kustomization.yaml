@@ -5,12 +5,12 @@ resources:
   - clusterrole.yaml
   - clusterrolebinding.yaml
   - configmap.yaml
+  - daemonset.yaml
   - deployment.yaml
-  - ingressclass.yaml
-  - job.yaml
+  - gatewayclass.yaml
   - namespace.yaml
   - role.yaml
   - rolebinding.yaml
+  - secret.yaml
   - service.yaml
   - serviceaccount.yaml
-  - validatingwebhookconfiguration.yaml

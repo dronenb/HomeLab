@@ -3,16 +3,22 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: kube-vip-ds
+    app.kubernetes.io/version: v0.8.0
   name: kube-vip-ds
   namespace: kube-system
 spec:
   selector:
     matchLabels:
-      name: kube-vip-ds
+      app.kubernetes.io/name: kube-vip-ds
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        name: kube-vip-ds
+        app.kubernetes.io/name: kube-vip-ds
+        app.kubernetes.io/version: v0.8.0
     spec:
       affinity:
         nodeAffinity:
@@ -32,28 +38,52 @@ spec:
               value: "true"
             - name: port
               value: "6443"
+            - name: vip_nodename
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: vip_interface
+              value: patchme
             - name: vip_cidr
               value: "32"
+            - name: dns_mode
+              value: first
             - name: cp_enable
               value: "true"
             - name: cp_namespace
               value: kube-system
-            - name: vip_ddns
-              value: "false"
             - name: svc_enable
+              value: "true"
+            - name: svc_leasename
+              value: plndr-svcs-lock
+            - name: svc_election
+              value: "true"
+            - name: lb_class_only
               value: "true"
             - name: vip_leaderelection
               value: "true"
+            - name: vip_leasename
+              value: plndr-cp-lock
             - name: vip_leaseduration
-              value: "15"
+              value: "5"
             - name: vip_renewdeadline
-              value: "10"
+              value: "3"
             - name: vip_retryperiod
-              value: "2"
+              value: "1"
+            - name: enable_node_labeling
+              value: "true"
+            - name: lb_enable
+              value: "true"
+            - name: lb_port
+              value: "6443"
+            - name: lb_fwdmethod
+              value: local
             - name: address
-              value: "10.91.1.4"
-          image: ghcr.io/kube-vip/kube-vip:v0.6.4
-          imagePullPolicy: Always
+              value: patchme
+            - name: prometheus_server
+              value: :2112
+          image: ghcr.io/kube-vip/kube-vip:v0.8.0
+          imagePullPolicy: IfNotPresent
           name: kube-vip
           resources: {}
           securityContext:
@@ -61,7 +91,6 @@ spec:
               add:
                 - NET_ADMIN
                 - NET_RAW
-                - SYS_TIME
       hostNetwork: true
       serviceAccountName: kube-vip
       tolerations:

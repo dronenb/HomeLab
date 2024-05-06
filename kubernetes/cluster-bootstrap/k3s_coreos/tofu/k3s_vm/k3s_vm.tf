@@ -1,0 +1,92 @@
+data "proxmox_virtual_environment_vms" "existing_vms" {}
+
+resource "proxmox_virtual_environment_file" "base_ignition" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = var.proxmox_node
+
+  source_raw {
+    data      = file("/private/tmp/k3s_init/k3s.ign")
+    file_name = "${var.vm_hostname}-base.ign"
+  }
+}
+
+resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
+  initialization {
+    dns {
+      servers = [var.nameserver]
+    }
+    ip_config {
+      ipv4 {
+        address = "${var.ipv4_addr.addr}%{if var.ipv4_addr.mask != ""}/${var.ipv4_addr.mask}%{endif}"
+        gateway = var.ipv4_gw
+      }
+    }
+    user_account {
+      keys     = var.cloudinit_ssh_keys
+      username = var.cloudinit_username
+      password = var.cloudinit_password
+    }
+  }
+  agent {
+    enabled = false # this will cause terraform operations to hang if the Qemu agent doesn't install correctly!
+  }
+  name = var.vm_hostname
+  tags = sort(
+    concat(
+      ["${var.vm_os}", "tofu"],
+      var.vm_tags,
+    )
+  )
+  bios      = "ovmf"
+  node_name = var.proxmox_node
+  machine   = "q35"
+  memory {
+    dedicated = var.vm_memory_mb
+  }
+
+  cpu {
+    type  = "x86-64-v2-AES"
+    cores = "2"
+  }
+
+  disk {
+    interface = "scsi0"
+    size      = var.vm_disksize
+  }
+  efi_disk {
+    type        = "4m"
+    file_format = "raw"
+  }
+  clone {
+    vm_id = lookup(
+      zipmap(
+        data.proxmox_virtual_environment_vms.existing_vms.vms[*].name,
+        data.proxmox_virtual_environment_vms.existing_vms.vms[*].vm_id
+      ),
+      "${var.vm_os}-latest"
+    )
+    full = true
+  }
+
+  network_device {
+    bridge = "vmbr0"
+    model  = "virtio"
+  }
+
+  operating_system {
+    type = "l26"
+  }
+
+  tpm_state {
+    version = "v2.0"
+  }
+  kvm_arguments = "-fw_cfg name=opt/com.coreos/config,file=/var/lib/vz/snippets/${var.vm_hostname}.ign"
+  vga {
+    enabled = true
+    memory  = 16
+    type    = "std"
+  }
+  # serial_device {}
+  hook_script_file_id = var.hook_script_id
+}

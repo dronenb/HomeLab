@@ -13,7 +13,7 @@ kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
 
 # Download manifests and separate into separate files
 curl -sL https://operatorhub.io/install/argocd-operator.yaml | \
-    grep -v "# Source: " | \
+    yq --no-colors --prettyPrint | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
 # Iterate over each yaml file
@@ -23,13 +23,8 @@ for file in *.yaml; do
         continue
     fi
     files+=("${file}")
-    # Prepend ---
-    echo -e "---\n# yamllint disable rule:line-length\n$(cat "${file}")" > "${file}"
-    # Add namespace to namespace scoped objects
-    regex="^clusterrole|clusterrolebinding|clusterissuer|namespace|customresourcedefinition"
-    if [[ ! "${file}" =~ $regex ]]; then
-        yq eval -i ".metadata.namespace = \"${NAMESPACE}\"" "${file}"
-    fi
+    contents="$(cat "${file}")"
+    printf -- "---\n# yamllint disable rule:line-length\n%s" "${contents}" > "${file}"
 done
 
 # Create kustomize file
@@ -38,7 +33,6 @@ cat <<EOF > kustomization.yaml
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
-  - ../additions
 $(printf "  - %s\n" "${files[@]}")
 EOF
 

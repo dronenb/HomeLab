@@ -4,6 +4,10 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/env.sh"
+
 # Colors
 BOLD_RED='\033[1;31m'
 BOLD_CYAN='\033[1;36m'
@@ -21,57 +25,37 @@ PODMAN_MACHINE_NAME="podman-machine-default"
 function main {
     chk_prerequisites
     chk_podman_machine
-    pull_podamn_images
+    pull_podman_images
     create_workdir
-    collect_ssh_keys
-    download_coreos
     generate_ignition
-    customize_coreos
-    upload_iso
+    tofu_apply
 }
 
-function upload_iso {
-    msg_change "Uploading ISO to Proxmox host..."
-    rsync --progress "${WORKDIR}/k3s.iso" "root@10.91.1.2:/var/lib/vz/template/iso/"
+function tofu_apply {
+    pushd tofu || exit 1
+    tofu init
+    tofu plan -out /tmp/tf.plan
+    tofu apply /tmp/tf.plan
+    popd || exit 1
 }
 
-function customize_coreos {
-    if [[ -f "${WORKDIR}/k3s.iso" ]]; then
-        msg_change "Deleting existing ISO..."
-        rm "${WORKDIR}/k3s.iso"
-    fi
-    msg_change "Creating new ISO from ignition file..."
-    coreos-installer iso customize \
-        --dest-ignition "${WORKDIR}/k3s.ign" \
-        --dest-device "/dev/sda" \
-        -o "${WORKDIR}/k3s.iso" \
-        "${WORKDIR}/fedora-coreos.iso"
-}
+# function upload_iso {
+#     msg_change "Uploading ISO to Proxmox host..."
+#     rsync --progress "${WORKDIR}/k3s.iso" "root@10.91.1.2:/var/lib/vz/template/iso/"
+# }
 
-function download_coreos {
-    msg_info "Checking if Fedora CoreOS is already downloaded..."
-    if [[ ! -f "${WORKDIR}/fedora-coreos.iso" ]]; then
-        msg_change "Downloading Fedora CoreOS ISO..."
-        coreos-installer download \
-            --architecture x86_64 \
-            --decompress \
-            --directory "${WORKDIR}" \
-            --format iso
-        mv "${WORKDIR}"/fedora-coreos-*-live.x86_64.iso "${WORKDIR}/fedora-coreos.iso"
-    fi
-}
-
-function collect_ssh_keys {
-    msg_info "Checking if SSH directory and public key exist in ${WORKDIR}"
-    if [[ ! -d "${WORKDIR}/.ssh" ]]; then
-        msg_change "Workdir ${WORKDIR} does not exist! Creating..."
-        mkdir -p "${WORKDIR}/.ssh"
-    fi
-    if [[ ! -f "${WORKDIR}/.ssh/id_rsa.pub" ]]; then
-        msg_change "SSH key does not exist! Downloading..."
-        curl -sL https://github.com/dronenb.keys > "${WORKDIR}/.ssh/id_rsa.pub"
-    fi
-}
+# function customize_coreos {
+#     if [[ -f "${WORKDIR}/k3s.iso" ]]; then
+#         msg_change "Deleting existing ISO..."
+#         rm "${WORKDIR}/k3s.iso"
+#     fi
+#     msg_change "Creating new ISO from ignition file..."
+#     coreos-installer iso customize \
+#         --dest-ignition "${WORKDIR}/k3s.ign" \
+#         --dest-device "/dev/sda" \
+#         -o "${WORKDIR}/k3s.iso" \
+#         "${WORKDIR}/fedora-coreos.iso"
+# }
 
 function create_workdir {
     msg_info "Checking if working directory exists"
@@ -83,14 +67,7 @@ function create_workdir {
 
 function generate_ignition {
     msg_change "Generating ignition file..."
-    butane --strict k3s.bu --files-dir "${HOME}" | tee "${WORKDIR}/k3s.ign" | jq
-    # Patch in password
-    login_item=$(bw get item 24454e27-f2fa-4903-b42f-b00f017b0ad1 | jq -r '.login')
-    username=$(echo "${login_item}" | jq -r '.username')
-    password=$(echo "${login_item}" | jq -r '.password')
-    hashed_password=$(openssl passwd -6 -salt "$(openssl rand -base64 32)" "${password}")
-    jq '.passwd.users |= map(if .name == "'"${username}"'" then . + {"passwordHash": "'"${hashed_password}"'"} else . end)' < "${WORKDIR}/k3s.ign" > "${WORKDIR}/k3s_patched.ign"
-    mv "${WORKDIR}/k3s_patched.ign" "${WORKDIR}/k3s.ign"
+    butane --strict k3s.bu | tee "${WORKDIR}/k3s.ign" | jq
     ignition-validate "${WORKDIR}/k3s.ign"
 }
 
@@ -99,12 +76,12 @@ function ignition-validate {
     podman run --rm --volume "${WORKDIR}:${WORKDIR}" quay.io/coreos/ignition-validate:release $@
 }
 
-function coreos-installer {
-    #shellcheck disable=SC2068
-    podman run --rm --volume "${WORKDIR}:${WORKDIR}" quay.io/coreos/coreos-installer:release $@
-}
+# function coreos-installer {
+#     #shellcheck disable=SC2068
+#     podman run --rm --volume "${WORKDIR}:${WORKDIR}" quay.io/coreos/coreos-installer:release $@
+# }
 
-function pull_podamn_images {
+function pull_podman_images {
     msg_info "Pulling podman images"
     images=(
         "quay.io/coreos/coreos-installer:release"

@@ -1,0 +1,7 @@
+---
+# yamllint disable rule:line-length
+# Source: cilium/templates/cilium-secrets-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cilium-secrets
