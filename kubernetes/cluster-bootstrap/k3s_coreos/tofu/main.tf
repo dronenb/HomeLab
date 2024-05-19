@@ -11,9 +11,14 @@ data "bitwarden_item_login" "cloudinit_credentials" {
   id = "24454e27-f2fa-4903-b42f-b00f017b0ad1"
 }
 
-resource "random_password" "k3s_token" {
+resource "random_password" "k3s_server_token" {
   length  = 128
-  special = false
+  special = true
+}
+
+resource "random_password" "k3s_agent_token" {
+  length  = 128
+  special = true
 }
 
 resource "proxmox_virtual_environment_file" "coreos_hookscript" {
@@ -32,21 +37,24 @@ resource "proxmox_virtual_environment_file" "coreos_hookscript" {
 }
 
 module "k3s-server" {
-  count              = 1
+  count              = 3
   source             = "./k3s_vm"
   vm_hostname        = "k3s-server-coreos${count.index}"
   proxmox_node       = local.proxmox_node
   vm_memory_mb       = 4096
   vm_disksize        = 20
-  vm_tags            = ["k3s", "k3s-server", "k3s-coreos"]
+  vm_tags            = ["k3s", "k3s-server"]
   cloudinit_username = data.bitwarden_item_login.cloudinit_credentials.username
   cloudinit_password = data.bitwarden_item_login.cloudinit_credentials.password
   cloudinit_ssh_keys = [trimspace(data.http.ssh_keys.response_body)]
   ipv4_addr          = { addr = format("%s%s", "10.91.1.", tostring(sum([9, count.index]))), mask = 24 }
+  rendevous_host     = "10.91.1.9"
   ipv4_gw            = "10.91.1.1"
   nameserver         = "10.91.1.1"
   vm_os              = "fcos"
   hook_script_id     = proxmox_virtual_environment_file.coreos_hookscript.id
+  k3s_server_token   = random_password.k3s_server_token.result
+  k3s_agent_token    = random_password.k3s_agent_token.result
 }
 
 # module "k3s-agent" {

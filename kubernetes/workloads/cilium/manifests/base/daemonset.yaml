@@ -21,21 +21,17 @@ spec:
   template:
     metadata:
       annotations:
-        # Set app AppArmor's profile to "unconfined". The value of this annotation
-        # can be modified as long users know which profiles they have available
-        # in AppArmor.
-        container.apparmor.security.beta.kubernetes.io/cilium-agent: unconfined
-        container.apparmor.security.beta.kubernetes.io/clean-cilium-state: unconfined
-        container.apparmor.security.beta.kubernetes.io/mount-cgroup: unconfined
-        container.apparmor.security.beta.kubernetes.io/apply-sysctl-overwrites: unconfined
       labels:
         k8s-app: cilium
         app.kubernetes.io/name: cilium-agent
         app.kubernetes.io/part-of: cilium
     spec:
+      securityContext:
+        appArmorProfile:
+          type: Unconfined
       containers:
         - name: cilium-agent
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           command:
             - cilium-agent
@@ -154,9 +150,6 @@ spec:
                 - ALL
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
-            - name: envoy-sockets
-              mountPath: /var/run/cilium/envoy/sockets
-              readOnly: false
             # Unprivileged containers need to mount /proc/sys/net from the host
             # to have write access
             - mountPath: /host/proc/sys/net
@@ -192,7 +185,7 @@ spec:
               mountPath: /tmp
       initContainers:
         - name: config
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           command:
             - cilium-dbg
@@ -219,7 +212,7 @@ spec:
         # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
         # We use nsenter command with host's cgroup and mount namespaces enabled.
         - name: mount-cgroup
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           env:
             - name: CGROUP_ROOT
@@ -256,7 +249,7 @@ spec:
               drop:
                 - ALL
         - name: apply-sysctl-overwrites
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           env:
             - name: BIN_PATH
@@ -294,7 +287,7 @@ spec:
         # from a privileged container because the mount propagation bidirectional
         # only works from privileged containers.
         - name: mount-bpf-fs
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           args:
             - mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf
@@ -310,7 +303,7 @@ spec:
               mountPath: /sys/fs/bpf
               mountPropagation: Bidirectional
         - name: clean-cilium-state
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           command:
             - /init-container.sh
@@ -361,7 +354,7 @@ spec:
               mountPath: /var/run/cilium # wait-for-kube-proxy
         # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
         - name: install-cni-binaries
-          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
+          image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
           command:
             - /install-plugin.sh
@@ -441,11 +434,6 @@ spec:
           hostPath:
             path: /run/xtables.lock
             type: FileOrCreate
-        # Sharing socket with Cilium Envoy on the same node by using a host path
-        - name: envoy-sockets
-          hostPath:
-            path: /var/run/cilium/envoy/sockets
-            type: DirectoryOrCreate
             # To read the clustermesh configuration
         - name: clustermesh-secrets
           projected:
@@ -492,178 +480,3 @@ spec:
                       path: server.key
                     - key: ca.crt
                       path: client-ca.crt
----
-# Source: cilium/templates/cilium-envoy/daemonset.yaml
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: cilium-envoy
-  namespace: kube-system
-  labels:
-    k8s-app: cilium-envoy
-    app.kubernetes.io/part-of: cilium
-    app.kubernetes.io/name: cilium-envoy
-    name: cilium-envoy
-spec:
-  selector:
-    matchLabels:
-      k8s-app: cilium-envoy
-  updateStrategy:
-    rollingUpdate:
-      maxUnavailable: 2
-    type: RollingUpdate
-  template:
-    metadata:
-      annotations:
-        prometheus.io/port: "9964"
-        prometheus.io/scrape: "true"
-        # Set app AppArmor's profile to "unconfined". The value of this annotation
-        # can be modified as long users know which profiles they have available
-        # in AppArmor.
-        container.apparmor.security.beta.kubernetes.io/cilium-envoy: unconfined
-      labels:
-        k8s-app: cilium-envoy
-        name: cilium-envoy
-        app.kubernetes.io/name: cilium-envoy
-        app.kubernetes.io/part-of: cilium
-    spec:
-      containers:
-        - name: cilium-envoy
-          image: quay.io/cilium/cilium-envoy:v1.27.4-21905253931655328edaacf3cd16aeda73bbea2f@sha256:d52f476c29a97c8b250fdbfbb8472191a268916f6a8503671d0da61e323b02cc
-          imagePullPolicy: IfNotPresent
-          command:
-            - /usr/bin/cilium-envoy-starter
-          args:
-            - -c /var/run/cilium/envoy/bootstrap-config.json
-            - --base-id 0
-            - --log-level info
-            - --log-format [%Y-%m-%d %T.%e][%t][%l][%n] [%g:%#] %v
-          startupProbe:
-            httpGet:
-              host: 127.0.0.1
-              path: /healthz
-              port: 9878
-              scheme: HTTP
-            failureThreshold: 105
-            periodSeconds: 2
-            successThreshold: 1
-            initialDelaySeconds: 5
-          livenessProbe:
-            httpGet:
-              host: 127.0.0.1
-              path: /healthz
-              port: 9878
-              scheme: HTTP
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 10
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              host: 127.0.0.1
-              path: /healthz
-              port: 9878
-              scheme: HTTP
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
-            timeoutSeconds: 5
-          env:
-            - name: K8S_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: spec.nodeName
-            - name: CILIUM_K8S_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
-            - name: KUBERNETES_SERVICE_HOST
-              value: patchme
-            - name: KUBERNETES_SERVICE_PORT
-              value: "6443"
-          ports:
-            - name: envoy-metrics
-              containerPort: 9964
-              hostPort: 9964
-              protocol: TCP
-          securityContext:
-            seLinuxOptions:
-              level: s0
-              type: spc_t
-            capabilities:
-              add:
-                - NET_ADMIN
-                - SYS_ADMIN
-              drop:
-                - ALL
-          terminationMessagePolicy: FallbackToLogsOnError
-          volumeMounts:
-            - name: envoy-sockets
-              mountPath: /var/run/cilium/envoy/sockets
-              readOnly: false
-            - name: envoy-artifacts
-              mountPath: /var/run/cilium/envoy/artifacts
-              readOnly: true
-            - name: envoy-config
-              mountPath: /var/run/cilium/envoy/
-              readOnly: true
-            - name: bpf-maps
-              mountPath: /sys/fs/bpf
-              mountPropagation: HostToContainer
-      restartPolicy: Always
-      priorityClassName: system-node-critical
-      serviceAccount: cilium-envoy
-      serviceAccountName: cilium-envoy
-      automountServiceAccountToken: true
-      terminationGracePeriodSeconds: 1
-      hostNetwork: true
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: cilium.io/no-schedule
-                    operator: NotIn
-                    values:
-                      - "true"
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  k8s-app: cilium
-              topologyKey: kubernetes.io/hostname
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  k8s-app: cilium-envoy
-              topologyKey: kubernetes.io/hostname
-      nodeSelector:
-        kubernetes.io/os: linux
-      tolerations:
-        - operator: Exists
-      volumes:
-        - name: envoy-sockets
-          hostPath:
-            path: /var/run/cilium/envoy/sockets
-            type: DirectoryOrCreate
-        - name: envoy-artifacts
-          hostPath:
-            path: /var/run/cilium/envoy/artifacts
-            type: DirectoryOrCreate
-        - name: envoy-config
-          configMap:
-            name: cilium-envoy-config
-            # note: the leading zero means this number is in octal representation: do not remove it
-            defaultMode: 0400
-            items:
-              - key: bootstrap-config.json
-                path: bootstrap-config.json
-                # To keep state between restarts / upgrades
-                # To keep state between restarts / upgrades for bpf maps
-        - name: bpf-maps
-          hostPath:
-            path: /sys/fs/bpf
-            type: DirectoryOrCreate

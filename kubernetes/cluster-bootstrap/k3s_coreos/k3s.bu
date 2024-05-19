@@ -7,28 +7,104 @@ storage:
       overwrite: true
       mode: 0755
       contents:
-        source: "https://github.com/k3s-io/k3s/releases/download/v1.29.4%2Bk3s1/k3s"
+        source: "https://github.com/k3s-io/k3s/releases/download/v1.30.0%2Bk3s1/k3s"
         verification:
-          hash: "sha256-2bcc3f7ba201e219575c6b7c3663af409e6dde691903b9d049302134816cf0e6"
+          hash: "sha256-e4b85e74d7be314f39e033142973cc53619f4fbaff3639a420312f20dea12868"
+    - path: /etc/rancher/k3s/config.yaml
+      overwrite: true
+      mode: 0644
+      contents:
+        inline: |
+          selinux: true
+          disable:
+            - traefik
+            - servicelb
+          flannel-backend: "none"
+          disable-network-policy: true
+          disable-kube-proxy: true
+          write-kubeconfig-mode: 644
+    - path: /etc/NetworkManager/conf.d/noauto.conf
+      mode: 0644
+      contents:
+        inline: |
+          [main]
+          # Do not do automatic (DHCP/SLAAC) configuration on ethernet devices
+          # with no other matching connections.
+          no-auto-default=*
 systemd:
   units:
-    - name: setup-qemu-guest-agent.service
+    - name: install-packages.service
       enabled: true
       contents: |
         [Unit]
-        Description=Setup Qemu Guest Agent
+        Description=Install prerequisite packages
         After=systemd-machine-id-commit.service
         After=network-online.target
         Require=network-online.target
         ConditionKernelCommandLine=ignition.platform.id=qemu
-        ConditionPathExists=!/var/lib/qemu-guest-agent.stamp
+        ConditionPathExists=!/var/lib/install-packages.stamp
 
         [Service]
         Type=oneshot
         RemainAfterExit=yes
-        ExecStart=/bin/rpm-ostree install qemu-guest-agent
-        ExecStart=/bin/touch /var/lib/qemu-guest-agent.stamp
+        ExecStart=/bin/rpm-ostree install qemu-guest-agent https://github.com/k3s-io/k3s-selinux/releases/download/v1.5.testing.2/k3s-selinux-1.5-2.coreos.noarch.rpm
+        # Useful packages for troubleshooting SELinux
+        # ExecStart=/bin/rpm-ostree install setroubleshoot setroubleshoot-server
+        ExecStart=/bin/touch /var/lib/install-packages.stamp
         ExecStart=/bin/systemctl --no-block reboot
 
         [Install]
         WantedBy=multi-user.target
+    - name: relabel-k3s.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install prerequisite packages
+        After=systemd-machine-id-commit.service
+        After=network-online.target
+        Before=k3s.service
+        Require=network-online.target
+        ConditionPathExists=/var/lib/install-packages.stamp
+        ConditionPathExists=!/var/lib/relabel-k3s.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/sbin/restorecon /etc/systemd/system/k3s.service /usr/local/bin/k3s
+        ExecStart=/usr/bin/systemctl daemon-reload
+        ExecStart=/bin/touch /var/lib/relabel-k3s.stamp
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: k3s.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Lightweight Kubernetes
+        Documentation=https://k3s.io
+        Wants=network-online.target
+        After=network-online.target
+
+        [Install]
+        WantedBy=multi-user.target
+
+        [Service]
+        Type=notify
+        EnvironmentFile=-/etc/default/%N
+        EnvironmentFile=-/etc/sysconfig/%N
+        EnvironmentFile=-/etc/systemd/system/k3s.service.env
+        KillMode=process
+        Delegate=yes
+        # Having non-zero Limit*s causes performance problems due to accounting overhead
+        # in the kernel. We recommend using cgroups to do container-local accounting.
+        LimitNOFILE=1048576
+        LimitNPROC=infinity
+        LimitCORE=infinity
+        TasksMax=infinity
+        TimeoutStartSec=0
+        Restart=always
+        RestartSec=5s
+        ExecStartPre=/bin/sh -xc '! /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service 2>/dev/null'
+        ExecStartPre=-/sbin/modprobe br_netfilter
+        ExecStartPre=-/sbin/modprobe overlay
+        ExecStart=/usr/local/bin/k3s server

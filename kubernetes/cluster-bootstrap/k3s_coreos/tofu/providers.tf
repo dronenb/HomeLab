@@ -8,7 +8,7 @@ terraform {
     # https://registry.terraform.io/providers/bpg/proxmox/latest
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.55.0"
+      version = "0.57.0"
     }
     # https://registry.terraform.io/providers/hashicorp/http/latest
     http = {
@@ -19,6 +19,10 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "3.6.1"
+    }
+    ignition = {
+      source = "community-terraform-providers/ignition"
+      version = "2.3.5"
     }
   }
 }
@@ -38,4 +42,3 @@ provider "proxmox" {
     username = data.bitwarden_item_login.proxmox_credentials.username
   }
 }
-

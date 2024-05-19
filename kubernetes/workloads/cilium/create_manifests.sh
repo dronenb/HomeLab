@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-# CILIUM_VERSION="1.15.4"
-
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
-# Need to figure out why this doesn't work
-# Would prefer to use helm instead of their own CLI
-# helm template cilium cilium/cilium \
-#     --include-crds \
-#     --version "${CILIUM_VERSION}" \
+export CILIUM_VERSION="1.15.5"
 
-cilium install --dry-run \
+helm template cilium cilium/cilium \
+    --api-versions gateway.networking.k8s.io/v1/GatewayClass \
+    --include-crds \
+    --version "${CILIUM_VERSION}" \
     --namespace kube-system \
     --set routingMode=tunnel \
     --set tunnelProtocol=geneve \
@@ -22,10 +19,12 @@ cilium install --dry-run \
     --set loadBalancer.mode=dsr \
     --set loadBalancer.dsrDispatch=geneve \
     --set l2announcements.enabled=true \
-    --set gatewayAPI.enabled=true \
-    --set envoy.enabled=true \
     --set hubble.relay.enabled=true \
-    --set hubble.ui.enabled=true  | \
+    --set ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16" \
+    --set hubble.ui.enabled=true \
+    --set gatewayAPI.enabled=true \
+    --set envoy.enabled=false | \
+    # envoy.enabled won't work with SELinux enabled: https://docs.cilium.io/en/latest/security/network/proxy/envoy/#known-limitations
     yq --no-colors --prettyPrint | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 

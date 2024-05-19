@@ -1,12 +1,36 @@
 data "proxmox_virtual_environment_vms" "existing_vms" {}
 
+data "ignition_file" "k3s_server_config" {
+  path = "/etc/rancher/k3s/config.yaml.d/server.yaml"
+  content {
+    content = var.ipv4_addr.addr == var.rendevous_host ? "cluster-init: true\ntoken: '${var.k3s_server_token}'" : "server: 'https://${var.rendevous_host}:6443'\ntoken: '${var.k3s_server_token}'"
+  }
+}
+
+data "ignition_file" "k3s_agent_config" {
+  path = "/etc/rancher/k3s/config.yaml.d/agent.yaml"
+  content {
+    content = "agent-token: '${var.k3s_agent_token}'\n"
+  }
+}
+
+data "ignition_config" "ignition_config" {
+  files = [
+    sensitive(data.ignition_file.k3s_server_config.rendered),
+    sensitive(data.ignition_file.k3s_agent_config.rendered),
+  ]
+  merge {
+    source = format("data:;base64,%s", base64encode(file("/private/tmp/k3s_init/k3s.ign")))
+  }
+}
+
 resource "proxmox_virtual_environment_file" "base_ignition" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = var.proxmox_node
 
   source_raw {
-    data      = file("/private/tmp/k3s_init/k3s.ign")
+    data      = sensitive(data.ignition_config.ignition_config.rendered)
     file_name = "${var.vm_hostname}-base.ign"
   }
 }
@@ -29,7 +53,7 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
     }
   }
   agent {
-    enabled = false # this will cause terraform operations to hang if the Qemu agent doesn't install correctly!
+    enabled = true # this will cause terraform operations to hang if the Qemu agent doesn't install correctly!
   }
   name = var.vm_hostname
   tags = sort(
@@ -46,7 +70,7 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
   }
 
   cpu {
-    type  = "x86-64-v2-AES"
+    type  = "host"
     cores = "2"
   }
 

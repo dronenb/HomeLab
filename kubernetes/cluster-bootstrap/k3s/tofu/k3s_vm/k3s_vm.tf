@@ -47,7 +47,7 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
   name      = var.vm_hostname
   tags      =     sort(
     concat(
-      ["${var.vm_os}", "terraform"],
+      ["${var.vm_os}", "tofu"],
       var.vm_tags,
     )
   )

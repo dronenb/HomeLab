@@ -7,6 +7,16 @@ variable "cloudinit_password" {
   sensitive = true
 }
 
+variable "k3s_server_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "k3s_agent_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "cloudinit_ssh_keys" {
   type    = list(string)
   default = []
@@ -76,5 +86,9 @@ variable "vm_os" {
 }
 
 variable "hook_script_id" {
+  type = string
+}
+
+variable "rendevous_host" {
   type = string
 }

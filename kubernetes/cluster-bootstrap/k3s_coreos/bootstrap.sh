@@ -29,6 +29,10 @@ function main {
     create_workdir
     generate_ignition
     tofu_apply
+    ssh -o StrictHostKeyChecking=no 10.91.1.9 'cat /etc/rancher/k3s/k3s.yaml' | \
+        yq --no-colors '.clusters[0].cluster.server = "https://10.91.1.9:6443"' \
+        > ~/.kube/config
+    chmod 600 ~/.kube/config
 }
 
 function tofu_apply {
