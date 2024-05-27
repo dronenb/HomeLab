@@ -41,13 +41,26 @@ resource "google_project_service" "homelab_budget" {
   disable_on_destroy = false
 }
 
-# Enable pubsub
+# Enable pubsub API
 resource "google_project_service" "homelab_pubsub" {
   project            = google_project.ben_homelab.project_id
   service            = "pubsub.googleapis.com"
   disable_on_destroy = false
 }
 
+# Enable Cloud Functions API
+resource "google_project_service" "homelab_cloudfunctions" {
+  project            = google_project.ben_homelab.project_id
+  service            = "cloudfunctions.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable Cloud Build API
+resource "google_project_service" "homelab_cloudbuild" {
+  project            = google_project.ben_homelab.project_id
+  service            = "cloudbuild.googleapis.com"
+  disable_on_destroy = false
+}
 
 # Enable Secret Manager API
 resource "google_project_service" "homelab_secretmanager" {
@@ -60,6 +73,34 @@ resource "google_project_service" "homelab_secretmanager" {
 resource "google_project_service" "homelab_storage" {
   project            = google_project.ben_homelab.project_id
   service            = "storage.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable IAM API
+resource "google_project_service" "homelab_iam" {
+  project            = google_project.ben_homelab.project_id
+  service            = "iam.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable Cloud Run API
+resource "google_project_service" "homelab_cloudrun" {
+  project            = google_project.ben_homelab.project_id
+  service            = "run.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable EventArc API
+resource "google_project_service" "homelab_eventarc" {
+  project            = google_project.ben_homelab.project_id
+  service            = "eventarc.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable Cloud Billing API
+resource "google_project_service" "homelab_cloudbilling" {
+  project            = google_project.ben_homelab.project_id
+  service            = "cloudbilling.googleapis.com"
   disable_on_destroy = false
 }
 

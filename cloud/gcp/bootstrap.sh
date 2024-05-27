@@ -5,7 +5,7 @@ set -e
 
 PROJECT_NAME="Ben-HomeLab"
 
-if [[ ! -x $(which gcloud) ]]; then
+if ! command -v gcloud > /dev/null; then
     echo -e \
         "gcloud CLI not installed! Please install on macOS with:\n" \
         "\tbrew install --cask google-cloud-sdk\n" \
