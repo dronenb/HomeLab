@@ -1,28 +1,21 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-operator/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cilium-operator
-  namespace: kube-system
+  namespace: cilium
   labels:
     io.cilium/app: operator
     name: cilium-operator
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-operator
 spec:
-  # See docs on ServerCapabilities.LeasesResourceLock in file pkg/k8s/version/version.go
-  # for more details.
   replicas: 2
   selector:
     matchLabels:
       io.cilium/app: operator
       name: cilium-operator
-  # ensure operator update on single node k8s clusters, by using rolling update with maxUnavailable=100% in case
-  # of one replica and no user configured Recreate strategy.
-  # otherwise an update might get stuck due to the default maxUnavailable=50% in combination with the
-  # podAntiAffinity which prevents deployments of multiple operator replicas on the same node.
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -104,8 +97,6 @@ spec:
       serviceAccount: cilium-operator
       serviceAccountName: cilium-operator
       automountServiceAccountToken: true
-      # In HA mode, cilium-operator pods must not be scheduled on the same
-      # node as they will clash with each other.
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -118,17 +109,15 @@ spec:
       tolerations:
         - operator: Exists
       volumes:
-        # To read the configuration from the config map
         - name: cilium-config-path
           configMap:
             name: cilium-config
 ---
-# Source: cilium/templates/hubble-relay/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hubble-relay
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
@@ -179,7 +168,6 @@ spec:
               port: 4222
             timeoutSeconds: 3
           startupProbe:
-            # give the relay one minute to start up
             grpc:
               port: 4222
             timeoutSeconds: 3
@@ -217,7 +205,6 @@ spec:
                 path: config.yaml
         - name: tls
           projected:
-            # note: the leading zero means this number is in octal representation: do not remove it
             defaultMode: 0400
             sources:
               - secret:
@@ -230,12 +217,11 @@ spec:
                     - key: ca.crt
                       path: hubble-server-ca.crt
 ---
-# Source: cilium/templates/hubble-ui/deployment.yaml
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: hubble-ui
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: hubble-ui
     app.kubernetes.io/name: hubble-ui

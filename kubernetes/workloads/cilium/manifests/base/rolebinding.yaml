@@ -1,11 +1,10 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-agent/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: cilium-config-agent
-  namespace: kube-system
+  namespace: cilium
   labels:
     app.kubernetes.io/part-of: cilium
 roleRef:
@@ -15,9 +14,24 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cilium
-    namespace: kube-system
+    namespace: cilium
 ---
-# Source: cilium/templates/cilium-agent/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cilium-secrets
+  namespace: cilium-secrets
+  labels:
+    app.kubernetes.io/part-of: cilium
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cilium-ingress-secrets
+subjects:
+  - kind: ServiceAccount
+    name: cilium
+    namespace: cilium
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -32,9 +46,24 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cilium
-    namespace: kube-system
+    namespace: cilium
 ---
-# Source: cilium/templates/cilium-operator/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cilium-operator-ingress-secrets
+  namespace: cilium-secrets
+  labels:
+    app.kubernetes.io/part-of: cilium
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cilium-operator-ingress-secrets
+subjects:
+  - kind: ServiceAccount
+    name: cilium-operator
+    namespace: cilium
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -49,4 +78,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cilium-operator
-    namespace: kube-system
+    namespace: cilium

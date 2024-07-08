@@ -1,6 +1,5 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-agent/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -14,9 +13,8 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cilium
-    namespace: kube-system
+    namespace: cilium
 ---
-# Source: cilium/templates/cilium-operator/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -30,9 +28,8 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cilium-operator
-    namespace: kube-system
+    namespace: cilium
 ---
-# Source: cilium/templates/hubble-ui/clusterrolebinding.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -46,4 +43,19 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hubble-ui
-    namespace: kube-system
+    namespace: cilium
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hubble-generate-certs
+  labels:
+    app.kubernetes.io/part-of: cilium
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hubble-generate-certs
+subjects:
+  - kind: ServiceAccount
+    name: hubble-generate-certs
+    namespace: cilium

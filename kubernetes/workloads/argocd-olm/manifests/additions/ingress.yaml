@@ -5,11 +5,10 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    ingress.cilium.io/tls-passthrough: enabled
+    ingress.cilium.io/force-https: enabled
 spec:
-  ingressClassName: nginx
+  ingressClassName: cilium
   rules:
     - host: argocd.fh.dronen.house
       http:

@@ -3,7 +3,7 @@ data "proxmox_virtual_environment_vms" "existing_vms" {}
 data "ignition_file" "k3s_server_config" {
   path = "/etc/rancher/k3s/config.yaml.d/server.yaml"
   content {
-    content = var.ipv4_addr.addr == var.rendevous_host ? "cluster-init: true\ntoken: '${var.k3s_server_token}'" : "server: 'https://${var.rendevous_host}:6443'\ntoken: '${var.k3s_server_token}'"
+    content = var.ipv4_addr.addr == var.rendevous_host ? "cluster-init: true\ntoken: '${var.k3s_server_token}'\ntls-san:\n  - '${var.cluster_vip}'" : "server: 'https://${var.rendevous_host}:6443'\ntoken: '${var.k3s_server_token}'\ntls-san:\n  - '${var.cluster_vip}'"
   }
 }
 

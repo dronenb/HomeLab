@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-set -e
-OLM_RELEASE=v0.26.0
+
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s failglob
+
+OLM_RELEASE=v0.28.0
 
 folders=("crds" "olm")
 
@@ -9,6 +14,7 @@ for folder in "${folders[@]}"; do
     pushd "manifests/base/${folder}" > /dev/null || exit 1
     # Download manifests and separate into separate files
     curl -sL "https://github.com/operator-framework/operator-lifecycle-manager/releases/download/${OLM_RELEASE}/${folder}.yaml" | \
+        yq --no-colors --prettyPrint '... comments=""' | \
         kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
     # Iterate over each yaml file
@@ -19,7 +25,7 @@ for folder in "${folders[@]}"; do
         fi
         files+=("${file}")
         # Prepend ---
-        echo -e "---\n# yamllint disable rule:line-length\n$(cat "${file}")" > "${file}"
+        printf -- "---\n# yamllint disable rule:line-length\n%s" "$(cat "${file}")" > "${file}"
     done
 
     # Create kustomize file

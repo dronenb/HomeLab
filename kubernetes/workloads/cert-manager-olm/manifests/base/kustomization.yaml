@@ -1,7 +1,8 @@
 ---
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+namespace: "cert-manager"
 resources:
-  - ../additions/
-  - namespace.yaml
   - subscription.yaml
+  - namespace.yaml
+  - operatorgroup.yaml

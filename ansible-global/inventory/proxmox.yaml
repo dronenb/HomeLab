@@ -48,3 +48,6 @@ proxmox:
             }}
           roles:
             - TerraformProv
+    proxmox0:
+      ansible_user: root
+      ansible_host: 10.72.1.5

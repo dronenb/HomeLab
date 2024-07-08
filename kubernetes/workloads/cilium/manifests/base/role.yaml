@@ -1,11 +1,10 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-agent/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cilium-config-agent
-  namespace: kube-system
+  namespace: cilium
   labels:
     app.kubernetes.io/part-of: cilium
 rules:
@@ -18,7 +17,23 @@ rules:
       - list
       - watch
 ---
-# Source: cilium/templates/cilium-agent/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cilium-ingress-secrets
+  namespace: cilium-secrets
+  labels:
+    app.kubernetes.io/part-of: cilium
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -36,7 +51,24 @@ rules:
       - list
       - watch
 ---
-# Source: cilium/templates/cilium-operator/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cilium-operator-ingress-secrets
+  namespace: cilium-secrets
+  labels:
+    app.kubernetes.io/part-of: cilium
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - delete
+      - update
+      - patch
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:

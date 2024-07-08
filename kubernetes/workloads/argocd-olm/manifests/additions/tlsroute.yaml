@@ -1,0 +1,17 @@
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  parentRefs:
+    - name: cilium-https-gateway
+      namespace: cilium
+  hostnames:
+    - "argocd.fh.dronen.house"
+  rules:
+    - backendRefs:
+        - name: argocd-server
+          kind: Service
+          port: 443

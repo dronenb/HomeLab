@@ -1,0 +1,18 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: argocd-redirect
+  namespace: argocd
+spec:
+  parentRefs:
+    - name: cilium-https-gateway
+      namespace: cilium
+  hostnames:
+    - "argocd.fh.dronen.house"
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301

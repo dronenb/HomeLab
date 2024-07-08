@@ -92,3 +92,7 @@ variable "hook_script_id" {
 variable "rendevous_host" {
   type = string
 }
+
+variable "cluster_vip" {
+  type = string
+}

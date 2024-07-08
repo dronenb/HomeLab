@@ -3,36 +3,46 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   - ../../base
+  - ./gateway.yaml
+  - ./service.yaml
 patches:
   - target:
       kind: Deployment
       name: cilium-operator
-      namespace: kube-system
+      namespace: cilium
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
-        value: 10.91.1.9
+        value: 10.91.1.8
   - target:
       kind: DaemonSet
       name: cilium
-      namespace: kube-system
+      namespace: cilium
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/4/value
-        value: 10.91.1.9
+        value: 10.91.1.8
   - target:
       kind: DaemonSet
       name: cilium
-      namespace: kube-system
+      namespace: cilium
     patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/env/2/value
-        value: 10.91.1.9
+        value: 10.91.1.8
   - target:
       kind: DaemonSet
       name: cilium
-      namespace: kube-system
+      namespace: cilium
     patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/4/env/3/value
-        value: 10.91.1.9
+        value: 10.91.1.8
+  - target:
+      kind: DaemonSet
+      name: cilium
+      namespace: cilium
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/initContainers/4/env/3/value
+        value: 10.91.1.8

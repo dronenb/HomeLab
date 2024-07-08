@@ -1,11 +1,10 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-agent/daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: cilium
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: cilium
     app.kubernetes.io/part-of: cilium
@@ -150,20 +149,12 @@ spec:
                 - ALL
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
-            # Unprivileged containers need to mount /proc/sys/net from the host
-            # to have write access
             - mountPath: /host/proc/sys/net
               name: host-proc-sys-net
-            # Unprivileged containers need to mount /proc/sys/kernel from the host
-            # to have write access
             - mountPath: /host/proc/sys/kernel
               name: host-proc-sys-kernel
             - name: bpf-maps
               mountPath: /sys/fs/bpf
-              # Unprivileged containers can't set mount propagation to bidirectional
-              # in this case we will mount the bpf fs from an init container that
-              # is privileged and set the mount propagation from host to container
-              # in Cilium.
               mountPropagation: HostToContainer
             - name: cilium-run
               mountPath: /var/run/cilium
@@ -172,7 +163,6 @@ spec:
             - name: clustermesh-secrets
               mountPath: /var/lib/cilium/clustermesh
               readOnly: true
-              # Needed to be able to load kernel modules
             - name: lib-modules
               mountPath: /lib/modules
               readOnly: true
@@ -209,8 +199,6 @@ spec:
             - name: tmp
               mountPath: /tmp
           terminationMessagePolicy: FallbackToLogsOnError
-        # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
-        # We use nsenter command with host's cgroup and mount namespaces enabled.
         - name: mount-cgroup
           image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
@@ -222,11 +210,6 @@ spec:
           command:
             - sh
             - -ec
-            # The statically linked Go program binary is invoked to avoid any
-            # dependency on utilities like sh and mount that can be missing on certain
-            # distros installed on the underlying host. Copy the binary to the
-            # same directory where we install cilium cni plugin so that exec permissions
-            # are available.
             - |
               cp /usr/bin/cilium-mount /hostbin/cilium-mount;
               nsenter --cgroup=/hostproc/1/ns/cgroup --mount=/hostproc/1/ns/mnt "${BIN_PATH}/cilium-mount" $CGROUP_ROOT;
@@ -257,11 +240,6 @@ spec:
           command:
             - sh
             - -ec
-            # The statically linked Go program binary is invoked to avoid any
-            # dependency on utilities like sh that can be missing on certain
-            # distros installed on the underlying host. Copy the binary to the
-            # same directory where we install cilium cni plugin so that exec permissions
-            # are available.
             - |
               cp /usr/bin/cilium-sysctlfix /hostbin/cilium-sysctlfix;
               nsenter --mount=/hostproc/1/ns/mnt "${BIN_PATH}/cilium-sysctlfix";
@@ -283,9 +261,6 @@ spec:
                 - SYS_PTRACE
               drop:
                 - ALL
-        # Mount the bpf fs if it is not mounted. We will perform this task
-        # from a privileged container because the mount propagation bidirectional
-        # only works from privileged containers.
         - name: mount-bpf-fs
           image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
@@ -346,13 +321,11 @@ spec:
           volumeMounts:
             - name: bpf-maps
               mountPath: /sys/fs/bpf
-              # Required to mount cgroup filesystem from the host to cilium agent pod
             - name: cilium-cgroup
               mountPath: /run/cilium/cgroupv2
               mountPropagation: HostToContainer
             - name: cilium-run
-              mountPath: /var/run/cilium # wait-for-kube-proxy
-        # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
+              mountPath: /var/run/cilium
         - name: install-cni-binaries
           image: quay.io/cilium/cilium:v1.15.5@sha256:4ce1666a73815101ec9a4d360af6c5b7f1193ab00d89b7124f8505dee147ca40
           imagePullPolicy: IfNotPresent
@@ -372,7 +345,7 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
             - name: cni-path
-              mountPath: /host/opt/cni/bin # .Values.cni.install
+              mountPath: /host/opt/cni/bin
       restartPolicy: Always
       priorityClassName: system-node-critical
       serviceAccount: cilium
@@ -392,61 +365,46 @@ spec:
       tolerations:
         - operator: Exists
       volumes:
-        # For sharing configuration between the "config" initContainer and the agent
         - name: tmp
           emptyDir: {}
-          # To keep state between restarts / upgrades
         - name: cilium-run
           hostPath:
             path: /var/run/cilium
             type: DirectoryOrCreate
-            # To keep state between restarts / upgrades for bpf maps
         - name: bpf-maps
           hostPath:
             path: /sys/fs/bpf
             type: DirectoryOrCreate
-        # To mount cgroup2 filesystem on the host
         - name: hostproc
           hostPath:
             path: /proc
             type: Directory
-        # To keep state between restarts / upgrades for cgroup2 filesystem
         - name: cilium-cgroup
           hostPath:
             path: /run/cilium/cgroupv2
             type: DirectoryOrCreate
-        # To install cilium cni plugin in the host
         - name: cni-path
           hostPath:
             path: /opt/cni/bin
             type: DirectoryOrCreate
-            # To install cilium cni configuration in the host
         - name: etc-cni-netd
           hostPath:
             path: /etc/cni/net.d
             type: DirectoryOrCreate
-            # To be able to load kernel modules
         - name: lib-modules
           hostPath:
             path: /lib/modules
-            # To access iptables concurrently with other processes (e.g. kube-proxy)
         - name: xtables-lock
           hostPath:
             path: /run/xtables.lock
             type: FileOrCreate
-            # To read the clustermesh configuration
         - name: clustermesh-secrets
           projected:
-            # note: the leading zero means this number is in octal representation: do not remove it
             defaultMode: 0400
             sources:
               - secret:
                   name: cilium-clustermesh
                   optional: true
-                  # note: items are not explicitly listed here, since the entries of this secret
-                  # depend on the peers configured, and that would cause a restart of all agents
-                  # at every addition/removal. Leaving the field empty makes each secret entry
-                  # to be automatically projected into the volume as a file whose name is the key.
               - secret:
                   name: clustermesh-apiserver-remote-cert
                   optional: true
@@ -467,7 +425,6 @@ spec:
             type: Directory
         - name: hubble-tls
           projected:
-            # note: the leading zero means this number is in octal representation: do not remove it
             defaultMode: 0400
             sources:
               - secret:

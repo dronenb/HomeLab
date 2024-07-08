@@ -1,28 +1,32 @@
 #!/bin/bash
-
-set -e
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s nullglob
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-# shellcheck disable=SC1091
-source "${SCRIPT_DIR}/../../../bash/bitwarden_env.sh"
+
+if [[ -z "${BW_SESSION}" ]]; then
+    # shellcheck disable=SC1091
+    source "${SCRIPT_DIR}/../../../bash/bitwarden_env.sh"
+fi
 
 arg="${1:-pre}"
 
-pushd "terraform/${arg}" > /dev/null || exit 1
+pushd "tofu/${arg}" > /dev/null || exit 1
 
 PROJECT_NAME="Ben-HomeLab"
 
-if [[ ! -x $(which gcloud) ]]; then
+if ! command -v gcloud > /dev/null; then
     echo -e \
         "gcloud CLI not installed! Please install on macOS with:\n" \
         "\tbrew install --cask google-cloud-sdk\n" \
         "...or install using Google's documentation" \
         1>&2
     exit 1
-elif [[ ! -x $(which terraform) ]]; then
+elif ! command -v tofu > /dev/null; then
     echo -e \
-        "terraform CLI not installed! Please install on macOS with:\n" \
-        "\tbrew install terraform\n" \
-        "...or install using HashiCorp's documentation" \
+        "tofu CLI not installed! Please install on macOS with:\n" \
+        "\tbrew install opentofu\n" \
         1>&2
     exit 1
 fi
@@ -46,4 +50,4 @@ export TF_VAR_homelab_project_id
 
 # Target the project
 gcloud config set project "${TF_VAR_homelab_project_id}"
-terraform apply -auto-approve
+tofu apply -auto-approve
