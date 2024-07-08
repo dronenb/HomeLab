@@ -1,29 +1,19 @@
 #!/usr/bin/env bash
 
-GATEWAY_API_VERSION=v1.0.0
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s failglob
+
+GATEWAY_API_VERSION=v1.1.0
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 
-# Download rbac manifests and separate into separate files
-links=(
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml"
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/standard/gateway.networking.k8s.io_gateways.yaml"
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml"
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml" 
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml"
-    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${GATEWAY_API_VERSION}/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml"
-)
 
-tmpvar=""
-for link in "${links[@]}"; do
-    content=$(curl -sL "${link}")
-    tmpvar=$(printf "%s\n---\n%s" "${tmpvar}" "${content}")
-done
-
-echo -n "${tmpvar}" |
-    yq --no-colors --prettyPrint | \
+curl -sL "https://github.com/kubernetes-sigs/gateway-api/releases/download/${GATEWAY_API_VERSION}/experimental-install.yaml" |
+    yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
 # Iterate over each yaml file

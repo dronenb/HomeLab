@@ -4,3 +4,65 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   - ../../base
   - ./configmap.yaml
+patches:
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/21/value
+        value: 10.91.1.8
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/3/value
+        value: eth0
+  # The following three patches are to resolve this:
+  # https://github.com/kube-vip/kube-vip/issues/721
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/volumes
+        value:
+          - hostPath:
+              path: /etc/rancher/k3s/k3s.yaml
+              type: ""
+            name: kubeconfig
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/hostAliases
+        value:
+          - ip: 127.0.0.1
+            hostnames:
+              - kubernetes
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts
+        value:
+          - mountPath: /etc/kubernetes/admin.conf
+            name: kubeconfig
+  - target:
+      kind: Deployment
+      name: kube-vip-cloud-provider
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: "KUBEVIP_ENABLE_LOADBALANCERCLASS"
+            value: "true"

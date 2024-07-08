@@ -4,5 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   - argocd.yaml
   - certificate.yaml
-  - ingress.yaml
+  # - ingress.yaml
+  - httproute.yaml
+  - tlsroute.yaml
   - operatorgroup.yaml

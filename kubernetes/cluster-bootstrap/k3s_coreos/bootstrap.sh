@@ -3,6 +3,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+shopt -s nullglob
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # shellcheck disable=SC1091
@@ -29,10 +30,27 @@ function main {
     create_workdir
     generate_ignition
     tofu_apply
+    sleep 30
     ssh -o StrictHostKeyChecking=no 10.91.1.9 'cat /etc/rancher/k3s/k3s.yaml' | \
         yq --no-colors '.clusters[0].cluster.server = "https://10.91.1.9:6443"' \
         > ~/.kube/config
     chmod 600 ~/.kube/config
+    pushd ../../workloads/gateway-api > /dev/null || exit 1
+    kubectl kustomize manifests/overlays/fh | kubectl apply -f -
+    popd > /dev/null || exit 1
+    pushd ../../workloads/kube-vip > /dev/null || exit 1
+    kubectl kustomize manifests/overlays/fh | kubectl apply -f -
+    popd > /dev/null || exit 1
+    pushd ../../workloads/cilium > /dev/null || exit 1
+    kubectl kustomize manifests/overlays/fh | kubectl apply -f -
+    popd > /dev/null || exit 1
+    pushd ../../workloads/olm > /dev/null || exit 1
+    ./apply.sh
+    popd > /dev/null || exit 1
+    pushd ../../workloads/cert-manager-olm > /dev/null || exit 1
+    ./apply.sh
+    popd > /dev/null || exit 1
+    yq -i eval '.clusters[0].cluster.server = "https://10.91.1.8:6443"' ~/.kube/config
 }
 
 function tofu_apply {

@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    implementation: kube-vip
+    io.cilium.gateway/owning-gateway: cilium-https-gateway
+  name: cilium-gateway-cilium-https-gateway
+  namespace: cilium
+spec:
+  allocateLoadBalancerNodePorts: false
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  loadBalancerClass: kube-vip.io/kube-vip-class
+  ports:
+    - name: port-443
+      port: 443
+    - name: port-80
+      port: 80
+  type: LoadBalancer

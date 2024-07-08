@@ -8,7 +8,7 @@ pushd manifests/base > /dev/null || exit 1
 
 # Create namespace object
 kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
-    yq eval 'del(.metadata.creationTimestamp) | del(.spec) | del(.status)' \
+    kubectl neat \
     > namespace.yaml
 
 # Download manifests and separate into separate files

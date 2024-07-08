@@ -6,7 +6,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/name: kube-vip-ds
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.8.1
   name: kube-vip-ds
   namespace: kube-system
 spec:
@@ -18,7 +18,7 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/name: kube-vip-ds
-        app.kubernetes.io/version: v0.8.0
+        app.kubernetes.io/version: v0.8.1
     spec:
       affinity:
         nodeAffinity:
@@ -43,7 +43,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: vip_interface
-              value: patchme
+              value: eth0
             - name: vip_cidr
               value: "32"
             - name: dns_mode
@@ -79,10 +79,10 @@ spec:
             - name: lb_fwdmethod
               value: local
             - name: address
-              value: patchme
+              value: 10.91.1.8
             - name: prometheus_server
               value: :2112
-          image: ghcr.io/kube-vip/kube-vip:v0.8.0
+          image: ghcr.io/kube-vip/kube-vip:v0.8.1
           imagePullPolicy: IfNotPresent
           name: kube-vip
           resources: {}

@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-set -e
+
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s failglob
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 export CILIUM_VERSION="1.15.5"
+export NAMESPACE=cilium
 
 helm template cilium cilium/cilium \
     --api-versions gateway.networking.k8s.io/v1/GatewayClass \
     --include-crds \
     --version "${CILIUM_VERSION}" \
-    --namespace kube-system \
+    --namespace "${NAMESPACE}" \
     --set routingMode=tunnel \
     --set tunnelProtocol=geneve \
     --set kubeProxyReplacement=true \
@@ -23,10 +28,24 @@ helm template cilium cilium/cilium \
     --set ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16" \
     --set hubble.ui.enabled=true \
     --set gatewayAPI.enabled=true \
+    --set ingressController.enabled=true \
+    --set ingressController.loadbalancerMode=shared \
+    --set ingressController.service.loadBalancerClass=kube-vip.io/kube-vip-class \
+    --set l7Proxy=true \
+    --set loadBalancer.l7.backend=envoy \
+    --set hubble.tls.auto.enabled=true \
+    --set hubble.tls.auto.method=cronJob \
+    --set hubble.tls.auto.certValidityDuration=1095 \
+    --set hubble.tls.auto.schedule="0 0 1 */4 *" \
     --set envoy.enabled=false | \
     # envoy.enabled won't work with SELinux enabled: https://docs.cilium.io/en/latest/security/network/proxy/envoy/#known-limitations
-    yq --no-colors --prettyPrint | \
+    yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
+
+echo "---" >> namespace.yaml
+kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
+    kubectl neat \
+    >> namespace.yaml
 
 # Iterate over each yaml file
 files=()

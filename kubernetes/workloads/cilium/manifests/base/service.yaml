@@ -1,11 +1,30 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/hubble-relay/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cilium-ingress
+  namespace: cilium
+  labels:
+    cilium.io/ingress: "true"
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      nodePort:
+    - name: https
+      port: 443
+      protocol: TCP
+      nodePort:
+  type: LoadBalancer
+  loadBalancerClass: kube-vip.io/kube-vip-class
+---
 kind: Service
 apiVersion: v1
 metadata:
   name: hubble-relay
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
@@ -19,12 +38,11 @@ spec:
       port: 80
       targetPort: 4245
 ---
-# Source: cilium/templates/hubble-ui/service.yaml
 kind: Service
 apiVersion: v1
 metadata:
   name: hubble-ui
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: hubble-ui
     app.kubernetes.io/name: hubble-ui
@@ -38,12 +56,11 @@ spec:
       port: 80
       targetPort: 8081
 ---
-# Source: cilium/templates/hubble/peer-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: hubble-peer
-  namespace: kube-system
+  namespace: cilium
   labels:
     k8s-app: cilium
     app.kubernetes.io/part-of: cilium

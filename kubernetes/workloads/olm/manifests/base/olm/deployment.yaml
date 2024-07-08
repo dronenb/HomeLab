@@ -9,7 +9,7 @@ metadata:
     app: olm-operator
 spec:
   strategy:
-    type: RollingUpdate
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -29,7 +29,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: ["ALL"]
+              drop:
+                - ALL
           command:
             - /bin/olm
           args:
@@ -37,7 +38,7 @@ spec:
             - $(OPERATOR_NAMESPACE)
             - --writeStatusName
             - ""
-          image: quay.io/operator-framework/olm@sha256:30481639e89a0cb282fc1855c1bfdde96ec5ee36d1c651c2d0d79c8d249e3ed5
+          image: quay.io/operator-framework/olm@sha256:40d0363f4aa684319cd721c2fcf3321785380fdc74de8ef821317cd25a10782a
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -76,7 +77,7 @@ metadata:
     app: catalog-operator
 spec:
   strategy:
-    type: RollingUpdate
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -96,17 +97,18 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: ["ALL"]
+              drop:
+                - ALL
           command:
             - /bin/catalog
           args:
-            - "--namespace"
+            - --namespace
             - olm
             - --configmapServerImage=quay.io/operator-framework/configmap-operator-registry:latest
             - --util-image
-            - quay.io/operator-framework/olm@sha256:30481639e89a0cb282fc1855c1bfdde96ec5ee36d1c651c2d0d79c8d249e3ed5
+            - quay.io/operator-framework/olm@sha256:40d0363f4aa684319cd721c2fcf3321785380fdc74de8ef821317cd25a10782a
             - --set-workload-user-id=true
-          image: quay.io/operator-framework/olm@sha256:30481639e89a0cb282fc1855c1bfdde96ec5ee36d1c651c2d0d79c8d249e3ed5
+          image: quay.io/operator-framework/olm@sha256:40d0363f4aa684319cd721c2fcf3321785380fdc74de8ef821317cd25a10782a
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

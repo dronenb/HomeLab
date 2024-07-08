@@ -5,12 +5,15 @@ resources:
   - clusterrole.yaml
   - clusterrolebinding.yaml
   - configmap.yaml
+  - cronjob.yaml
   - daemonset.yaml
   - deployment.yaml
+  - endpoints.yaml
   - gatewayclass.yaml
+  - ingressclass.yaml
+  - job.yaml
   - namespace.yaml
   - role.yaml
   - rolebinding.yaml
-  - secret.yaml
   - service.yaml
   - serviceaccount.yaml

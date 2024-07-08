@@ -49,6 +49,7 @@ module "k3s-server" {
   cloudinit_ssh_keys = [trimspace(data.http.ssh_keys.response_body)]
   ipv4_addr          = { addr = format("%s%s", "10.91.1.", tostring(sum([9, count.index]))), mask = 24 }
   rendevous_host     = "10.91.1.9"
+  cluster_vip        = "10.91.1.8"
   ipv4_gw            = "10.91.1.1"
   nameserver         = "10.91.1.1"
   vm_os              = "fcos"

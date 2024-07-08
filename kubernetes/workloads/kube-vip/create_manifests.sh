@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s failglob
+
 KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
 
 mkdir -p manifests/base
@@ -19,18 +24,18 @@ done
 
 content=$( \
     podman run --rm "ghcr.io/kube-vip/kube-vip:${KVVERSION}" manifest daemonset \
-        --interface patchme \
-        --address patchme \
-        --inCluster \
-        --taint \
-        --controlplane \
-        --services \
+        --address 10.91.1.8 \
+        --interface eth0 \
         --arp \
-        --leaderElection \
+        --controlplane \
         --enableLoadBalancer \
         --enableNodeLabeling \
         --lbClassOnly \
-        --servicesElection
+        --leaderElection \
+        --inCluster \
+        --services \
+        --servicesElection \
+        --taint
 )
 
 tmpvar=$(printf "%s\n---\n%s" "${tmpvar}" "${content}")

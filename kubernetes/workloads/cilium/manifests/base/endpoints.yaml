@@ -1,0 +1,12 @@
+---
+# yamllint disable rule:line-length
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: cilium-ingress
+  namespace: cilium
+subsets:
+  - addresses:
+      - ip: 192.192.192.192
+    ports:
+      - port: 9999

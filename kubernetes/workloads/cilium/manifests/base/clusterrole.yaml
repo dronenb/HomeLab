@@ -1,6 +1,5 @@
 ---
 # yamllint disable rule:line-length
-# Source: cilium/templates/cilium-agent/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -53,9 +52,6 @@ rules:
     verbs:
       - list
       - watch
-      # This is used when validating policies in preflight. This will need to stay
-      # until we figure out how to avoid "get" inside the preflight, and then
-      # should be removed ideally.
       - get
   - apiGroups:
       - cilium.io
@@ -92,7 +88,6 @@ rules:
       - create
   - apiGroups:
       - cilium.io
-    # To synchronize garbage collection of such resources
     resources:
       - ciliumidentities
     verbs:
@@ -124,7 +119,6 @@ rules:
     verbs:
       - patch
 ---
-# Source: cilium/templates/cilium-operator/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -140,8 +134,6 @@ rules:
       - get
       - list
       - watch
-      # to automatically delete [core|kube]dns pods so that are starting to being
-      # managed by Cilium
       - delete
   - apiGroups:
       - ""
@@ -153,9 +145,7 @@ rules:
   - apiGroups:
       - ""
     resources:
-      # To remove node taints
       - nodes
-      # To set NetworkUnavailable false on startup
       - nodes/status
     verbs:
       - patch
@@ -170,7 +160,6 @@ rules:
   - apiGroups:
       - ""
     resources:
-      # to perform LB IP allocation for BGP
       - services/status
     verbs:
       - update
@@ -178,7 +167,6 @@ rules:
   - apiGroups:
       - ""
     resources:
-      # to check apiserver connectivity
       - namespaces
       - secrets
     verbs:
@@ -188,7 +176,6 @@ rules:
   - apiGroups:
       - ""
     resources:
-      # to perform the translation of a CNP that contains `ToGroup` to its endpoints
       - services
       - endpoints
     verbs:
@@ -205,11 +192,9 @@ rules:
       - ciliumnetworkpolicies
       - ciliumclusterwidenetworkpolicies
     verbs:
-      # Create auto-generated CNPs and CCNPs from Policies that have 'toGroups'
       - create
       - update
       - deletecollection
-      # To update the status of the CNPs and CCNPs
       - patch
       - get
       - list
@@ -220,7 +205,6 @@ rules:
       - ciliumnetworkpolicies/status
       - ciliumclusterwidenetworkpolicies/status
     verbs:
-      # Update the auto-generated CNPs and CCNPs status.
       - patch
       - update
   - apiGroups:
@@ -229,7 +213,6 @@ rules:
       - ciliumendpoints
       - ciliumidentities
     verbs:
-      # To perform garbage collection of such resources
       - delete
       - list
       - watch
@@ -238,7 +221,6 @@ rules:
     resources:
       - ciliumidentities
     verbs:
-      # To synchronize garbage collection of such resources
       - update
   - apiGroups:
       - cilium.io
@@ -250,7 +232,6 @@ rules:
       - get
       - list
       - watch
-      # To perform CiliumNode garbage collector
       - delete
   - apiGroups:
       - cilium.io
@@ -335,12 +316,6 @@ rules:
       - ciliumloadbalancerippools/status
     verbs:
       - patch
-  # For cilium-operator running in HA mode.
-  #
-  # Cilium operator running in HA mode requires the use of ResourceLock for Leader Election
-  # between multiple running instances.
-  # The preferred way of doing this is to use LeasesResourceLock as edits to Leases are less
-  # common and fewer objects in the cluster watch "all Leases".
   - apiGroups:
       - coordination.k8s.io
     resources:
@@ -348,6 +323,21 @@ rules:
     verbs:
       - create
       - get
+      - update
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses/status
+    verbs:
       - update
   - apiGroups:
       - gateway.networking.k8s.io
@@ -375,7 +365,6 @@ rules:
       - update
       - patch
 ---
-# Source: cilium/templates/hubble-ui/clusterrole.yaml
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -420,3 +409,36 @@ rules:
       - get
       - list
       - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hubble-generate-certs
+  labels:
+    app.kubernetes.io/part-of: cilium
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    resourceNames:
+      - hubble-server-certs
+      - hubble-relay-client-certs
+      - hubble-relay-server-certs
+    verbs:
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    resourceNames:
+      - cilium-ca
+    verbs:
+      - get
+      - update
