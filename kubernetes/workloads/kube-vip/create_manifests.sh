@@ -35,7 +35,7 @@ content=$( \
         --inCluster \
         --services \
         --servicesElection \
-        --taint
+        --taint | kubectl neat
 )
 
 tmpvar=$(printf "%s\n---\n%s" "${tmpvar}" "${content}")

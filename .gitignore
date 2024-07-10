@@ -35,3 +35,5 @@ terraform.rc
 
 *.retry
 tofu/killswitch-source/killswitch-source.zip
+
+node_modules/*
