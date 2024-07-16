@@ -8,3 +8,7 @@ resources:
   - cephblockpool.yaml
   - cephfilesystem.yaml
   - storageclass.yaml
+  - httproute.yaml
+  - tlsroute.yaml
+  - certificate.yaml
+  - cronjob.yaml
