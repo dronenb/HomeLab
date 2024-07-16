@@ -1,0 +1,10 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  - ../../base
+  - cephcluster.yaml
+  - deployment.yaml
+  - cephblockpool.yaml
+  - cephfilesystem.yaml
+  - storageclass.yaml
