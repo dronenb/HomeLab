@@ -8,18 +8,19 @@ terraform {
     # https://registry.terraform.io/providers/bpg/proxmox/latest
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.57.0"
+      version = "0.61.1"
     }
     # https://registry.terraform.io/providers/hashicorp/http/latest
     http = {
       source  = "hashicorp/http"
-      version = "3.4.2"
+      version = "3.4.3"
     }
     # https://registry.terraform.io/providers/hashicorp/random/latest
     random = {
       source  = "hashicorp/random"
-      version = "3.6.1"
+      version = "3.6.2"
     }
+    # https://registry.terraform.io/providers/community-terraform-providers/ignition/latest
     ignition = {
       source = "community-terraform-providers/ignition"
       version = "2.3.5"

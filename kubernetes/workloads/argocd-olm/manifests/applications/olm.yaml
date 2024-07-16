@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-vip
+  name: cilium
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: "https://github.com/dronenb/HomeLab.git"
     targetRevision: HEAD
-    path: kubernetes/workloads/kube-vip/manifests/overlays/fh
+    path: kubernetes/workloads/olm/manifests/overlays/fh
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: kube-system
+    namespace: cilium
   syncPolicy:
     automated:
       prune: true
