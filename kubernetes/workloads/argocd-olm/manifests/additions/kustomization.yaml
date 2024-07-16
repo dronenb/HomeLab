@@ -7,4 +7,3 @@ resources:
   # - ingress.yaml
   - httproute.yaml
   - tlsroute.yaml
-  - operatorgroup.yaml

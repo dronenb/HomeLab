@@ -77,6 +77,21 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+    - name: symlink-disks.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Add block devices for k3s PV consumption to /mnt/disks
+        ConditionPathExists=!/var/lib/symlink-disks.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/bin/sh -xc 'mkdir -p /mnt/disks && ln -sfv /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1 /mnt/disks/'
+        ExecStart=/bin/touch /var/lib/symlink-disks.stamp
+
+        [Install]
+        WantedBy=multi-user.target
     - name: k3s.service
       enabled: true
       contents: |

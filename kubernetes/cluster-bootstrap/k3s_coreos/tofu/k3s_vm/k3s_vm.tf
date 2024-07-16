@@ -78,6 +78,12 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
     interface = "scsi0"
     size      = var.vm_disksize
   }
+  # Volume for Ceph
+  disk {
+    interface = "scsi1"
+    size      = 100
+    file_format = "raw"
+  }
   efi_disk {
     type        = "4m"
     file_format = "raw"
@@ -107,7 +113,6 @@ resource "proxmox_virtual_environment_vm" "k3s_server_vm" {
   }
   kvm_arguments = "-fw_cfg name=opt/com.coreos/config,file=/var/lib/vz/snippets/${var.vm_hostname}.ign"
   vga {
-    enabled = true
     memory  = 16
     type    = "std"
   }
