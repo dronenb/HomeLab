@@ -30,6 +30,9 @@ spec:
           image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.10
           name: kube-vip-cloud-provider
           imagePullPolicy: Always
+          env:
+            - name: KUBEVIP_ENABLE_LOADBALANCERCLASS
+              value: "true"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30

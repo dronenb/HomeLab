@@ -8,9 +8,10 @@ shopt -s failglob
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
-export CILIUM_VERSION="1.15.5"
+export CILIUM_VERSION="1.16.1"
 export NAMESPACE=cilium
 
+helm repo update
 helm template cilium cilium/cilium \
     --api-versions gateway.networking.k8s.io/v1/GatewayClass \
     --include-crds \

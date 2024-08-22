@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: cilium-operator
-          image: quay.io/cilium/operator-generic:v1.15.5@sha256:f5d3d19754074ca052be6aac5d1ffb1de1eb5f2d947222b5f10f6d97ad4383e8
+          image: quay.io/cilium/operator-generic:v1.16.1@sha256:3bc7e7a43bc4a4d8989cb7936c5d96675dd2d02c306adf925ce0a7c35aa27dc4
           imagePullPolicy: IfNotPresent
           command:
             - cilium-operator-generic
@@ -94,7 +94,6 @@ spec:
       hostNetwork: true
       restartPolicy: Always
       priorityClassName: system-cluster-critical
-      serviceAccount: cilium-operator
       serviceAccountName: cilium-operator
       automountServiceAccountToken: true
       affinity:
@@ -150,7 +149,7 @@ spec:
             runAsGroup: 65532
             runAsNonRoot: true
             runAsUser: 65532
-          image: quay.io/cilium/hubble-relay:v1.15.5@sha256:1d24b24e3477ccf9b5ad081827db635419c136a2bd84a3e60f37b26a38dd0781
+          image: quay.io/cilium/hubble-relay:v1.16.1@sha256:2e1b4c739a676ae187d4c2bfc45c3e865bda2567cc0320a90cb666657fcfcc35
           imagePullPolicy: IfNotPresent
           command:
             - hubble-relay
@@ -166,11 +165,14 @@ spec:
           livenessProbe:
             grpc:
               port: 4222
-            timeoutSeconds: 3
+            timeoutSeconds: 10
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 12
           startupProbe:
             grpc:
               port: 4222
-            timeoutSeconds: 3
+            initialDelaySeconds: 10
             failureThreshold: 20
             periodSeconds: 3
           volumeMounts:
@@ -183,7 +185,6 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
       restartPolicy: Always
       priorityClassName:
-      serviceAccount: hubble-relay
       serviceAccountName: hubble-relay
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 1
@@ -243,13 +244,16 @@ spec:
         app.kubernetes.io/name: hubble-ui
         app.kubernetes.io/part-of: cilium
     spec:
+      securityContext:
+        fsGroup: 1001
+        runAsGroup: 1001
+        runAsUser: 1001
       priorityClassName:
-      serviceAccount: hubble-ui
       serviceAccountName: hubble-ui
       automountServiceAccountToken: true
       containers:
         - name: frontend
-          image: quay.io/cilium/hubble-ui:v0.13.0@sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666
+          image: quay.io/cilium/hubble-ui:v0.13.1@sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -270,7 +274,7 @@ spec:
               mountPath: /tmp
           terminationMessagePolicy: FallbackToLogsOnError
         - name: backend
-          image: quay.io/cilium/hubble-ui-backend:v0.13.0@sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803
+          image: quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b
           imagePullPolicy: IfNotPresent
           env:
             - name: EVENTS_SERVER_PORT
