@@ -19,12 +19,14 @@ spec:
       nodePort:
   type: LoadBalancer
   loadBalancerClass: kube-vip.io/kube-vip-class
+  externalTrafficPolicy: Cluster
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: hubble-relay
   namespace: cilium
+  annotations:
   labels:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
@@ -36,7 +38,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 4245
+      targetPort: grpc
 ---
 kind: Service
 apiVersion: v1

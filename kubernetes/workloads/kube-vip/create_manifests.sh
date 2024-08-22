@@ -44,6 +44,9 @@ echo -n "${tmpvar}" |
     yq --no-colors --prettyPrint | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
+# Add loadbalancerclass to cloud controller
+yq -i '.spec.template.spec.containers[0].env += [{"name":"KUBEVIP_ENABLE_LOADBALANCERCLASS", "value": "true"}]' deployment.yaml
+
 # Iterate over each yaml file
 files=()
 for file in *.yaml; do

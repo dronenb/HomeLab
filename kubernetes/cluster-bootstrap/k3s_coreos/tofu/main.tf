@@ -41,7 +41,7 @@ module "k3s-server" {
   source             = "./k3s_vm"
   vm_hostname        = "k3s-server-coreos${count.index}"
   proxmox_node       = local.proxmox_node
-  vm_memory_mb       = 4096
+  vm_memory_mb       = 6144
   vm_disksize        = 20
   vm_tags            = ["k3s", "k3s-server"]
   cloudinit_username = data.bitwarden_item_login.cloudinit_credentials.username

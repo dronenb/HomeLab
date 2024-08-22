@@ -1,7 +1,9 @@
 #!/bin/bash
 
-set -e
-# set -x
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s nullglob
 
 PROJECT_NAME="Ben-HomeLab"
 

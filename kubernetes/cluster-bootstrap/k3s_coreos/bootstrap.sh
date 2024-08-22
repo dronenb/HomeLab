@@ -35,6 +35,38 @@ function main {
         yq --no-colors '.clusters[0].cluster.server = "https://10.91.1.9:6443"' \
         > ~/.kube/config
     chmod 600 ~/.kube/config
+    configure_wif
+    apply_manifests
+    yq -i eval '.clusters[0].cluster.server = "https://10.91.1.8:6443"' ~/.kube/config
+    update_argocd_password
+}
+
+function update_argocd_password {
+    item_id=8cc9f7b5-95e5-4487-a800-b1d40010b04c
+    argocd_password=$(kubectl -n argocd get secret argocd-cluster -o jsonpath='{.data.admin\.password}' | base64 -d)
+    bw get item "${item_id}" | \
+        jq -r '.login.password="'"${argocd_password}"'"' | \
+        bw encode | \
+        bw edit item "${item_id}" > /dev/null
+    bw sync
+}
+
+function configure_wif {
+    pushd ../../../cloud/gcp/tofu || exit 1
+    mkdir -p k3s-wif/.well-known
+    pushd k3s-wif || exit 1
+    echo "Getting OpenID configuration and public keys from cluster"
+    token=$(kubectl -n default create token default)
+    curl -H "Authorization: Bearer ${token}" -k -sL https://10.91.1.9:6443/.well-known/openid-configuration > .well-known/openid-configuration
+    curl -H "Authorization: Bearer ${token}" -k -sL https://10.91.1.9:6443/openid/v1/jwks > keys.json
+    popd > /dev/null
+    echo "Running terraform apply"
+    cd .. || exit 1
+    ./bootstrap.sh
+    popd > /dev/null
+}
+
+function apply_manifests {
     pushd ../../workloads/gateway-api > /dev/null || exit 1
     kubectl kustomize manifests/overlays/fh | kubectl apply -f -
     popd > /dev/null || exit 1
@@ -63,6 +95,7 @@ function tofu_apply {
     tofu apply /tmp/tf.plan
     popd || exit 1
 }
+
 
 # function upload_iso {
 #     msg_change "Uploading ISO to Proxmox host..."

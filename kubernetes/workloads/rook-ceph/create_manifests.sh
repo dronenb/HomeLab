@@ -8,13 +8,13 @@ set -o pipefail
 shopt -s failglob
 
 NAMESPACE=rook-ceph
-# EXTERNAL_DNS_CHART_VERSION=1.14.5
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
+# helm search repo rook-release/rook-ceph --versions
 helm repo add rook-release https://charts.rook.io/release
-
+helm repo update
 helm template rook-ceph rook-release/rook-ceph \
     --namespace="${NAMESPACE}" \
     --set hostpathRequiresPrivileged=true | \

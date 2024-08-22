@@ -110,8 +110,6 @@ rules:
   - apiGroups:
       - cilium.io
     resources:
-      - ciliumnetworkpolicies/status
-      - ciliumclusterwidenetworkpolicies/status
       - ciliumendpoints/status
       - ciliumendpoints
       - ciliuml2announcementpolicies/status
@@ -298,6 +296,7 @@ rules:
     resources:
       - ciliumloadbalancerippools
       - ciliumpodippools
+      - ciliumbgppeeringpolicies
       - ciliumbgpclusterconfigs
       - ciliumbgpnodeconfigoverrides
     verbs:
@@ -364,6 +363,14 @@ rules:
     verbs:
       - update
       - patch
+  - apiGroups:
+      - multicluster.x-k8s.io
+    resources:
+      - serviceimports
+    verbs:
+      - get
+      - list
+      - watch
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -409,36 +416,3 @@ rules:
       - get
       - list
       - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: hubble-generate-certs
-  labels:
-    app.kubernetes.io/part-of: cilium
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    verbs:
-      - create
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    resourceNames:
-      - hubble-server-certs
-      - hubble-relay-client-certs
-      - hubble-relay-server-certs
-    verbs:
-      - update
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    resourceNames:
-      - cilium-ca
-    verbs:
-      - get
-      - update
