@@ -85,6 +85,7 @@ function apply_manifests {
     pushd ../../workloads/argocd-olm > /dev/null || exit 1
     ./apply.sh
     popd > /dev/null || exit 1
+    yq -i eval '.clusters[0].cluster.server = "https://10.91.1.8:6443"' ~/.kube/config
 }
 
 function tofu_apply {
