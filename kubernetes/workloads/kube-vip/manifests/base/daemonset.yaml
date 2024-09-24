@@ -5,7 +5,7 @@ kind: DaemonSet
 metadata:
   labels:
     app.kubernetes.io/name: kube-vip-ds
-    app.kubernetes.io/version: v0.8.2
+    app.kubernetes.io/version: v0.8.3
   name: kube-vip-ds
   namespace: kube-system
 spec:
@@ -17,15 +17,12 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/name: kube-vip-ds
-        app.kubernetes.io/version: v0.8.2
+        app.kubernetes.io/version: v0.8.3
     spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/master
-                    operator: Exists
               - matchExpressions:
                   - key: node-role.kubernetes.io/control-plane
                     operator: Exists
@@ -81,7 +78,7 @@ spec:
               value: 10.91.1.8
             - name: prometheus_server
               value: :2112
-          image: ghcr.io/kube-vip/kube-vip:v0.8.2
+          image: ghcr.io/kube-vip/kube-vip:v0.8.3
           imagePullPolicy: IfNotPresent
           name: kube-vip
           securityContext:

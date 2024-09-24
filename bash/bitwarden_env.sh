@@ -1,5 +1,6 @@
 #!/bin/bash
 function bwu() {
+    # https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
     export NODE_OPTIONS="--no-deprecation"
     BW_SESSION=$(security find-generic-password -a "${USER}" -s BW_SESSION -w)
     export BW_SESSION
