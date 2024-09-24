@@ -8,7 +8,7 @@ metadata:
   name: cilium-gateway-cilium-https-gateway
   namespace: cilium
 spec:
-  allocateLoadBalancerNodePorts: false
+  allocateLoadBalancerNodePorts: true
   internalTrafficPolicy: Cluster
   ipFamilies:
     - IPv4
