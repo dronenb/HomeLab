@@ -42,6 +42,11 @@ function main {
 }
 
 function update_argocd_password {
+    echo "Updating ArgoCD password in Bitwarden..."
+    while ! kubectl -n argocd get secret argocd-cluster > /dev/null 2>&1; do
+        echo "Secret still pending creation... Sleeping for 5s..."
+        sleep 5
+    done
     item_id=8cc9f7b5-95e5-4487-a800-b1d40010b04c
     argocd_password=$(kubectl -n argocd get secret argocd-cluster -o jsonpath='{.data.admin\.password}' | base64 -d)
     bw get item "${item_id}" | \

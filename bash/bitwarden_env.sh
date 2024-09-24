@@ -1,9 +1,10 @@
 #!/bin/bash
 function bwu() {
+    export NODE_OPTIONS="--no-deprecation"
     BW_SESSION=$(security find-generic-password -a "${USER}" -s BW_SESSION -w)
     export BW_SESSION
     BW_STATUS=$(bw status | jq -r .status)
-    case "$BW_STATUS" in
+    case "${BW_STATUS}" in
     "unauthenticated")
         echo "Logging into BitWarden"
         unset BW_SESSION
