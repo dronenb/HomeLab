@@ -7,9 +7,9 @@ storage:
       overwrite: true
       mode: 0755
       contents:
-        source: "https://github.com/k3s-io/k3s/releases/download/v1.30.3%2Bk3s1/k3s"
+        source: "https://github.com/k3s-io/k3s/releases/download/v1.31.1%2Bk3s1/k3s"
         verification:
-          hash: "sha256-00e9752be22c0e440cee3a8ffd51e2b8c18ef10cea7edf11cc33f37c70bb6385"
+          hash: "sha256-404141c08a6b194246784191f1fc7200dc7a56f4b44aff069e00ff2786803d96"
     - path: /etc/rancher/k3s/config.yaml
       overwrite: true
       mode: 0644
