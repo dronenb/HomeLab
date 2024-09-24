@@ -11,7 +11,7 @@ spec:
     path: kubernetes/workloads/olm/manifests/overlays/fh
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: cilium
+    namespace: olm
   syncPolicy:
     automated:
       prune: true
