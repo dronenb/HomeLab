@@ -17,8 +17,9 @@ storage:
         inline: |
           selinux: true
           disable:
-            - traefik
+            - local-storage
             - servicelb
+            - traefik
           flannel-backend: "none"
           disable-network-policy: true
           disable-kube-proxy: true

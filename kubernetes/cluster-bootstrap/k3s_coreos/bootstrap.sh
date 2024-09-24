@@ -38,6 +38,10 @@ function main {
     configure_wif
     apply_manifests
     yq -i eval '.clusters[0].cluster.server = "https://10.91.1.8:6443"' ~/.kube/config
+    while ! nc -vz 10.91.1.8 6443; do
+        echo "Waiting for kube-vip IP to open port 6443..."
+        sleep 5
+    done
     update_argocd_password
 }
 
