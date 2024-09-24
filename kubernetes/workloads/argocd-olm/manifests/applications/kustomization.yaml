@@ -6,3 +6,4 @@ resources:
   - gateway-api.yaml
   - kube-vip.yaml
   - olm.yaml
+  - argocd.yaml
