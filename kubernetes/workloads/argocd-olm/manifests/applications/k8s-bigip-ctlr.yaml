@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-bigip-ctlr
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/dronenb/HomeLab.git"
+    targetRevision: HEAD
+    path: kubernetes/workloads/k8s-bigip-ctlr/manifests/overlays/fh
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: k8s-bigip-ctlr
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
