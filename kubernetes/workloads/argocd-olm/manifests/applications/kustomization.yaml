@@ -2,8 +2,9 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
+  - argocd.yaml
   - cilium.yaml
   - gateway-api.yaml
   - kube-vip.yaml
+  - nfs-subdir-external-provisioner.yaml
   - olm.yaml
-  - argocd.yaml
