@@ -1,0 +1,9 @@
+apiVersion: fic.f5.com/v1
+kind: IPAM
+metadata:
+  name: testing
+  namespace: kube-system
+spec:
+  hostSpecs:
+    - ipamLabel: test
+      key: test

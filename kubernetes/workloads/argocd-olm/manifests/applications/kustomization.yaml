@@ -4,7 +4,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   - argocd.yaml
   - cilium.yaml
+  - f5-ipam-controller.yaml
   - gateway-api.yaml
+  - k8s-bigip-ctlr.yaml
   - kube-vip.yaml
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
