@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: registry
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/dronenb/HomeLab.git"
+    targetRevision: HEAD
+    path: kubernetes/workloads/registry/manifests/overlays/fh
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: registry
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false

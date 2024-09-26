@@ -8,3 +8,4 @@ resources:
   - kube-vip.yaml
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
+  - registry.yaml

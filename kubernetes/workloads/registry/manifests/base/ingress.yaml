@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registry-ingress
+  namespace: registry
+  annotations:
+    ingress.cilium.io/force-https: enabled
+spec:
+  ingressClassName: cilium
+  tls:
+    - secretName: registry-server-tls
+      hosts:
+        - registry.fh.dronen.house
+  rules:
+    - host: registry.fh.dronen.house
+      http:
+        paths:
+          - backend:
+              service:
+                name: registry-service
+                port:
+                  number: 5000
+            path: /
+            pathType: Prefix

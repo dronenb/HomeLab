@@ -1,0 +1,17 @@
+---
+# yamllint disable rule:line-length
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-service
+  namespace: registry
+  labels:
+    app: registry
+spec:
+  type: ClusterIP
+  ports:
+    - name: registry-port
+      port: 5000
+      targetPort: registry-port
+  selector:
+    app: registry
