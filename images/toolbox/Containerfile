@@ -1,0 +1,248 @@
+FROM registry.access.redhat.com/ubi9-minimal@sha256:c0e70387664f30cd9cf2795b547e4a9a51002c44a4a86aa9335ab030134bf392
+
+ARG \
+  OC_VERSION=4.17.0 \
+  OC_SHASUMS_SHA256SUM=566920aea0aff5048b3d97d359925a543fca63c6aaed9ce7e5e6e06fdf4d5561 \
+  KUBECTL_VERSION=1.31.1 \
+  KUBECTL_SHA256SUM=57b514a7facce4ee62c93b8dc21fda8cf62ef3fed22e44ffc9d167eab843b2ae \
+  ARGOCD_VAULT_PLUGIN_VERSION=1.17.0 \
+  ARGOCD_VAULT_PLUGIN_SHA256SUM=aca0af4dfdc5623d1776679def2d9e6123db26d9f8b2f428c4324042295278dd \
+  BUTANE_VERSION=0.22.0 \
+  BUTANE_SHA256SUM=0c3be780fafb9abe90fa1e00544d0d3997cdd2adf39a6f75ad5fa40ed0c82840 \
+  COREOS_INSTALLER_IMAGE_TAG=v0.22.1@sha256:1139a080cfac306ee97e7c04da5ed6b58b44b7eeaeaeac5051a1b862c2e3dc9f \
+  GCLOUD_VERSION=496.0.0 \
+  GH_SHA256SUM=49700b3fedb5bfcbef696fe9f1f69091ceb9caf2d40bd872b5028c451efc52bc \
+  IGNITION_VALIDATE_VERSION=2.19.0 \
+  IGNITION_VALIDATE_SHA256SUM=6e853bc8debe1f32189d7c853a2acbcf1de8b79a79e695c05ca868291fbce8ad \
+  JQ_VERSION=1.7.1 \
+  JQ_SHA256SUM=5942c9b0934e510ee61eb3e30273f1b3fe2590df93933a93d7c58b81d19c8ff5 \
+  NMSTATECTL_VERSION=2.2.35 \
+  NMSTATECTL_SHA256SUM=aac556fcfe4ce43bd380b604bdb6928896435fd7b30b35bb870c307d26e7365a \
+  YQ_VERSION=4.44.3 \
+  YQ_SHA256SUM=a2c097180dd884a8d50c956ee16a9cec070f30a7947cf4ebf87d5f36213e9ed7
+
+ENV \
+  LANG='en_US.UTF-8' \
+  LANGUAGE='en_US:en' \
+  LC_ALL='en_US.UTF-8' \
+  TZ=UTC \
+  HOME=/home/default \
+  USER_NAME=default \
+  USER_UID=1001 \
+  PATH="/usr/local/google-cloud-sdk/bin:/home/default/.local/bin:${PATH}"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN set -ex && \
+  #################################################################
+  # Define package dependecies
+  #
+  # BUILDTIME_PKGS:
+  #   list of packges that are only required during container build
+  #   and are typicallly installed as part container build process
+  #
+  # RUNTIME_PKGS:
+  #   list of packages that must be present in the final container
+  #   image.
+  #################################################################
+  PKGMGR='microdnf' && \
+  PKGS="bash ca-certificates expect git-core glibc \
+  glibc-langpack-en glibc-minimal-langpack gzip kmod libgcc libstdc++ \
+  libxcrypt-compat openssl-devel pciutils \
+  procps python3.12 python3.12-pip rpm shadow-utils tar unzip zlib" && \
+  #################################################################
+  # Install packages
+  #################################################################\
+  "${PKGMGR}" \
+  --disablerepo="*" \
+  --enablerepo="ubi-9-appstream-rpms" \
+  --enablerepo="ubi-9-baseos-rpms" \
+  --enablerepo="ubi-9-codeready-builder-rpms" \
+  install --disableplugin=subscription-manager \
+  ${PKGS} --nodocs -y && \
+  ##################################################################
+  # install python
+  ##################################################################
+  ln -s -f /usr/bin/python3.12 /usr/bin/python3 && \
+  ln -s -f /usr/bin/python3.12 /usr/bin/python && \
+  ln -s -f /usr/bin/pip3.12 /usr/bin/pip3 && \
+  ln -s -f /usr/bin/pip3.12 /usr/bin/pip && \
+  #################################################################
+  # Grab OpenShift shasums
+  #################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output "/tmp/oc_sha256sum.txt" \
+  --url "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/sha256sum.txt" && \
+  echo "${OC_SHASUMS_SHA256SUM} /tmp/oc_sha256sum.txt" | sha256sum -c - && \
+  ##################################################################
+  # install argocd-vault-plugin
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /usr/local/bin/argocd-vault-plugin \
+  --url "https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v${ARGOCD_VAULT_PLUGIN_VERSION}/argocd-vault-plugin_${ARGOCD_VAULT_PLUGIN_VERSION}_linux_amd64" && \
+  echo "${ARGOCD_VAULT_PLUGIN_SHA256SUM} /usr/local/bin/argocd-vault-plugin" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/argocd-vault-plugin && \
+  ##################################################################
+  # install butane
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /usr/local/bin/butane \
+  --url "https://github.com/coreos/butane/releases/download/v${BUTANE_VERSION}/butane-x86_64-unknown-linux-gnu" && \
+  echo "${BUTANE_SHA256SUM} /usr/local/bin/butane" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/butane && \
+  ##################################################################
+  # install gcloud
+  ##################################################################
+  export CLOUDSDK_PYTHON=/usr/bin/python && \
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /tmp/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz \
+  --url "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" && \
+  # echo "${GCLOUD_SHA256SUM} /tmp/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz" | sha256sum -c - && \
+  tar -zxf /tmp/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz --no-same-owner --one-top-level=/usr/local/google-cloud-sdk --strip-components 1 && \
+  rm -f /tmp/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz && \
+  /usr/local/google-cloud-sdk/install.sh \
+  --usage-reporting=false \
+  --bash-completion=false \
+  --path-update=false \
+  --rc-path=${HOME}/.bashrc \
+  --additional-components=gke-gcloud-auth-plugin \
+  --quiet && \
+  gcloud info && \
+  #gcloud components remove bundled-python3-unix && \
+  #gcloud components list && \
+  #gcloud components beta && \
+  ##################################################################
+  # minimize gcloud
+  ##################################################################
+  gcloud config set core/disable_usage_reporting true && \
+  gcloud config set component_manager/disable_update_check true && \
+  gcloud config set metrics/environment github_docker_image && \
+  gcloud config set survey/disable_prompts true && \
+  rm -rf /usr/lib64/google-cloud-sdk/.install/.backup && \
+  rm -rf /usr/local/google-cloud-sdk/.install/.backup && \
+  rm -rf /usr/local/google-cloud-sdk/{.install,VERSION,LICENSE,README,RELEASE_NOTES,platform,deb,install.*,rpm,data,properties,bin/anthoscli} && \
+  rm -rf /usr/local/.config/gcloud/ && \
+  rm -rf ${HOME}/.config/gcloud && \
+  mkdir -p ${HOME}/.config && \
+  du -h --max-depth=1 /usr/local/google-cloud-sdk && \
+  ##################################################################
+  # install ignition-validate
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /usr/local/bin/ignition-validate \
+  --url "https://github.com/coreos/ignition/releases/download/v${IGNITION_VALIDATE_VERSION}/ignition-validate-x86_64-linux" && \
+  echo "${IGNITION_VALIDATE_SHA256SUM} /usr/local/bin/ignition-validate" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/ignition-validate && \
+  #################################################################
+  # install jq
+  #################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --progress-bar --location --fail --show-error \
+  --output /usr/local/bin/jq \
+  "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
+  echo "${JQ_SHA256SUM} /usr/local/bin/jq" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/jq && \
+  #################################################################
+  # install nmstatectl
+  #################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --progress-bar --location --fail --show-error \
+  --output /tmp/nmstatectl-linux-x64.zip \
+  "https://github.com/nmstate/nmstate/releases/download/v${NMSTATECTL_VERSION}/nmstatectl-linux-x64.zip" && \
+  echo "${NMSTATECTL_SHA256SUM} /tmp/nmstatectl-linux-x64.zip" | sha256sum -c - && \
+  pushd /tmp/ && \
+  unzip "/tmp/nmstatectl-linux-x64.zip" && \
+  mv /tmp/nmstatectl /usr/local/bin/ && \
+  rm /tmp/nmstatectl-linux-x64.zip && \
+  chmod 0755 /usr/local/bin/nmstatectl && \
+  popd && \
+  ##################################################################
+  # install oc
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /tmp/openshift-client-linux-${OC_VERSION}.tar.gz \
+  --url "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz" && \
+  echo "$(cat /tmp/oc_sha256sum.txt | awk '$2=="openshift-client-linux-'"${OC_VERSION}"'.tar.gz" {print $1}') /tmp/openshift-client-linux-${OC_VERSION}.tar.gz" | sha256sum -c - && \
+  tar -zxf /tmp/openshift-client-linux-${OC_VERSION}.tar.gz --no-same-owner -C /usr/local/bin oc && \
+  chmod 0755 /usr/local/bin/oc && \
+  rm -f /tmp/openshift-client-linux-${OC_VERSION}.tar.gz && \
+  ##################################################################
+  # install kubectl
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /usr/local/bin/kubectl \
+  --url "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+  echo "${KUBECTL_SHA256SUM} /usr/local/bin/kubectl" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/kubectl && \
+  ##################################################################
+  # install coreos-installer
+  ##################################################################
+  mkdir /tmp/coreos-installer && \
+  oc image extract "quay.io/coreos/coreos-installer:${COREOS_INSTALLER_IMAGE_TAG}" --path /usr/sbin/coreos-installer:/tmp/coreos-installer && \
+  mv /tmp/coreos-installer/coreos-installer /usr/sbin/coreos-installer && \
+  chmod 0755 /usr/sbin/coreos-installer && \
+  rm -rf /tmp/coreos-installer && \
+  ##################################################################
+  # install yq
+  ##################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /usr/local/bin/yq \
+  --url "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" && \
+  echo "${YQ_SHA256SUM} /usr/local/bin/yq" | sha256sum -c - && \
+  chmod 0755 /usr/local/bin/yq && \
+  #################################################################
+  # finalize
+  #################################################################
+  chmod -R 0775 "${HOME}" /home && \
+  chgrp -R 0 "${HOME}" /home && \
+  ${PKGMGR} clean all -y --enablerepo='*' && \
+  rm -rf /{root,tmp,var/cache/{ldconfig,yum}}/* && \
+  rm -rf /var/cache/* /var/log/dnf* /var/log/yum.*
+
+WORKDIR "${HOME}"
+
+USER "${USER_UID}:0"
+
+ENTRYPOINT ["/usr/bin/entrypoint"]
+
+CMD ["/bin/bash"]

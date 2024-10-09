@@ -6,11 +6,15 @@ terraform {
   required_providers {
     archive = {
       source  = "hashicorp/archive"
-      version = "2.4.2"
+      version = "2.6.0"
     }
     google = {
       source  = "hashicorp/google"
-      version = "5.30.0"
+      version = "6.6.0"
+    }
+    bitwarden = {
+      source  = "maxlaverse/bitwarden"
+      version = "0.10.0"
     }
   }
 }

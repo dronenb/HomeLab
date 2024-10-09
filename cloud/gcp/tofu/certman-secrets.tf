@@ -30,3 +30,4 @@ resource "google_secret_manager_secret_version" "cert_manager_cloudflare_token" 
   secret      = google_secret_manager_secret.cert_manager_cloudflare_token.id
   secret_data = data.bitwarden_item_login.cert_manager_cloudflare_token.password
 }
+

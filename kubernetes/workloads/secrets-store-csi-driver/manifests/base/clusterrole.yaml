@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
 rules:
   - apiGroups:
       - ""
@@ -29,9 +29,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
   name: secretproviderclasses-admin-role
@@ -57,9 +57,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
     rbac.authorization.k8s.io/aggregate-to-view: "true"
   name: secretproviderclasses-viewer-role
 rules:
@@ -80,9 +80,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
     rbac.authorization.k8s.io/aggregate-to-view: "true"
   name: secretproviderclasspodstatuses-viewer-role
 rules:
@@ -103,9 +103,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
 rules:
   - apiGroups:
       - ""
@@ -128,9 +128,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.4
+    app.kubernetes.io/version: 1.4.5
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.4
+    helm.sh/chart: secrets-store-csi-driver-1.4.5
 rules:
   - apiGroups:
       - ""

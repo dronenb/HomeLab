@@ -1,0 +1,5 @@
+failure-threshold: warning
+ignored:
+  - SC2086 # Ignore the use of double quotes, omitting false positives
+no-color: false
+strict-labels: true

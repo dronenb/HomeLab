@@ -3,13 +3,14 @@ provider "google" {
   billing_project       = var.homelab_project_id
 }
 
+provider "bitwarden" {}
+
 # Homelab project
 resource "google_project" "ben_homelab" {
   name                = "Ben-HomeLab"
   project_id          = var.homelab_project_id
   org_id              = var.google_org_id
   billing_account     = var.billing_account_id
-  skip_delete         = true
   auto_create_network = false
 }
 
