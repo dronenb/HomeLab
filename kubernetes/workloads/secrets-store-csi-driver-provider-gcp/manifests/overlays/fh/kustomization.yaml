@@ -6,3 +6,11 @@ resources:
   - ../../base
   - secretproviderclass.yaml
   - pod.yaml
+patches:
+  - target:
+      kind: DaemonSet
+      name: csi-secrets-store-provider-gcp
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: registry.fh.dronen.house/secrets-store-csi-driver-provider-gcp:newarch

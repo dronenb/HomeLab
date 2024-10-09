@@ -62,6 +62,8 @@ spec:
               value: /etc/kubernetes/secrets-store-csi-providers
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/run/secrets/tokens/gcp-ksa/credential-configuration.json
+            - name: GAIA_TOKEN_EXCHANGE_ENDPOINT
+              value: https://sts.googleapis.com/v1/token
           volumeMounts:
             - mountPath: /etc/kubernetes/secrets-store-csi-providers
               name: providervol
@@ -78,6 +80,9 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 10
             periodSeconds: 30
+          args:
+            - "-v"
+            - "5"
       volumes:
         - name: providervol
           hostPath:
@@ -87,7 +92,7 @@ spec:
             defaultMode: 420
             sources:
               - serviceAccountToken:
-                  audience: k3s
+                  audience: https://iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif
                   expirationSeconds: 3600
                   path: token
               - configMap:

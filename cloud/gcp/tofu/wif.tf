@@ -51,6 +51,10 @@ resource "google_iam_workload_identity_pool_provider" "k3s_homelab_wif" {
   }
   oidc {
     issuer_uri        = "https://storage.googleapis.com/${google_storage_bucket.k3s_homelab_wif_oidc.name}"
-    allowed_audiences = ["k3s"]
+    allowed_audiences = [
+      "https://iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif",
+      "//iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif",
+      "k3s"
+    ]
   }
 }
