@@ -5,7 +5,6 @@ set -o nounset
 set -o pipefail
 shopt -s nullglob
 
-./tofu.sh pre
 export AVP_TYPE=gcpsecretmanager
 kubectl kustomize manifests/base | \
     kubectl apply -f -

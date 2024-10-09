@@ -65,9 +65,8 @@ function configure_wif {
     mkdir -p k3s-wif/.well-known
     pushd k3s-wif || exit 1
     echo "Getting OpenID configuration and public keys from cluster"
-    token=$(kubectl -n default create token default)
-    curl -H "Authorization: Bearer ${token}" -k -sL https://10.91.1.9:6443/.well-known/openid-configuration > .well-known/openid-configuration
-    curl -H "Authorization: Bearer ${token}" -k -sL https://10.91.1.9:6443/openid/v1/jwks > keys.json
+    kubectl get --raw /.well-known/openid-configuration > .well-known/openid-configuration
+    kubectl get --raw /openid/v1/jwks > keys.json
     popd > /dev/null
     echo "Running terraform apply"
     cd .. || exit 1
