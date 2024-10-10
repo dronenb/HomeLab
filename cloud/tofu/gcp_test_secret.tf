@@ -8,7 +8,7 @@ resource "google_secret_manager_secret" "test_secret" {
 
 resource "google_secret_manager_secret_version" "test_secret" {
   secret      = google_secret_manager_secret.test_secret.id
-  secret_data = "fake-secret"
+  secret_data = "gcp-fake-secret"
 }
 
 resource "google_secret_manager_secret_iam_member" "member" {
