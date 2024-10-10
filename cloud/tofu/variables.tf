@@ -10,3 +10,7 @@ variable "google_org_id" {
   type      = number
   sensitive = true
 }
+variable "azure_subscription_id" {
+  type      = string
+  sensitive = true
+}

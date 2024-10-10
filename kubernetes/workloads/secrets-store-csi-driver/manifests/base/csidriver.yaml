@@ -16,3 +16,11 @@ spec:
   attachRequired: false
   volumeLifecycleModes:
     - Ephemeral
+  tokenRequests:
+    - audience: "//iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif"
+      expirationSeconds: 3600
+    - audience: "k3s"
+      expirationSeconds: 3600
+    - audience: "api://AzureADTokenExchange"
+      expirationSeconds: 3600
+  requiresRepublish: true

@@ -17,12 +17,20 @@ spec:
       terminationMessagePolicy: File
       command: ["/usr/bin/sleep", "inf"]
       volumeMounts:
-        - mountPath: "/var/secrets"
-          name: mysecret
+        - mountPath: "/var/gcpsecrets"
+          name: gcpsecrets
+        - mountPath: "/var/azuresecrets"
+          name: azuresecrets
   volumes:
-    - name: mysecret
+    - name: gcpsecrets
       csi:
         driver: secrets-store.csi.k8s.io
         readOnly: true
         volumeAttributes:
-          secretProviderClass: "app-secrets"
+          secretProviderClass: "gcp"
+    - name: azuresecrets
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "azure"

@@ -5,6 +5,13 @@ provider "google" {
 
 provider "bitwarden" {}
 
+provider "azuread" {}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.azure_subscription_id
+}
+
 # Homelab project
 resource "google_project" "ben_homelab" {
   name                = "Ben-HomeLab"

@@ -43,7 +43,7 @@ export TF_VAR_homelab_project_id
 gcloud config set project "${TF_VAR_homelab_project_id}"
 
 #shellcheck disable=SC1091
-source ../../bash/bitwarden_env.sh
+source ../bash/bitwarden_env.sh
 
 pushd tofu || exit 1
 tofu plan -var-file=variables.tfvars -out /tmp/plan
