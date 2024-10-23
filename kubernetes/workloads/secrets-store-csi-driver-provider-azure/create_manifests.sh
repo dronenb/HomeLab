@@ -24,11 +24,6 @@ helm template csi-secrets-store-provider-azure csi-secrets-store-provider-azure/
     yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
-echo "---" >> namespace.yaml
-kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
-    kubectl neat \
-    >> namespace.yaml
-
 # Iterate over each yaml file
 files=()
 for file in *.yaml; do

@@ -21,6 +21,8 @@ spec:
           name: gcpsecrets
         - mountPath: "/var/azuresecrets"
           name: azuresecrets
+        - mountPath: "/var/awssecrets"
+          name: awssecrets
   volumes:
     - name: gcpsecrets
       csi:
@@ -34,3 +36,9 @@ spec:
         readOnly: true
         volumeAttributes:
           secretProviderClass: "azure"
+    - name: awssecrets
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "aws"
