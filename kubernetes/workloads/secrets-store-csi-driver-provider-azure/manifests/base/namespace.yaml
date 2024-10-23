@@ -1,7 +1,0 @@
----
-# yamllint disable rule:line-length
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: secrets-store-csi-driver

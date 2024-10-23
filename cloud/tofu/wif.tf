@@ -19,16 +19,16 @@ resource "google_storage_bucket_iam_member" "k3s_homelab_wif_oidc_public" {
 }
 
 resource "google_storage_bucket_object" "k3s-openid-configuration" {
-  name   = ".well-known/openid-configuration"
-  source = "k3s-wif/.well-known/openid-configuration"
-  bucket = google_storage_bucket.k3s_homelab_wif_oidc.name
+  name          = ".well-known/openid-configuration"
+  source        = "k3s-wif/.well-known/openid-configuration"
+  bucket        = google_storage_bucket.k3s_homelab_wif_oidc.name
   cache_control = "max-age=60"
 }
 
 resource "google_storage_bucket_object" "k3s-keys-json" {
-  name   = "keys.json"
-  source = "k3s-wif/keys.json"
-  bucket = google_storage_bucket.k3s_homelab_wif_oidc.name
+  name          = "keys.json"
+  source        = "k3s-wif/keys.json"
+  bucket        = google_storage_bucket.k3s_homelab_wif_oidc.name
   cache_control = "max-age=60"
 }
 
@@ -50,7 +50,7 @@ resource "google_iam_workload_identity_pool_provider" "k3s_homelab_wif" {
     "google.subject" = "assertion.sub"
   }
   oidc {
-    issuer_uri        = "https://storage.googleapis.com/${google_storage_bucket.k3s_homelab_wif_oidc.name}"
+    issuer_uri = "https://storage.googleapis.com/${google_storage_bucket.k3s_homelab_wif_oidc.name}"
     allowed_audiences = [
       "https://iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif",
       "//iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif",
