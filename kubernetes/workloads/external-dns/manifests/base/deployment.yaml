@@ -1,9 +1,7 @@
----
-# yamllint disable rule:line-length
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: external-dns
+  name: opnsense-unbound-external-dns-webhook
   namespace: external-dns
   labels:
     helm.sh/chart: external-dns-1.14.5
@@ -25,7 +23,7 @@ spec:
         app.kubernetes.io/name: external-dns
         app.kubernetes.io/instance: external-dns
     spec:
-      serviceAccountName: external-dns
+      serviceAccountName: opnsense-unbound-external-dns-webhook
       securityContext:
         fsGroup: 65534
         runAsNonRoot: true
@@ -46,14 +44,23 @@ spec:
           image: registry.k8s.io/external-dns/external-dns:v0.14.2
           imagePullPolicy: IfNotPresent
           args:
-            - --log-level=info
+            - --log-level=debug
             - --log-format=text
             - --interval=1m
-            - --source=service
             - --source=ingress
-            - --policy=upsert-only
+            - --source=service
+            - --source=gateway-httproute
+            - --source=gateway-tlsroute
+            - --source=gateway-tcproute
+            - --source=gateway-udproute
+            - --policy=sync
             - --registry=txt
-            - --provider=aws
+            - --txt-owner-id=default
+            - --txt-prefix=k8s.
+            - --domain-filter=fh.dronen.house
+            - --provider=webhook
+            - --ignore-ingress-tls-spec
+            - --webhook-provider-url=http://localhost:8800
           ports:
             - name: http
               protocol: TCP
@@ -76,3 +83,58 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
+        - name: webhook
+          image: ghcr.io/jobs62/opnsense_unbound_external-dns_webhook:v0.4.5@sha256:22d3bd25bacaa0a8445a746d6541a8994bcb54e6047f5a079574adc792f88034
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+          env:
+            - name: OPNSENSE_BASE
+              value: https://10.91.1.1/
+            - name: OPNSENSE_ALLOW_INVALID_CERTS
+              value: "true"
+            - name: OPNSENSE_DOMAIN_FILTERS
+              value: '[".fh.dronen.house"]'
+            - name: OPNSENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: key
+                  name: opnsense-creds
+            - name: OPNSENSE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: opnsense-creds
+          # ports:
+          #   - name: http-webhook
+          #     protocol: TCP
+          #     containerPort: 8888
+          #   - name: http-wh-metrics
+          #     protocol: TCP
+          #     containerPort: 8080
+          # livenessProbe:
+          #   failureThreshold: 2
+          #   httpGet:
+          #     path: /healthz
+          #     port: http-webhook
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   failureThreshold: 6
+          #   httpGet:
+          #     path: /healthz
+          #     port: http-webhook
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   timeoutSeconds: 5

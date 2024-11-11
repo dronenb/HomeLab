@@ -1,9 +1,7 @@
----
-# yamllint disable rule:line-length
 apiVersion: v1
 kind: Service
 metadata:
-  name: external-dns
+  name: opnsense-unbound-external-dns-webhook
   namespace: external-dns
   labels:
     helm.sh/chart: external-dns-1.14.5

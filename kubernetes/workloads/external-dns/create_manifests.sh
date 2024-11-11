@@ -14,32 +14,19 @@ mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
-
 helm template external-dns external-dns/external-dns \
+    --values ../../values.yaml \
     --namespace="${NAMESPACE}" \
     --version "${EXTERNAL_DNS_CHART_VERSION}" | \
     yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
-# Iterate over each yaml file
-files=()
-for file in *.yaml; do
-    if [[ "${file}" == "kustomization.yaml" ]]; then
-        continue
-    fi
-    files+=("${file}")
-    contents="$(cat "${file}")"
-    printf -- "---\n# yamllint disable rule:line-length\n%s" "${contents}" > "${file}"
-done
+echo "---" > namespace.yaml
+kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
+    kubectl neat \
+    >> namespace.yaml
 
-# Create kustomize file
-cat <<EOF > kustomization.yaml
----
-kind: Kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-resources:
-$(printf "  - %s\n" "${files[@]}")
-EOF
+kustomize create --autodetect
 
 # Format YAML
 prettier . --write
