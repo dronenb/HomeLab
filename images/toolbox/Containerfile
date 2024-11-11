@@ -1,6 +1,8 @@
 FROM registry.access.redhat.com/ubi9-minimal@sha256:c0e70387664f30cd9cf2795b547e4a9a51002c44a4a86aa9335ab030134bf392
 
 ARG \
+  AZ_CLI_VERSION=2.65.0 \
+  AZCOPY_MAJOR_VERSION=v10 \
   OC_VERSION=4.17.0 \
   OC_SHASUMS_SHA256SUM=566920aea0aff5048b3d97d359925a543fca63c6aaed9ce7e5e6e06fdf4d5561 \
   KUBECTL_VERSION=1.31.1 \
@@ -90,6 +92,48 @@ RUN set -ex && \
   --url "https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v${ARGOCD_VAULT_PLUGIN_VERSION}/argocd-vault-plugin_${ARGOCD_VAULT_PLUGIN_VERSION}_linux_amd64" && \
   echo "${ARGOCD_VAULT_PLUGIN_SHA256SUM} /usr/local/bin/argocd-vault-plugin" | sha256sum -c - && \
   chmod 0755 /usr/local/bin/argocd-vault-plugin && \
+  #################################################################
+  ## Install AWS CLI
+  #################################################################
+  curl --progress-bar --location --fail --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output /tmp/awscliv2.zip \
+  --url "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" && \
+  pushd /tmp && \
+  unzip /tmp/awscliv2.zip && \
+  /tmp/aws/install && \
+  rm -rf /tmp/awscliv2.zip /tmp/aws && \
+  popd && \
+  #################################################################
+  ## Install Azure CLI
+  #################################################################
+  rpm -i https://packages.microsoft.com/config/rhel/9.0/packages-microsoft-prod.rpm && \
+  "${PKGMGR}" install -y --disableplugin=subscription-manager "azure-cli-${AZ_CLI_VERSION}-1.el9" && \
+  #################################################################
+  ## Install azcopy
+  #################################################################
+  AZCOPY_FILENAME="azcopy_${AZCOPY_MAJOR_VERSION}.tar.gz" && \
+  AZCOPY_URL="https://aka.ms/downloadazcopy-${AZCOPY_MAJOR_VERSION}-linux" && \
+  mkdir -p /tmp/azcopy && \
+  cd /tmp/azcopy && \
+  curl \
+  --progress-bar \
+  --location \
+  --fail \
+  --show-error \
+  --connect-timeout "${CURL_CONNECTION_TIMEOUT:-20}" \
+  --retry "${CURL_RETRY:-5}" \
+  --retry-delay "${CURL_RETRY_DELAY:-0}" \
+  --retry-max-time "${CURL_RETRY_MAX_TIME:-60}" \
+  --output "${AZCOPY_FILENAME}" \
+  "${AZCOPY_URL}" && \
+  tar -zxf "${AZCOPY_FILENAME}" --strip-components=1 && \
+  mv azcopy /usr/local/bin/ && \
+  cd /tmp && \
+  rm -rf /tmp/azcopy && \
   ##################################################################
   # install butane
   ##################################################################
