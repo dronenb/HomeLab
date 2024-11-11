@@ -59,6 +59,7 @@ spec:
               mountPath: /var/lib/cni/multus
             - name: host-var-lib-kubelet
               mountPath: /var/lib/kubelet
+              mountPropagation: HostToContainer
             - name: host-run-k8s-cni-cncf-io
               mountPath: /run/k8s.cni.cncf.io
             - name: host-run-netns
@@ -93,6 +94,13 @@ spec:
             - name: cnibin
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
+        - name: cni-plugins
+          image: rancher/hardened-cni-plugins:v1.6.0-build20241022
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: cnibin
+              mountPath: /host/opt/cni/bin
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
