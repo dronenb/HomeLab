@@ -1,9 +1,7 @@
----
-# yamllint disable rule:line-length
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: external-dns
+  name: opnsense-unbound-external-dns-webhook
   labels:
     helm.sh/chart: external-dns-1.14.5
     app.kubernetes.io/name: external-dns
@@ -44,3 +42,9 @@ rules:
       - get
       - watch
       - list
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways", "httproutes", "tlsroutes", "tcproutes", "udproutes"]
+    verbs: ["get", "watch", "list"]

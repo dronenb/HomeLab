@@ -1,0 +1,69 @@
+fullnameOverride: opnsense-unbound-external-dns-webhook
+logLevel: &logLevel debug
+provider:
+  name: webhook
+  webhook:
+    image:
+      repository: ghcr.io/jobs62/opnsense_unbound_external-dns_webhook
+      tag: v0.4.5@sha256:22d3bd25bacaa0a8445a746d6541a8994bcb54e6047f5a079574adc792f88034
+    ports:
+      - containerPort: 8800
+        name: http
+    env:
+      - name: OPNSENSE_BASE
+        value: "https://10.91.1.1/"
+      - name: OPNSENSE_ALLOW_INVALID_CERTS
+        value: "true"
+      # - name: OPNSENSE_DOMAIN_FILTERS
+      #   value: "[\".fh.dron\"]"
+      - name: OPNSENSE_KEY
+        valueFrom:
+          secretKeyRef:
+            name: opnsense-creds
+            key: key
+      - name: OPNSENSE_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: opnsense-creds
+            key: secret
+extraArgs:
+  - --ignore-ingress-tls-spec
+  - --webhook-provider-url=http://localhost:8800
+policy: sync
+sources: ["ingress", "service"]
+txtOwnerId: default
+txtPrefix: k8s.
+domainFilters: ["fh.dronen.house"]
+# provider: webhook
+# registry: noop
+# extraArgs:
+#   webhook-provider-url: http://localhost:8800
+# managedRecordTypesFilters:
+#   - A
+#   - AAAA
+# sources:
+#   - pod
+#   - service
+# sidecars:
+#   - name: opnsense-unbound-external-dns-webhook
+#     image: ghcr.io/jobs62/opnsense_unbound_external-dns_webhook:latest
+#     ports:
+#       - containerPort: 8800
+#         name: http
+#     env:
+#       - name: OPNSENSE_BASE
+#         value: "https://10.91.1.1/"
+#       - name: OPNSENSE_ALLOW_INVALID_CERTS
+#         value: "true"
+#       - name: OPNSENSE_DOMAIN_FILTERS
+#         value: "[\".home\"]"
+#       - name: OPNSENSE_KEY
+#         valueFrom:
+#           secretKeyRef:
+#             name: opnsense
+#             key: key
+#       - name: OPNSENSE_SECRET
+#         valueFrom:
+#           secretKeyRef:
+#             name: opnsense
+#             key: secret
