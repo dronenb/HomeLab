@@ -13,8 +13,11 @@ spec:
       name: cluster-issuer-account-key
     solvers:
       - dns01:
-          cloudflare:
-            email: <path:projects/805422933562/secrets/email#email>
-            apiTokenSecretRef:
-              name: cloudflare-api-token
-              key: api-token
+          cloudDNS:
+            # The ID of the GCP project
+            project: ben-homelab
+          # cloudflare:
+          #   email: <path:projects/805422933562/secrets/email#email>
+          #   apiTokenSecretRef:
+          #     name: cloudflare-api-token
+          #     key: api-token

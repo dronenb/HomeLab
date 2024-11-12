@@ -112,6 +112,13 @@ resource "google_project_service" "homelab_cloudbilling" {
   disable_on_destroy = false
 }
 
+# Enable Cloud DNS API
+resource "google_project_service" "homelab_clouddns" {
+  project            = google_project.ben_homelab.project_id
+  service            = "dns.googleapis.com"
+  disable_on_destroy = false
+}
+
 # Bucket for storing state files
 resource "google_storage_bucket" "homelab_state" {
   #checkov:skip=CKV_GCP_62:I will setup bucket logging later
