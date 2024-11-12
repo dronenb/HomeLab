@@ -1,0 +1,205 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+  labels:
+    app: cert-manager
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/version: v1.16.1
+    olm.deployment-spec-hash: 7ZdLpNyxmt3X9QF929qRzm5d32eV6eFfJ0GIi8
+    olm.managed: "true"
+    olm.owner: cert-manager.v1.16.1
+    olm.owner.kind: ClusterServiceVersion
+    olm.owner.namespace: cert-manager
+    operators.coreos.com/cert-manager.cert-manager: ""
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: cert-manager
+      app.kubernetes.io/name: cert-manager
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        alm-examples: |-
+          [
+            {
+              "apiVersion": "cert-manager.io/v1",
+              "kind": "Issuer",
+              "metadata": {
+                "name": "example-issuer"
+              },
+              "spec": {
+                "selfSigned": {}
+              }
+            },
+            {
+              "apiVersion": "cert-manager.io/v1",
+              "kind": "ClusterIssuer",
+              "metadata": {
+                "name": "example-clusterissuer"
+              },
+              "spec": {
+                "selfSigned": {}
+              }
+            },
+            {
+              "apiVersion": "cert-manager.io/v1",
+              "kind": "Certificate",
+              "metadata": {
+                "name": "example-certificate"
+              },
+              "spec": {
+                "dnsNames": [
+                  "example.com"
+                ],
+                "issuerRef": {
+                  "name": "example-issuer"
+                },
+                "secretName": "example-certificate-tls"
+              }
+            },
+            {
+              "apiVersion": "cert-manager.io/v1",
+              "kind": "CertificateRequest",
+              "metadata": {
+                "name": "example-certificaterequest"
+              },
+              "spec": {}
+            },
+            {
+              "apiVersion": "acme.cert-manager.io/v1",
+              "kind": "Order",
+              "metadata": {
+                "name": "example-order"
+              },
+              "spec": {}
+            },
+            {
+              "apiVersion": "acme.cert-manager.io/v1",
+              "kind": "Challenge",
+              "metadata": {
+                "name": "example-challenge"
+              },
+              "spec": {}
+            }
+          ]
+        capabilities: Full Lifecycle
+        categories: Security
+        containerImage: quay.io/jetstack/cert-manager-controller:v1.16.1
+        createdAt: 2024-10-09T14:20:33
+        olm.operatorGroup: cert-manager
+        olm.operatorNamespace: cert-manager
+        olm.skipRange: ">=1.16.0 <1.16.1"
+        olm.targetNamespaces: ""
+        operatorframework.io/properties: '{"properties":[{"type":"olm.gvk","value":{"group":"acme.cert-manager.io","kind":"Challenge","version":"v1"}},{"type":"olm.gvk","value":{"group":"acme.cert-manager.io","kind":"Order","version":"v1"}},{"type":"olm.gvk","value":{"group":"cert-manager.io","kind":"Certificate","version":"v1"}},{"type":"olm.gvk","value":{"group":"cert-manager.io","kind":"CertificateRequest","version":"v1"}},{"type":"olm.gvk","value":{"group":"cert-manager.io","kind":"ClusterIssuer","version":"v1"}},{"type":"olm.gvk","value":{"group":"cert-manager.io","kind":"Issuer","version":"v1"}},{"type":"olm.package","value":{"packageName":"cert-manager","version":"1.16.1"}}]}'
+        operators.operatorframework.io/builder: operator-sdk-v1.33.0
+        operators.operatorframework.io/internal-objects: |-
+          [
+            "challenges.acme.cert-manager.io",
+            "orders.acme.cert-manager.io"
+          ]
+        operators.operatorframework.io/project_layout: unknown
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9402"
+        prometheus.io/scrape: "true"
+        repository: https://github.com/cert-manager/cert-manager
+        support: The cert-manager maintainers
+      creationTimestamp: null
+      labels:
+        app: cert-manager
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/instance: cert-manager
+        app.kubernetes.io/name: cert-manager
+        app.kubernetes.io/version: v1.16.1
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: cert-manager
+      serviceAccountName: cert-manager
+      terminationGracePeriodSeconds: 30
+      containers:
+        - args:
+            - --v=2
+            - --cluster-resource-namespace=$(POD_NAMESPACE)
+            - --leader-election-namespace=kube-system
+            - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.16.1
+            - --max-concurrent-challenges=60
+          image: quay.io/jetstack/cert-manager-controller:v1.16.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              path: /livez
+              port: http-healthz
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 15
+          name: cert-manager-controller
+          ports:
+            - containerPort: 9402
+              name: http-metrics
+              protocol: TCP
+            - containerPort: 9403
+              name: http-healthz
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: OPERATOR_CONDITION_NAME
+              value: cert-manager.v1.16.1
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/run/secrets/tokens/gcp-ksa/credential-configuration.json
+          volumeMounts:
+            - mountPath: /var/run/secrets/tokens/gcp-ksa
+              name: gcp-ksa
+              readOnly: true
+      volumes:
+        - name: gcp-ksa
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  audience: k3s
+                  expirationSeconds: 3600
+                  path: token
+              - configMap:
+                  items:
+                    - key: credential-configuration.json
+                      path: credential-configuration.json
+                  name: default-creds-config
+                  optional: false
