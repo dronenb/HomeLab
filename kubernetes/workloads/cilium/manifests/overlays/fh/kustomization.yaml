@@ -5,6 +5,8 @@ resources:
   - ../../base
   - ./gateway.yaml
   - ./service.yaml
+  - ./ingress.yaml
+  - ./certificate.yaml
 patches:
   - target:
       kind: Deployment
