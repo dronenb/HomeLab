@@ -1,0 +1,22 @@
+FROM docker.io/debian:bookwork-slim@sha256:ca3372ce30b03a591ec573ea975ad8b0ecaf0eb17a354416741f8001bbcae33d
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ADD --chown=_apt https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+RUN set -ex && \
+  echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list && \
+  apt-get update && \
+  apt-get upgrade -y && \
+  apt-get autoremove -y && \
+  apt-get install -y --no-install-recommends xorriso=1.5.4-4 proxmox-auto-install-assistant=8.2.6 && \
+  apt-get clean all && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+
+WORKDIR "/tmp"
+
+USER "1001:0"
+
+ENTRYPOINT ["/bin/bash", "-c"]
+
+CMD ["/bin/bash"]
