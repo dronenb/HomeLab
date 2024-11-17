@@ -1,13 +1,11 @@
----
-kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 namespace: cert-manager
 resources:
-  - clusterissuer.yaml
-  - secret.yaml
+  - ../../base
+  - ./clusterissuer.yaml
 configMapGenerator:
   - name: default-creds-config
+    namespace: cert-manager
     files:
       - config/credential-configuration.json
-    options:
-      disableNameSuffixHash: true
