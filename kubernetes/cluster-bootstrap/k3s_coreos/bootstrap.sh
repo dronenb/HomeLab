@@ -61,7 +61,7 @@ function update_argocd_password {
 }
 
 function configure_wif {
-    pushd ../../../cloud/gcp/tofu || exit 1
+    pushd ../../../cloud/tofu || exit 1
     mkdir -p k3s-wif/.well-known
     pushd k3s-wif || exit 1
     echo "Getting OpenID configuration and public keys from cluster"
@@ -84,10 +84,13 @@ function apply_manifests {
     pushd ../../workloads/cilium > /dev/null || exit 1
     kubectl kustomize manifests/overlays/fh | kubectl apply -f -
     popd > /dev/null || exit 1
+    pushd ../../workloads/external-dns > /dev/null || exit 1
+    ./apply.sh
+    popd > /dev/null || exit 1
     pushd ../../workloads/olm > /dev/null || exit 1
     ./apply.sh
     popd > /dev/null || exit 1
-    pushd ../../workloads/cert-manager-olm > /dev/null || exit 1
+    pushd ../../workloads/cert-manager > /dev/null || exit 1
     ./apply.sh
     popd > /dev/null || exit 1
     pushd ../../workloads/argocd-olm > /dev/null || exit 1
