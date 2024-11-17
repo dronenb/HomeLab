@@ -1,5 +1,3 @@
----
-# yamllint disable rule:line-length
 kind: ConfigMap
 apiVersion: v1
 metadata:
