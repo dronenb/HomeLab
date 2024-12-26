@@ -5,7 +5,8 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-OLM_RELEASE=v0.28.0
+# https://github.com/operator-framework/operator-lifecycle-manager/releases
+OLM_RELEASE=v0.30.0
 
 folders=("crds" "olm")
 

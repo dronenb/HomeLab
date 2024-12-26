@@ -10,4 +10,4 @@ spec:
     - "home-assistant.fh.dronen.house"
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-cloudflare
+    name: letsencrypt-clouddns

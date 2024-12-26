@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
 spec:
   # https://quay.io/repository/argoproj/argocd?tab=tags
-  version: "sha256:68894064bc381c19ea951029510aa614bd26bf46c2ec65ea445c7d8d095a9417"
+  version: "sha256:ad42764edc22a17dfb22ebbe6dd5cb426124571ffb9dd233e86c1ed178a101e1"
   server:
     ingress:
       enabled: false

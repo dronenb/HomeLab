@@ -17,8 +17,8 @@ YQ_BINARY="/usr/local/bin/yq"
 NMSTATECTL_BINARY="/usr/local/bin/nmstatectl"
 
 function install_butane {
-    local BUTANE_VERSION="0.20.0"
-    local BUTANE_CHECKSUM="28003c61b991d17d66c23cd3f305202ae14736b8e7fd941986b6086cf931ed4b"
+    local BUTANE_VERSION="0.23.0"
+    local BUTANE_CHECKSUM="5833ce9f9c2932d9b02bc05821ffb6927d1e896a524c8dd53a4c9d2d90c47e2c"
     local ARCH="x86_64"
     local DOWNLOAD_URL="https://github.com/coreos/butane/releases/download/v${BUTANE_VERSION}/butane-${ARCH}-unknown-linux-gnu"
 
@@ -33,8 +33,8 @@ function install_butane {
 }
 
 function install_yq {
-    local YQ_VERSION="4.43.1"
-    local YQ_CHECKSUM="cfbbb9ba72c9402ef4ab9d8f843439693dfb380927921740e51706d90869c7e1"
+    local YQ_VERSION="4.44.6"
+    local YQ_CHECKSUM="0c2b24e645b57d8e7c0566d18643a6d4f5580feeea3878127354a46f2a1e4598"
     local ARCH="amd64"
     local DOWNLOAD_URL="https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCH}"
 
@@ -49,8 +49,8 @@ function install_yq {
 }
 
 function install_nmstatectl {
-    local NMSTATECTL_VERSION="2.2.27"
-    local NMSTATECTL_CHECKSUM="16c5045559541e10c3d4c8793954c13f80cb66619e68be46696e286e4b9ef2f4"
+    local NMSTATECTL_VERSION="2.2.39"
+    local NMSTATECTL_CHECKSUM="8b563db85c145d814f531e1d998dc0db53c4c16d8b7cf73da89308dda82913c6"
     local ARCH="x64"
     local DOWNLOAD_URL="https://github.com/nmstate/nmstate/releases/download/v${NMSTATECTL_VERSION}/nmstatectl-linux-${ARCH}.zip"
 
@@ -108,7 +108,7 @@ function main {
         butane_conf=$( cat \
 <<EOF
 variant: fcos
-version: 1.5.0
+version: 1.6.0
 ignition:
   config:
     merge:
@@ -150,95 +150,10 @@ EOF
         # TODO: add IPv6 support
         network_data=$(qm cloudinit dump "${vmid}" network)
         network_config_indices=$("${YQ_BINARY}" '.config | length' <<< "${network_data}")
-        # First attempt, didn't work 
-#         nmstate=""
-#         for ((i=0; i<network_config_indices; i++)); do
-#             entry=$("${YQ_BINARY}" ".config[${i}]" <<< "${network_data}")
-#             entry_type=$("${YQ_BINARY}" ".type" <<< "${entry}")
-#             if [[ "${entry_type}" == "physical" ]]; then
-#                 mac_address=$("${YQ_BINARY}" ".mac_address" <<< "${entry}")
-#                 if_name=$("${YQ_BINARY}" ".name" <<< "${entry}")
-#                 # https://docs.fedoraproject.org/en-US/fedora-coreos/customize-nic/
-#                 if_name_kernel_arg="ifname=${if_name}:${mac_address}"
-#                 butane_conf=$(echo -n "${butane_conf}" | "${YQ_BINARY}" '.kernel_arguments.should_exist += [load_str("'<(echo "${if_name_kernel_arg}")'")]')
-#                 subnet_indices=$("${YQ_BINARY}" '.subnets | length' <<< "${entry}")
-#                 for ((j=0; j<subnet_indices; j++)); do
-#                     subnet_entry=$("${YQ_BINARY}" ".subnets[${j}]" <<< "${entry}")
-#                     subnet_type=$("${YQ_BINARY}" '.type' <<< "${subnet_entry}")
-#                     if [[ "${subnet_type}" == "static" ]]; then
-#                         gateway=$("${YQ_BINARY}" '.gateway' <<< "${subnet_entry}")
-#                         if [[ "${gateway}" != "null" ]]; then
-#                             route=$( cat \
-# <<EOF
-# - destination: 0.0.0.0/0
-#   next-hop-interface: ${if_name}
-#   next-hop-address: ${gateway}
-# EOF
-#                             )
-#                             nmstate=$(echo -n "${nmstate}" | "${YQ_BINARY}" '.routes.config += load("'<(echo "${route}")'")')
-#                         fi
-#                         address=$(echo -n "${subnet_entry}" | "${YQ_BINARY}" '.address')
-#                         prefix=$(mask_to_prefix "$(echo -n "${subnet_entry}" | "${YQ_BINARY}" '.netmask')")
-#                         interface=$( cat \
-# <<EOF
-# - name: ${if_name}
-#   type: ethernet
-#   state: up
-#   ipv4:
-#     enabled: true
-#     dhcp: false
-#     address:
-#       - ip: ${address}
-#         prefix-length: ${prefix}
-#   ipv6:
-#     enabled: false
-# EOF
-#                         )
-#                         nmstate=$(echo -n "${nmstate}" | "${YQ_BINARY}" '.interfaces += load("'<(echo "${interface}")'")')
-#                     elif [[ "${subnet_type}" == "dhcp4" ]]; then
-#                         interface=$( cat \
-# <<EOF
-# - name: ${if_name}
-#   type: ethernet
-#   state: up
-#   ipv4:
-#     enabled: true
-#     dhcp: true
-#   ipv6:
-#     enabled: false
-# EOF
-#                         )
-#                         nmstate=$(echo -n "${nmstate}" | "${YQ_BINARY}" '.interfaces += load("'<(echo "${interface}")'")')
-#                     fi
-#                 done
-#             elif [[ "${entry_type}" == "nameserver" ]]; then
-#                 nameservers=$("${YQ_BINARY}" '.address' <<< "${entry}")
-#                 search_domains=$("${YQ_BINARY}" '.search' <<< "${entry}")
-#                 nmstate=$(echo -n "${nmstate}" | "${YQ_BINARY}" '.dns-resolver.config.server += load("'<(echo "${nameservers}")'")')
-#                 nmstate=$(echo -n "${nmstate}" | "${YQ_BINARY}" '.dns-resolver.config.search += load("'<(echo "${search_domains}")'")')
-#             fi
-#         done
-#         nmconnectionfiles=$(echo -n "${nmstate}" | "${NMSTATECTL_BINARY}" gc -q /dev/stdin)
-#         nmconnectionfiles_indices=$("${YQ_BINARY}" '.NetworkManager | length' <<< "${nmconnectionfiles}")
-#         for ((n=0; n<nmconnectionfiles_indices; n++)); do
-#             nmconnectionfile_entry=$(echo "${nmconnectionfiles}" | "${YQ_BINARY}" ".NetworkManager[${n}]")
-#             # filename=$(echo "${nmconnectionfile_entry}" | "${YQ_BINARY}" '.0')
-#             nmconnectionfile=$(echo "${nmconnectionfile_entry}" | "${YQ_BINARY}" '.1')
-#             # nmconnection_butane=$("${YQ_BINARY}" -n '[{"path":"/etc/NetworkManager/system-connections/'"${filename}"'", "mode":0644, "contents":{"inline":load_str("'<(echo -n "${nmconnectionfile}")'")}}]')
-#             nmconnection_butane=$("${YQ_BINARY}" -n '[{"path":"/etc/coreos-firstboot-network", "mode":0644, "contents":{"inline":load_str("'<(echo -n "${nmconnectionfile}")'")}}]')
-#             butane_conf=$(echo -n "${butane_conf}" | "${YQ_BINARY}" '.storage.files += load("'<(echo "${nmconnection_butane}")'")')
-#         done
-
-
 
         # This works but is hacky, needs attention, and I would rather not do this with kernel arguments
         nameserver=""
         for ((i=0; i<network_config_indices; i++)); do
-            # nameserver=""
-            # address=""
-            # gateway=""
-            # netmask=""
-            # if_name=""
             entry=$("${YQ_BINARY}" ".config[${i}]" <<< "${network_data}")
             entry_type=$("${YQ_BINARY}" ".type" <<< "${entry}")
             if [[ "${entry_type}" == "physical" ]]; then
@@ -255,7 +170,6 @@ EOF
                         gateway=$("${YQ_BINARY}" '.gateway' <<< "${subnet_entry}")
                         address=$(echo -n "${subnet_entry}" | "${YQ_BINARY}" '.address')
                         netmask=$(echo -n "${subnet_entry}" | "${YQ_BINARY}" '.netmask')
-                        
                     fi
                 done
             elif [[ "${entry_type}" == "nameserver" ]]; then

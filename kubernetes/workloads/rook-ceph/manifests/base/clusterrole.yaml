@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""
@@ -99,7 +99,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""
@@ -132,7 +132,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""
@@ -320,7 +320,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""
@@ -376,7 +376,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""
@@ -658,7 +658,7 @@ metadata:
     app.kubernetes.io/part-of: rook-ceph-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/created-by: helm
-    helm.sh/chart: rook-ceph-v1.15.0
+    helm.sh/chart: rook-ceph-v1.16.0
 rules:
   - apiGroups:
       - ""

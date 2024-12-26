@@ -4,9 +4,8 @@ resources:
   - clusterrole.yaml
   - clusterrolebinding.yaml
   - customresourcedefinition.yaml
-  - deployment-cert-manager-cainjector.yaml
-  - deployment-cert-manager-webhook.yaml
-  - deployment-cert-manager.yaml
+  - deployment.yaml
+  - job.yaml
   - mutatingwebhookconfiguration.yaml
   - namespace.yaml
   - role.yaml

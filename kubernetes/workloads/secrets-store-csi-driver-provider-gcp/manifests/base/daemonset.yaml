@@ -37,7 +37,7 @@ spec:
       hostIPC: false
       containers:
         - name: provider
-          image: us-docker.pkg.dev/secretmanager-csi/secrets-store-csi-driver-provider-gcp/plugin@sha256:cb0cb5e7abf9487619f2a55acf4c608c8c17599d1b889cc88cb73356740f846b
+          image: us-docker.pkg.dev/secretmanager-csi/secrets-store-csi-driver-provider-gcp/plugin@sha256:16206089381c7f9b70442b4ed97e65bc34daec1ee26a5c5de7453a24f0f1de13
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -81,8 +81,7 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 30
           args:
-            - "-v"
-            - "5"
+            - -v=5
       volumes:
         - name: providervol
           hostPath:
@@ -92,7 +91,7 @@ spec:
             defaultMode: 420
             sources:
               - serviceAccountToken:
-                  audience: https://iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif
+                  audience: k3s
                   expirationSeconds: 3600
                   path: token
               - configMap:

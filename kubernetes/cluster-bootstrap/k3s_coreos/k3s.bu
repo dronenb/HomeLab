@@ -1,15 +1,15 @@
 # https://coreos.github.io/butane/config-fcos-v1_5/
 variant: fcos
-version: 1.5.0
+version: 1.6.0
 storage:
   files:
     - path: /usr/local/bin/k3s
       overwrite: true
       mode: 0755
       contents:
-        source: "https://github.com/k3s-io/k3s/releases/download/v1.31.2%2Bk3s1/k3s"
+        source: "https://github.com/k3s-io/k3s/releases/download/v1.31.4%2Bk3s1/k3s"
         verification:
-          hash: "sha256-256ca852ff2ca165afbc14ed34df450aa1295e4eb01e3d1da9f251f37e546712"
+          hash: "sha256-74897e4af26ea383ce50f445752f40ca63a0aef0d90994fb74073c43063eeeb2"
     - path: /etc/rancher/k3s/config.yaml
       overwrite: true
       mode: 0644

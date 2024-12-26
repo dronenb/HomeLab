@@ -1,0 +1,30 @@
+global:
+  leaderElection:
+    namespace: "cert-manager"
+crds:
+  enabled: true
+extraEnv:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /var/run/secrets/tokens/gcp-ksa/credential-configuration.json
+extraArgs:
+  - --dns01-recursive-nameservers-only
+  - --dns01-recursive-nameservers=8.8.8.8:53,8.8.4.4:53
+volumes:
+  - name: gcp-ksa
+    projected:
+      defaultMode: 420
+      sources:
+        - serviceAccountToken:
+            audience: k3s
+            expirationSeconds: 3600
+            path: token
+        - configMap:
+            items:
+              - key: credential-configuration.json
+                path: credential-configuration.json
+            name: default-creds-config
+            optional: false
+volumeMounts:
+  - mountPath: /var/run/secrets/tokens/gcp-ksa
+    name: gcp-ksa
+    readOnly: true

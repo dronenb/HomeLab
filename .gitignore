@@ -34,6 +34,6 @@ override.tf.json
 terraform.rc
 
 *.retry
-cloud/gcp/tofu/killswitch-source/killswitch-source.zip
+cloud/tofu/killswitch-source/killswitch-source.zip
 
 node_modules/*
