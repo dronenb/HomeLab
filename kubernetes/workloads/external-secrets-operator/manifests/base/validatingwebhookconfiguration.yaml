@@ -3,6 +3,11 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: secretstore-validate
   labels:
+    helm.sh/chart: external-secrets-0.12.1
+    app.kubernetes.io/name: external-secrets-webhook
+    app.kubernetes.io/instance: external-secrets
+    app.kubernetes.io/version: v0.12.1
+    app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
 webhooks:
   - name: validate.secretstore.external-secrets.io
@@ -57,6 +62,11 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: externalsecret-validate
   labels:
+    helm.sh/chart: external-secrets-0.12.1
+    app.kubernetes.io/name: external-secrets-webhook
+    app.kubernetes.io/instance: external-secrets
+    app.kubernetes.io/version: v0.12.1
+    app.kubernetes.io/managed-by: Helm
     external-secrets.io/component: webhook
 webhooks:
   - name: validate.externalsecret.external-secrets.io

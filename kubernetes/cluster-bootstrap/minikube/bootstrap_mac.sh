@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -e
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s nullglob
 # set -x
 
 # Colors
@@ -22,7 +25,7 @@ function main {
 
 function install_prereqs {
     echo -e "${CYAN}Checking prerequities...${NC}"
-    if [[ ! -x $(which brew) ]]; then
+    if ! command -v brew > /dev/null; then
         echo "${RED}Homebrew must be installed! Install from brew.sh${NC}" 1>&2
         exit 1
     fi
@@ -119,7 +122,7 @@ function bootstrap_minikube {
     while true; do
         echo -ne "${YELLOW}This process will delete and recreate any existing minikube cluster.\nWould you like to continue? [y/n]: ${NC}"
         read -r yn
-        case $yn in
+        case ${yn} in
             [Yy]* ) break;;
             [Nn]* ) exit 0;;
             * ) echo -ne "Please answer y/n";;

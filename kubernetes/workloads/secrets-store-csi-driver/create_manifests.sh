@@ -9,7 +9,7 @@ mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 # helm search repo secrets-store-csi-driver/secrets-store-csi-driver --versions
-export VERSION="1.4.6"
+export VERSION="1.4.7"
 export NAMESPACE=secrets-store-csi-driver
 
 helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts

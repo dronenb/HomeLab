@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-GATEWAY_API_VERSION=v1.1.0
+GATEWAY_API_VERSION=v1.2.1
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1

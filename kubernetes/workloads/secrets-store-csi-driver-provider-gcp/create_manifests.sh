@@ -6,7 +6,7 @@ set -o pipefail
 shopt -s failglob
 
 NAMESPACE=secrets-store-csi-driver
-COMMIT_SHA=7218875135b87ca930b9bcb97231b1ede4e93e1a # v1.6.0
+COMMIT_SHA=c640ef4395f9953ea93516e18f968769bcc52776 # v1.7.0
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1

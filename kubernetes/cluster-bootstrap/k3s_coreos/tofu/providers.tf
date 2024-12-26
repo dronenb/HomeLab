@@ -3,22 +3,22 @@ terraform {
     # https://registry.terraform.io/providers/maxlaverse/bitwarden/latest/docs
     bitwarden = {
       source  = "maxlaverse/bitwarden"
-      version = "0.8.0"
+      version = "0.12.1"
     }
     # https://registry.terraform.io/providers/bpg/proxmox/latest
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.63.0"
+      version = "0.69.0"
     }
     # https://registry.terraform.io/providers/hashicorp/http/latest
     http = {
       source  = "hashicorp/http"
-      version = "3.4.4"
+      version = "3.4.5"
     }
     # https://registry.terraform.io/providers/hashicorp/random/latest
     random = {
       source  = "hashicorp/random"
-      version = "3.6.2"
+      version = "3.6.3"
     }
     # https://registry.terraform.io/providers/community-terraform-providers/ignition/latest
     ignition = {
