@@ -79,14 +79,16 @@ function apply_manifests {
     kubectl kustomize manifests/overlays/fh | kubectl apply -f -
     popd > /dev/null || exit 1
     pushd ../../workloads/kube-vip > /dev/null || exit 1
-    kubectl kustomize manifests/overlays/fh | kubectl apply -f -
+    # kubectl kustomize manifests/overlays/fh | kubectl apply -f -
+    ./apply.sh
+    # TODO: wait for kube-vip pods to be healthy before installing cilium
     popd > /dev/null || exit 1
     pushd ../../workloads/cilium > /dev/null || exit 1
     kubectl kustomize manifests/overlays/fh | kubectl apply -f -
     popd > /dev/null || exit 1
-    pushd ../../workloads/external-dns > /dev/null || exit 1
-    ./apply.sh
-    popd > /dev/null || exit 1
+    # pushd ../../workloads/external-dns > /dev/null || exit 1
+    # ./apply.sh
+    # popd > /dev/null || exit 1
     pushd ../../workloads/olm > /dev/null || exit 1
     ./apply.sh
     popd > /dev/null || exit 1

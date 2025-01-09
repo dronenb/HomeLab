@@ -15,12 +15,6 @@
     {
       "path": "../HomeLab",
     },
-    {
-      "path": "../../.ansible",
-    },
-    {
-      "path": "../secrets-store-csi-driver-provider-gcp",
-    },
   ],
   "settings": {
     "yaml.schemas": {
