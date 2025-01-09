@@ -5,4 +5,4 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-kubectl kustomize manifests/base | kubectl apply -f -
+kubectl kustomize manifests/overlays/fh | kubectl apply -f -
