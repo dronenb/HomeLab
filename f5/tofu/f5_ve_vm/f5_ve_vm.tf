@@ -37,6 +37,8 @@ tmsh save /sys config
 tmsh modify sys global-settings mgmt-dhcp disabled
 tmsh create sys management-ip ${var.ipv4_addr.addr}/${var.ipv4_addr.mask}
 tmsh create sys management-route default gateway ${var.ipv4_gw}
+tmsh create net self self_1nic address ${var.ipv4_addr.addr}/${var.ipv4_addr.mask} vlan internal allow-service default traffic-group traffic-group-local-only
+tmsh create net route default network default gw ${var.ipv4_gw}
 tmsh save /sys config
 EOF
         },
@@ -77,7 +79,7 @@ EOF
         }
       }
     }))
-    file_name = "f5-ve-cloud-init.yaml"
+    file_name = "f5-ve-cloud-init-${var.vm_hostname}.yaml"
   }
 }
 
