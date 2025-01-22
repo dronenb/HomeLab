@@ -6,6 +6,7 @@ resources:
   - cilium.yaml
   - gateway-api.yaml
   - kube-vip.yaml
+  - kubernetes-nmstate.yaml
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
   - registry.yaml
