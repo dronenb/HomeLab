@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: cilium-operator
-          image: quay.io/cilium/operator-generic:v1.16.5@sha256:f7884848483bbcd7b1e0ccfd34ba4546f258b460cb4b7e2f06a1bcc96ef88039
+          image: quay.io/cilium/operator-generic:v1.16.6@sha256:13d32071d5a52c069fb7c35959a56009c6914439adc73e99e098917646d154fc
           imagePullPolicy: IfNotPresent
           command:
             - cilium-operator-generic
@@ -149,7 +149,7 @@ spec:
             runAsGroup: 65532
             runAsNonRoot: true
             runAsUser: 65532
-          image: quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00
+          image: quay.io/cilium/hubble-relay:v1.16.6@sha256:ca8dcaa5a81a37743b1397ba2221d16d5d63e4a47607584f1bf50a3b0882bf3b
           imagePullPolicy: IfNotPresent
           command:
             - hubble-relay
