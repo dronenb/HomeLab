@@ -34,6 +34,8 @@ helm template cilium cilium/cilium \
     --set ingressController.enabled=true \
     --set ingressController.loadbalancerMode=shared \
     --set ingressController.service.loadBalancerClass=kube-vip.io/kube-vip-class \
+    --set ingressController.service.allocateLoadBalancerNodePorts=false \
+    --set ingressController.service.externalTrafficPolicy=Local \
     --set l7Proxy=true \
     --set loadBalancer.l7.backend=envoy \
     --set hubble.tls.auto.enabled=true \

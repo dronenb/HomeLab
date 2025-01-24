@@ -19,7 +19,8 @@ spec:
       nodePort:
   type: LoadBalancer
   loadBalancerClass: kube-vip.io/kube-vip-class
-  externalTrafficPolicy: Cluster
+  allocateLoadBalancerNodePorts: false
+  externalTrafficPolicy: Local
 ---
 kind: Service
 apiVersion: v1
