@@ -12,6 +12,7 @@ export CILIUM_VERSION="1.16.6"
 export NAMESPACE=cilium
 
 helm repo update
+# https://docs.cilium.io/en/stable/helm-reference/
 helm template cilium cilium/cilium \
     --api-versions gateway.networking.k8s.io/v1/GatewayClass \
     --include-crds \
@@ -29,6 +30,7 @@ helm template cilium cilium/cilium \
     --set ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16" \
     --set hubble.ui.enabled=true \
     --set gatewayAPI.enabled=true \
+    --set gatewayAPI.externalTrafficPolicy=Local \
     --set ingressController.enabled=true \
     --set ingressController.loadbalancerMode=shared \
     --set ingressController.service.loadBalancerClass=kube-vip.io/kube-vip-class \
