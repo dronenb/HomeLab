@@ -14,6 +14,7 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
   loadBalancerClass: kube-vip.io/kube-vip-class
+  externalTrafficPolicy: Local
   ports:
     - name: port-443
       port: 443

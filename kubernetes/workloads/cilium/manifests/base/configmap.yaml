@@ -37,7 +37,7 @@ data:
   enable-gateway-api-app-protocol: "false"
   enable-gateway-api-alpn: "false"
   gateway-api-xff-num-trusted-hops: "0"
-  gateway-api-service-externaltrafficpolicy: Cluster
+  gateway-api-service-externaltrafficpolicy: Local
   gateway-api-secrets-namespace: cilium-secrets
   gateway-api-hostnetwork-enabled: "false"
   gateway-api-hostnetwork-nodelabelselector: ""
