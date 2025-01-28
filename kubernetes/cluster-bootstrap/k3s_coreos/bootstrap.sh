@@ -31,6 +31,7 @@ function main {
     generate_ignition
     tofu_apply
     sleep 30
+    mkdir -p "${HOME}/.kube"
     ssh -o StrictHostKeyChecking=no 10.91.1.9 'cat /etc/rancher/k3s/k3s.yaml' | \
         yq --no-colors '.clusters[0].cluster.server = "https://10.91.1.9:6443"' \
         > ~/.kube/config
