@@ -20,7 +20,7 @@ data "ignition_config" "ignition_config" {
     sensitive(data.ignition_file.k3s_agent_config.rendered),
   ]
   merge {
-    source = format("data:;base64,%s", base64encode(file("/private/tmp/k3s_init/k3s.ign")))
+    source = format("data:;base64,%s", base64encode(file("/tmp/k3s_init/k3s.ign")))
   }
 }
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -46,5 +46,6 @@ gcloud config set project "${TF_VAR_homelab_project_id}"
 source ../bash/bitwarden_env.sh
 
 pushd tofu || exit 1
+tofu init -upgrade
 tofu plan -var-file=variables.tfvars -out /tmp/plan
 tofu apply /tmp/plan

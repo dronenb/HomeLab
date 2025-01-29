@@ -6,6 +6,7 @@ provider "registry.opentofu.org/bpg/proxmox" {
   constraints = "0.69.0"
   hashes = [
     "h1:qPVErcPtYkDNRCPVL32eUaEW1HKJpfjSr03t5c1EAqM=",
+    "h1:tEy+dEI3yR382/EELTtL06jR0lD+R6XsAo4dW0gPE+o=",
     "zh:046713ab723f4aecc2886263b3e2fc79f2391c821a81a5346f7ff185edd17f68",
     "zh:05c19166978a8a81031e502d3934bae5daac17fe44d8f397bb6a67f9bade337b",
     "zh:12327ed39e85680cfd086bcb0d7ebefd15d352c1cd857e5164d4729122821489",
@@ -29,6 +30,7 @@ provider "registry.opentofu.org/community-terraform-providers/ignition" {
   constraints = "2.3.5"
   hashes = [
     "h1:0s5DTjg3RV3bvzIbcQJRUBSIWyK2VJNojqsFF0elrzw=",
+    "h1:enjeBw6W/9Aq35ka+UKwvOu+NvPTKPyeQiyEpXdoMP4=",
     "zh:0f8df825101f42ebbc1937a49d94ba243401cb15cfa9cdc3b93cee1ea38081c4",
     "zh:26cbeb5c77b45ce1861368c43cf24eec135c4d873ee38ba43043db48a663d0f6",
     "zh:32a1911d7a05b30d17612d3d3fa76a285a9d5105b4983b4d6093d5773d385611",
@@ -49,6 +51,7 @@ provider "registry.opentofu.org/hashicorp/http" {
   constraints = "3.4.5"
   hashes = [
     "h1:P3NFKZbtHuQ6mmoDVpg4WYlDJ+yK4cchzkjTPzBWG3Y=",
+    "h1:pFCZslKZ3olBdqFcLVrMGPwiIglC/EjjFKnE51gcDMs=",
     "zh:055a4431d33bb89b9848193152433eaead7cc2e6746d3436a5922419de2112bf",
     "zh:0bfabafea9f5e36802fcfc5a800831ec1767d896af889abc610014d02b09bdc2",
     "zh:300b4983fe1b43bd0a7dac1f94b30b3814f11c824224dd83fb45a521c02cea60",
@@ -67,6 +70,7 @@ provider "registry.opentofu.org/hashicorp/random" {
   constraints = "3.6.3"
   hashes = [
     "h1:32/UZofQoXk8zPj9vpIDiSEmERA3Mx2VPvk1lHTTHvw=",
+    "h1:GRAEnu2AKg83f9m3rmp56kJQbPoezeEHdGR98FRbjcc=",
     "zh:1bfd2e54b4eee8c761a40b6d99d45880b3a71abc18a9a7a5319204da9c8363b2",
     "zh:21a15ac74adb8ba499aab989a4248321b51946e5431219b56fc827e565776714",
     "zh:221acfac3f7a5bcd6cb49f79a1fca99da7679bde01017334bad1f951a12d85ba",
@@ -84,6 +88,7 @@ provider "registry.opentofu.org/maxlaverse/bitwarden" {
   version     = "0.12.1"
   constraints = "0.12.1"
   hashes = [
+    "h1:7c7yGTZfnKdfEslszO3HbsadwbUsactBTgJn63Vahfk=",
     "h1:EJ6epDEl5gTf6xENZr1+F4NVSIM4a5AAE1wBUXxL2x8=",
     "zh:0b01f9e07a169b63121799043b7a1c431c198073e629193dced9365649367b25",
     "zh:13c8589eacd000c0f4de66012f0426acf4727cd5ac1527514a40192390846012",
