@@ -25,10 +25,13 @@ PODMAN_MACHINE_NAME="podman-machine-default"
 
 function main {
     chk_prerequisites
-    chk_podman_machine
+    if [[ $(uname) == "Darwin" ]]; then
+        chk_podman_machine
+    fi
     pull_podman_images
     create_workdir
     generate_ignition
+    ensure_ssh_config
     tofu_apply
     sleep 30
     mkdir -p "${HOME}/.kube"
@@ -44,6 +47,22 @@ function main {
         sleep 5
     done
     update_argocd_password
+}
+
+function ensure_ssh_config {
+    if [[ ! -f "${HOME}/.ssh/config" ]]; then
+        mkdir -p "${HOME}/.ssh"
+        touch "${HOME}/.ssh/config"
+        chmod 600 "${HOME}/.ssh/config"
+    fi
+    if ! grep -q "Host proxmox" "${HOME}/.ssh/config"; then
+cat <<EOF >> "${HOME}/.ssh/config"
+Host proxmox
+  HostName 10.91.1.2
+  User root
+  Port 22
+EOF
+    fi
 }
 
 function update_argocd_password {
@@ -104,7 +123,7 @@ function apply_manifests {
 
 function tofu_apply {
     pushd tofu || exit 1
-    tofu init
+    tofu init -upgrade
     tofu plan -out /tmp/tf.plan
     tofu apply /tmp/tf.plan
     popd || exit 1
@@ -145,7 +164,7 @@ function generate_ignition {
 
 function ignition-validate {
     #shellcheck disable=SC2068
-    podman run --rm --volume "${WORKDIR}:${WORKDIR}" quay.io/coreos/ignition-validate:release $@
+    podman run --rm --volume "${WORKDIR}:${WORKDIR}:Z" quay.io/coreos/ignition-validate:release $@
 }
 
 # function coreos-installer {
@@ -192,13 +211,13 @@ function chk_podman_machine {
 
     # Check if the default machine meets the system requirements
     jq_query='
-        .[] | 
+        .[] |
         select(
             (.Name=="'"${PODMAN_MACHINE_NAME}"'")
             and (.CPUs | tonumber  >= '"${PODMAN_MACHINE_VCPUS}"')
             and (.Memory | tonumber >= '"$((PODMAN_MACHINE_MEMORY_MB * 1024 * 1024))"')
             and (.DiskSize | tonumber >= '"$((PODMAN_MACHINE_DISK_GB * 1024 * 1024 * 1024))"')
-        ) | 
+        ) |
         length
     '
 

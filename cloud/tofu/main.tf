@@ -7,6 +7,10 @@ provider "bitwarden" {}
 
 provider "azuread" {}
 
+provider "aws" {
+  region = "us-east-1"
+}
+
 provider "azurerm" {
   features {}
   subscription_id = var.azure_subscription_id
