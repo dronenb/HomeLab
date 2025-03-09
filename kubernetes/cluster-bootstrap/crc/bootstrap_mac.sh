@@ -32,19 +32,22 @@ function install_prereqs {
   fi
   # Ensure brew services are installed by simply running "brew services" - https://github.com/Homebrew/homebrew-services/blob/aa377a5dbc924d6387483617f0b9ef285e418a94/README.md#L11
   brew services > /dev/null
-  if ! command -v crc > /dev/null; then
-    echo "${RED}crc must be installed! Install from https://console.redhat.com/openshift/create/local ${NC}" 1>&2
-    exit 1
-  fi
   JQ_INSTALLED=0
   BW_INSTALLED=0
   OC_INSTALLED=0
   YQ_INSTALLED=0
   KUBECTL_INSTALLED=0
   HAPROXY_INSTALLED=0
-  for formula in $(brew list --formula -1); do
+  # CRC_INSTALLED=0
+  for formula in $(brew list --formula -1 --full-name); do
     if [[ "${formula}" == "bitwarden-cli" ]]; then
       BW_INSTALLED=1
+    # Eventually I'd like to upstream this and make it compile from source
+    # see https://github.com/dronenb/homebrew-tap/pull/59
+    # haven't figured out why it doesn't work yet
+    # in the meantime, I can install Red Hat's package via a cask
+    # elif [[ "${formula}" == "dronenb/tap/crc" ]]; then
+    #   CRC_INSTALLED=1
     elif [[ "${formula}" == "jq" ]]; then
       JQ_INSTALLED=1
     elif [[ "${formula}" == "haproxy" ]]; then
@@ -57,9 +60,18 @@ function install_prereqs {
       OC_INSTALLED=1
     fi
   done
+  CRC_INSTALLED=0
+  for cask in $(brew list --cask -1 --full-name); do
+    if [[ "${cask}" == "dronenb/tap/crc" ]]; then
+      CRC_INSTALLED=1
+    fi
+  done
   pkgs_to_install=()
   if [[ "${JQ_INSTALLED}" -ne 1 ]]; then
     pkgs_to_install+=("jq")
+  fi
+  if [[ "${CRC_INSTALLED}" -ne 1 ]]; then
+    pkgs_to_install+=("--cask dronenb/tap/crc")
   fi
   if [[ "${HAPROXY_INSTALLED}" -ne 1 ]]; then
     pkgs_to_install+=("haproxy")
@@ -82,7 +94,8 @@ function install_prereqs {
   fi
   for formula in "${pkgs_to_install[@]}"; do
     echo -e "${YELLOW}Installing prerequisite homebrew formulas...${NC}"
-    brew install "${formula}"
+    # shellcheck disable=SC2086
+    brew install ${formula}
   done
 }
 
@@ -138,7 +151,9 @@ function bootstrap_crc {
   crc config set preset openshift
   crc setup
   # Ensure crc daemon is running
+  # if using Red Hat's crc, use the following command to ensure the daemon is started
   launchctl kickstart -k "gui/$(id -u)/com.redhat.crc.daemon"
+  # brew services start dronenb/tap/crc
   crc start --pull-secret-file="${PULL_SECRET_FILEPATH}" > /dev/null # so credentials don't print to the console
 }
 
