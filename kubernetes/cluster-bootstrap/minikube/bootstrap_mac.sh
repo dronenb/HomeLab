@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
-#set -o nounset
+set -o nounset
 set -o pipefail
 shopt -s nullglob
 # set -x
@@ -29,6 +29,10 @@ function install_prereqs {
         echo "${RED}Homebrew must be installed! Install from brew.sh${NC}" 1>&2
         exit 1
     fi
+    PODMAN_INSTALLED=0
+    MINIKUBE_INSTALLED=0
+    JQ_INSTALLED=0
+    KUBECTL_INSTALLED=0
     for formula in $(brew list --formula -1); do
         if [[ "${formula}" == "podman" ]]; then
             PODMAN_INSTALLED=1
@@ -36,17 +40,22 @@ function install_prereqs {
             MINIKUBE_INSTALLED=1
         elif [[ "${formula}" == "jq" ]]; then
             JQ_INSTALLED=1
+        elif [[ "${formula}" == "kubernetes-cli" ]]; then
+            KUBECTL_INSTALLED=1
         fi
     done
     pkgs_to_install=()
-    if [[ -z "${PODMAN_INSTALLED}" ]]; then
+    if [[ "${PODMAN_INSTALLED}" -ne 1  ]]; then
         pkgs_to_install+=("podman")
     fi
-    if [[ -z "${MINIKUBE_INSTALLED}" ]]; then
+    if [[ "${MINIKUBE_INSTALLED}" -ne 1  ]]; then
         pkgs_to_install+=("minikube")
     fi
-    if [[ -z "${JQ_INSTALLED}" ]]; then
+    if [[ "${JQ_INSTALLED}" -ne 1  ]]; then
         pkgs_to_install+=("jq")
+    fi
+    if [[ "${KUBECTL_INSTALLED}" -ne 1 ]]; then
+        pkgs_to_install+=("kubernetes-cli")
     fi
     if [[ "${#pkgs_to_install[@]}" -gt 0 ]]; then
         echo -e "${YELLOW}Updating homebrew...${NC}"
