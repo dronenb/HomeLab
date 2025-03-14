@@ -20,7 +20,7 @@ spec:
       serviceAccountName: registry-sa
       containers:
         - name: registry
-          image: registry:2
+          image: docker.io/library/registry:2.8@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
           ports:
             - name: registry-port
               containerPort: 5000
