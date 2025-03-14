@@ -54,23 +54,6 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: cilium-tlsinterception-secrets
-  namespace: cilium-secrets
-  labels:
-    app.kubernetes.io/part-of: cilium
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    verbs:
-      - get
-      - list
-      - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
   name: cilium-operator-ingress-secrets
   namespace: cilium-secrets
   labels:
@@ -90,24 +73,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cilium-operator-gateway-secrets
-  namespace: cilium-secrets
-  labels:
-    app.kubernetes.io/part-of: cilium
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    verbs:
-      - create
-      - delete
-      - update
-      - patch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cilium-operator-tlsinterception-secrets
   namespace: cilium-secrets
   labels:
     app.kubernetes.io/part-of: cilium
