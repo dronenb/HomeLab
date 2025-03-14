@@ -1,0 +1,7 @@
+---
+# yamllint disable rule:line-length
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-bigip-ctlr

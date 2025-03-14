@@ -1,0 +1,58 @@
+---
+# yamllint disable rule:line-length
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f5-ipam-stable-f5-ipam-controller
+  namespace: f5-ipam-controller
+  labels:
+    app.kubernetes.io/instance: f5-ipam-stable
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: f5-ipam-controller
+    app: f5-ipam-controller
+    chart: f5-ipam-controller-0.0.5
+    release: f5-ipam-stable
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: f5-ipam-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: f5-ipam-stable
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: f5-ipam-controller
+        app: f5-ipam-controller
+        release: f5-ipam-stable
+    spec:
+      serviceAccountName: f5-ipam-stable-f5-ipam-controller
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: f5-ipam-controller
+          image: f5networks/f5-ipam-controller:0.1.11
+          volumeMounts:
+            - name: fic-volume-mount
+              mountPath: /app/ipamdb
+          imagePullPolicy: Always
+          command:
+            - /app/bin/f5-ipam-controller
+          args:
+            - --orchestration=kubernetes
+            - --ipam-provider=f5-ip-provider
+            - --ip-range={"test":"172.16.1.1-172.16.1.5", "prod":"172.16.1.50-172.16.1.55"}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+      volumes:
+        - name: fic-volume-mount
+          persistentVolumeClaim:
+            claimName: f5-ipam-stable-f5-ipam-controller
