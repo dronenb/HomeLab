@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/name: cainjector
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cainjector
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 spec:
   replicas: 1
   selector:
@@ -25,9 +25,9 @@ spec:
         app.kubernetes.io/name: cainjector
         app.kubernetes.io/instance: cert-manager
         app.kubernetes.io/component: cainjector
-        app.kubernetes.io/version: v1.16.2
+        app.kubernetes.io/version: v1.17.1
         app.kubernetes.io/managed-by: Helm
-        helm.sh/chart: cert-manager-v1.16.2
+        helm.sh/chart: cert-manager-v1.17.1
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/scrape: "true"
@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cert-manager-cainjector
-          image: quay.io/jetstack/cert-manager-cainjector:v1.16.2
+          image: quay.io/jetstack/cert-manager-cainjector:v1.17.1
           imagePullPolicy: IfNotPresent
           args:
             - --v=2
@@ -74,9 +74,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 spec:
   replicas: 1
   selector:
@@ -91,9 +91,9 @@ spec:
         app.kubernetes.io/name: cert-manager
         app.kubernetes.io/instance: cert-manager
         app.kubernetes.io/component: controller
-        app.kubernetes.io/version: v1.16.2
+        app.kubernetes.io/version: v1.17.1
         app.kubernetes.io/managed-by: Helm
-        helm.sh/chart: cert-manager-v1.16.2
+        helm.sh/chart: cert-manager-v1.17.1
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/scrape: "true"
@@ -122,13 +122,13 @@ spec:
                   optional: false
       containers:
         - name: cert-manager-controller
-          image: quay.io/jetstack/cert-manager-controller:v1.16.2
+          image: quay.io/jetstack/cert-manager-controller:v1.17.1
           imagePullPolicy: IfNotPresent
           args:
             - --v=2
             - --cluster-resource-namespace=$(POD_NAMESPACE)
             - --leader-election-namespace=cert-manager
-            - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.16.2
+            - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.17.1
             - --dns01-recursive-nameservers-only
             - --dns01-recursive-nameservers=8.8.8.8:53,8.8.4.4:53
             - --max-concurrent-challenges=60
@@ -179,9 +179,9 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 spec:
   replicas: 1
   selector:
@@ -196,9 +196,9 @@ spec:
         app.kubernetes.io/name: webhook
         app.kubernetes.io/instance: cert-manager
         app.kubernetes.io/component: webhook
-        app.kubernetes.io/version: v1.16.2
+        app.kubernetes.io/version: v1.17.1
         app.kubernetes.io/managed-by: Helm
-        helm.sh/chart: cert-manager-v1.16.2
+        helm.sh/chart: cert-manager-v1.17.1
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/scrape: "true"
@@ -212,7 +212,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cert-manager-webhook
-          image: quay.io/jetstack/cert-manager-webhook:v1.16.2
+          image: quay.io/jetstack/cert-manager-webhook:v1.17.1
           imagePullPolicy: IfNotPresent
           args:
             - --v=2

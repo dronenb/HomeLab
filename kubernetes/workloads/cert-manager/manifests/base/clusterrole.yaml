@@ -7,9 +7,9 @@ metadata:
     app.kubernetes.io/name: cainjector
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cainjector
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -77,9 +77,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -125,9 +125,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -173,9 +173,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -244,9 +244,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - acme.cert-manager.io
@@ -312,9 +312,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - acme.cert-manager.io
@@ -419,9 +419,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -490,9 +490,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
     rbac.authorization.k8s.io/aggregate-to-cluster-reader: "true"
 rules:
   - apiGroups:
@@ -513,9 +513,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
     rbac.authorization.k8s.io/aggregate-to-view: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
@@ -550,9 +550,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
 rules:
@@ -595,9 +595,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cert-manager
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - cert-manager.io
@@ -618,9 +618,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cert-manager
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - certificates.k8s.io
@@ -663,9 +663,9 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: v1.16.2
+    app.kubernetes.io/version: v1.17.1
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.2
+    helm.sh/chart: cert-manager-v1.17.1
 rules:
   - apiGroups:
       - authorization.k8s.io
