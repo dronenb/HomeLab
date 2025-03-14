@@ -8,21 +8,11 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.7
+    app.kubernetes.io/version: 1.4.8
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.7
+    helm.sh/chart: secrets-store-csi-driver-1.4.8
 spec:
   podInfoOnMount: true
   attachRequired: false
   volumeLifecycleModes:
     - Ephemeral
-  tokenRequests:
-    - audience: "//iam.googleapis.com/projects/805422933562/locations/global/workloadIdentityPools/k3s-homelab-wif/providers/k3s-homelab-wif"
-      expirationSeconds: 3600
-    - audience: "k3s"
-      expirationSeconds: 3600
-    - audience: "api://AzureADTokenExchange"
-      expirationSeconds: 3600
-    - audience: "sts.amazonaws.com"
-      expirationSeconds: 3600
-  requiresRepublish: true

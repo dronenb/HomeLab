@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.7
+    app.kubernetes.io/version: 1.4.8
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.7
+    helm.sh/chart: secrets-store-csi-driver-1.4.8
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -28,9 +28,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.7
+    app.kubernetes.io/version: 1.4.8
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.7
+    helm.sh/chart: secrets-store-csi-driver-1.4.8
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -48,9 +48,9 @@ metadata:
     app.kubernetes.io/instance: csi-secrets-store
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: secrets-store-csi-driver
-    app.kubernetes.io/version: 1.4.7
+    app.kubernetes.io/version: 1.4.8
     app: secrets-store-csi-driver
-    helm.sh/chart: secrets-store-csi-driver-1.4.7
+    helm.sh/chart: secrets-store-csi-driver-1.4.8
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
