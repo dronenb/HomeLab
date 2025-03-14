@@ -13,5 +13,7 @@ if nc -vz "$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.ser
 fi
 # shellcheck disable=SC1091
 source "${SCRIPT_DIR}/env.sh"
+mkdir -p /tmp/k3s_init
+touch /tmp/k3s_init/k3s.ign
 cd tofu || exit 1
 tofu destroy
