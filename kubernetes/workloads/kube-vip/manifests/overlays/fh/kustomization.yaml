@@ -21,41 +21,6 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
         value: eth0
-  # The following three patches are to resolve this:
-  # https://github.com/kube-vip/kube-vip/issues/721
-  - target:
-      kind: DaemonSet
-      name: kube-vip-ds
-      namespace: kube-system
-    patch: |-
-      - op: add
-        path: /spec/template/spec/volumes
-        value:
-          - hostPath:
-              path: /etc/rancher/k3s/k3s.yaml
-              type: ""
-            name: kubeconfig
-  - target:
-      kind: DaemonSet
-      name: kube-vip-ds
-      namespace: kube-system
-    patch: |-
-      - op: add
-        path: /spec/template/spec/hostAliases
-        value:
-          - ip: 127.0.0.1
-            hostnames:
-              - kubernetes
-  - target:
-      kind: DaemonSet
-      name: kube-vip-ds
-      namespace: kube-system
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts
-        value:
-          - mountPath: /etc/kubernetes/admin.conf
-            name: kubeconfig
   - target:
       kind: Deployment
       name: kube-vip-cloud-provider
@@ -66,3 +31,20 @@ patches:
         value:
           - name: "KUBEVIP_ENABLE_LOADBALANCERCLASS"
             value: "true"
+  # The following three patches are to resolve this:
+  # https://github.com/kube-vip/kube-vip/issues/721
+  - target:
+      kind: DaemonSet
+      name: kube-vip-ds
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: KUBERNETES_SERVICE_HOST
+          value: "127.0.0.1"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: KUBERNETES_SERVICE_PORT
+          value: "6443"
