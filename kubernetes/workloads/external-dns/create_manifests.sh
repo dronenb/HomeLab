@@ -8,7 +8,8 @@ set -o pipefail
 shopt -s failglob
 
 NAMESPACE=external-dns
-EXTERNAL_DNS_CHART_VERSION=1.14.5
+# helm search repo external-dns/external-dns
+EXTERNAL_DNS_CHART_VERSION=1.15.2
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1

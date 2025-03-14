@@ -3,10 +3,10 @@ kind: ClusterRole
 metadata:
   name: opnsense-unbound-external-dns-webhook
   labels:
-    helm.sh/chart: external-dns-1.14.5
+    helm.sh/chart: external-dns-1.15.2
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
-    app.kubernetes.io/version: 0.14.2
+    app.kubernetes.io/version: 0.15.1
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -42,9 +42,3 @@ rules:
       - get
       - watch
       - list
-  - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["gateway.networking.k8s.io"]
-    resources: ["gateways", "httproutes", "tlsroutes", "tcproutes", "udproutes"]
-    verbs: ["get", "watch", "list"]
