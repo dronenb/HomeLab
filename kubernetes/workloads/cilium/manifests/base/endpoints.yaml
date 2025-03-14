@@ -5,7 +5,6 @@ kind: Endpoints
 metadata:
   name: cilium-ingress
   namespace: cilium
-  labels:
 subsets:
   - addresses:
       - ip: 192.192.192.192

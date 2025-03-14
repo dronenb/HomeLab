@@ -7,7 +7,6 @@ metadata:
   namespace: cilium
   labels:
     cilium.io/ingress: "true"
-    app.kubernetes.io/part-of: cilium
 spec:
   ports:
     - name: http
