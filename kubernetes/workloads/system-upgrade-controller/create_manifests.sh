@@ -26,7 +26,8 @@ echo -n "${tmpvar}" |
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
 yq -i '.metadata.annotations."argocd.argoproj.io/sync-wave" = "-1"' namespace.yaml
-
+yq -i '.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation = true' deployment.yaml
+yq -i '.spec.template.spec.containers[0].securityContext.privileged = true' deployment.yaml
 # Iterate over each yaml file
 files=()
 for file in *.yaml; do
