@@ -74,6 +74,9 @@ resources:
 $(printf "  - %s\n" "${files[@]}")
 EOF
 
+# This keeps argo out of sync in version 1.17.1
+yq -i 'del(.data.ipam-multi-pool-pre-allocation)' configmap.yaml
+
 # Format YAML
 prettier . --write
 popd > /dev/null || exit 1
