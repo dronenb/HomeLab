@@ -59,7 +59,7 @@ spec:
           imagePullPolicy: IfNotPresent
           name: system-upgrade-controller
           securityContext:
-            allowPrivilegeEscalation: false
+            allowPrivilegeEscalation: true
             capabilities:
               drop:
                 - ALL
@@ -68,6 +68,7 @@ spec:
             runAsUser: 65534
             seccompProfile:
               type: RuntimeDefault
+            privileged: true
           volumeMounts:
             - mountPath: /etc/ssl
               name: etc-ssl
