@@ -11,7 +11,7 @@ spec:
     path: kubernetes/workloads/system-upgrade-controller/manifests/overlays/fh
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: system-upgrade-controller
+    namespace: system-upgrade
   syncPolicy:
     automated:
       prune: true
