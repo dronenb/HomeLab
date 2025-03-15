@@ -10,3 +10,4 @@ resources:
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
   - registry.yaml
+  - system-upgrade-controller
