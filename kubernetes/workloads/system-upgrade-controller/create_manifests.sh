@@ -25,6 +25,8 @@ echo -n "${tmpvar}" |
     yq --no-colors --prettyPrint | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
+yq -i '.metadata.annotations."argocd.argoproj.io/sync-wave" = "-1"' namespace.yaml
+
 # Iterate over each yaml file
 files=()
 for file in *.yaml; do

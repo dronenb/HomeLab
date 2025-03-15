@@ -6,3 +6,5 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
   name: system-upgrade
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
