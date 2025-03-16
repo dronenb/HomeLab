@@ -50,9 +50,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: WATCH_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: ""
             - name: LOG_STRUCTURED
               value: "false"
             - name: LOG_LEVEL
