@@ -1,0 +1,18 @@
+---
+# yamllint disable rule:line-length
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: valkey-operator
+  name: valkey-operator-leader-election-rolebinding
+  namespace: valkey-operator-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: valkey-operator-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: valkey-operator-controller-manager
+    namespace: valkey-operator-system

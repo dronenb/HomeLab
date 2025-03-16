@@ -1,0 +1,10 @@
+---
+# yamllint disable rule:line-length
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: valkey-operator
+    control-plane: controller-manager
+  name: valkey-operator-system

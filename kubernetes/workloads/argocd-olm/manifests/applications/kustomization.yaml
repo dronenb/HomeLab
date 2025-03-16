@@ -11,3 +11,4 @@ resources:
   - olm.yaml
   - registry.yaml
   - system-upgrade-controller.yaml
+  - valkey-operator.yaml
