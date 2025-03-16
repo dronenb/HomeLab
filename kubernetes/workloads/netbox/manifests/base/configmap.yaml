@@ -1,0 +1,210 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netbox
+  namespace: netbox
+  labels:
+    app.kubernetes.io/instance: netbox
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: netbox
+    app.kubernetes.io/version: v4.2.6
+    helm.sh/chart: netbox-5.0.57
+data:
+  configuration.py: |2-
+    """
+    This file serves as a base configuration for Netbox
+    https://netboxlabs.com/docs/netbox/en/stable/configuration/
+    """
+
+    import os
+    import re
+    from pathlib import Path
+
+    import yaml
+
+
+    def _deep_merge(source, destination):
+        """Inspired by https://stackoverflow.com/a/20666342"""
+        for key, value in source.items():
+            dst_value = destination.get(key)
+
+            if isinstance(value, dict) and isinstance(dst_value, dict):
+                _deep_merge(value, dst_value)
+            else:
+                destination[key] = value
+
+        return destination
+
+
+    def _load_yaml() -> None:
+        """Load YAML from files"""
+        extra_config_base = Path("/run/config/extra")
+        config_files = [Path("/run/config/netbox/netbox.yaml")]
+
+        config_files.extend(sorted(extra_config_base.glob("*/*.yaml")))
+
+        for config_file in config_files:
+            with open(config_file, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            _deep_merge(config, globals())
+
+
+    def _read_secret(secret_name: str, secret_key: str, default: str | None = None) -> str | None:
+        """Read secret from file"""
+        try:
+            secret = open(
+                f"/run/secrets/{secret_name}/{secret_key}",
+                "r",
+                encoding="utf-8",
+            )
+        except EnvironmentError:
+            return default
+        with secret:
+            return secret.readline().strip()
+
+
+    CORS_ORIGIN_REGEX_WHITELIST = []
+    DATABASE = {}
+    EMAIL = {}
+    REDIS = {}
+
+    _load_yaml()
+
+    provided_secret_name = os.getenv("SECRET_NAME", "netbox")
+
+    DATABASE["PASSWORD"] = _read_secret(provided_secret_name, "db_password")
+    EMAIL["PASSWORD"] = _read_secret(provided_secret_name, "email_password")
+    REDIS["tasks"]["PASSWORD"] = _read_secret(provided_secret_name, "redis_tasks_password")
+    REDIS["caching"]["PASSWORD"] = _read_secret(provided_secret_name, "redis_cache_password")
+    SECRET_KEY = _read_secret(provided_secret_name, "secret_key")
+
+    # Post-process certain values
+    CORS_ORIGIN_REGEX_WHITELIST = [re.compile(r) for r in CORS_ORIGIN_REGEX_WHITELIST]
+    if "SENTINELS" in REDIS["tasks"]:
+        REDIS["tasks"]["SENTINELS"] = [tuple(x.split(r":")) for x in REDIS["tasks"]["SENTINELS"]]
+    if "SENTINELS" in REDIS["caching"]:
+        REDIS["caching"]["SENTINELS"] = [tuple(x.split(r":")) for x in REDIS["caching"]["SENTINELS"]]
+    if ALLOWED_HOSTS_INCLUDES_POD_ID:
+        ALLOWED_HOSTS.append(os.getenv("POD_IP"))
+  netbox.yaml: |-
+    ALLOWED_HOSTS: ["*"]
+    ALLOWED_HOSTS_INCLUDES_POD_ID: true
+
+    DATABASE:
+      HOST: "netbox-postgresql-ha.netbox.svc"
+      USER: "netbox"
+      NAME: "netbox"
+      PORT: 5432
+      OPTIONS:
+        sslmode: prefer
+        target_session_attrs: read-write
+      CONN_MAX_AGE: 300
+      DISABLE_SERVER_SIDE_CURSORS: false
+
+    ADMINS: []
+    ALLOW_TOKEN_RETRIEVAL: false
+    AUTH_PASSWORD_VALIDATORS: []
+    ALLOWED_URL_SCHEMES: ["file","ftp","ftps","http","https","irc","mailto","sftp","ssh","tel","telnet","tftp","vnc","xmpp"]
+    BANNER_TOP: ""
+    BANNER_BOTTOM: ""
+    BANNER_LOGIN: ""
+    BASE_PATH: ""
+    CHANGELOG_RETENTION: 90
+    CUSTOM_VALIDATORS: {}
+    DEFAULT_USER_PREFERENCES: {}
+    CORS_ORIGIN_ALLOW_ALL: false
+    CORS_ORIGIN_WHITELIST: []
+    CORS_ORIGIN_REGEX_WHITELIST: []
+    CSRF_TRUSTED_ORIGINS: []
+    DATA_UPLOAD_MAX_MEMORY_SIZE: 2621440
+    DEBUG: false
+    DEFAULT_LANGUAGE: "en-us"
+
+    EMAIL:
+      SERVER: "localhost"
+      PORT: 25
+      USERNAME: ""
+      USE_SSL: false
+      USE_TLS: false
+      SSL_CERTFILE: ""
+      SSL_KEYFILE: ""
+      TIMEOUT: 10
+      FROM_EMAIL: ""
+
+    ENFORCE_GLOBAL_UNIQUE: true
+    EXEMPT_VIEW_PERMISSIONS: []
+    FIELD_CHOICES: {}
+    FILE_UPLOAD_MAX_MEMORY_SIZE: 2621440
+    GRAPHQL_ENABLED: true
+    HTTP_PROXIES: {}
+    INTERNAL_IPS: ["127.0.0.1","::1"]
+    JOB_RETENTION: 90
+    LOGGING: {}
+    LOGIN_PERSISTENCE: false
+    LOGIN_REQUIRED: false
+    LOGIN_TIMEOUT: 1209600
+    LOGOUT_REDIRECT_URL: "home"
+    MAINTENANCE_MODE: false
+    MAPS_URL: "https://maps.google.com/?q="
+    MAX_PAGE_SIZE: 1000
+    MEDIA_ROOT: /opt/netbox/netbox/media
+    METRICS_ENABLED: false
+    PAGINATE_COUNT: 50
+    PLUGINS: []
+    PLUGINS_CONFIG: {}
+    POWERFEED_DEFAULT_AMPERAGE: 15
+    POWERFEED_DEFAULT_MAX_UTILIZATION: 80
+    POWERFEED_DEFAULT_VOLTAGE: 120
+    PREFER_IPV4: false
+    RACK_ELEVATION_DEFAULT_UNIT_HEIGHT: 22
+    RACK_ELEVATION_DEFAULT_UNIT_WIDTH: 220
+    REMOTE_AUTH_ENABLED: false
+    REMOTE_AUTH_BACKEND: ["netbox.authentication.RemoteUserBackend"]
+    REMOTE_AUTH_HEADER: "HTTP_REMOTE_USER"
+    REMOTE_AUTH_USER_FIRST_NAME: "HTTP_REMOTE_USER_FIRST_NAME"
+    REMOTE_AUTH_USER_LAST_NAME: "HTTP_REMOTE_USER_LAST_NAME"
+    REMOTE_AUTH_USER_EMAIL: "HTTP_REMOTE_USER_EMAIL"
+    REMOTE_AUTH_AUTO_CREATE_USER: false
+    REMOTE_AUTH_AUTO_CREATE_GROUPS: false
+    REMOTE_AUTH_DEFAULT_GROUPS: []
+    REMOTE_AUTH_DEFAULT_PERMISSIONS: {}
+    REMOTE_AUTH_GROUP_SYNC_ENABLED: false
+    REMOTE_AUTH_GROUP_HEADER: "HTTP_REMOTE_USER_GROUP"
+    REMOTE_AUTH_SUPERUSER_GROUPS: []
+    REMOTE_AUTH_SUPERUSERS: []
+    REMOTE_AUTH_STAFF_GROUPS: []
+    REMOTE_AUTH_STAFF_USERS: []
+    REMOTE_AUTH_GROUP_SEPARATOR: "|"
+    RELEASE_CHECK_URL: ""
+
+    REDIS:
+      tasks:
+        HOST: "netbox-redis"
+        PORT: 6379
+        USERNAME: ""
+        DATABASE: 0
+        SSL: false
+        INSECURE_SKIP_TLS_VERIFY: false
+        CA_CERT_PATH: ""
+      caching:
+        HOST: "netbox-redis"
+        PORT: 6379
+        USERNAME: ""
+        DATABASE: 1
+        SSL: false
+        INSECURE_SKIP_TLS_VERIFY: false
+        CA_CERT_PATH: ""
+
+    REPORTS_ROOT: /opt/netbox/netbox/reports
+    RQ_DEFAULT_TIMEOUT: 300
+    SCRIPTS_ROOT: /opt/netbox/netbox/scripts
+    CSRF_COOKIE_NAME: "csrftoken"
+    SESSION_COOKIE_NAME: sessionid
+    ENABLE_LOCALIZATION: false
+    TIME_ZONE: "UTC"
+    DATE_FORMAT: "N j, Y"
+    SHORT_DATE_FORMAT: "Y-m-d"
+    TIME_FORMAT: "g:i a"
+    SHORT_TIME_FORMAT: "H:i:s"
+    DATETIME_FORMAT: "N j, Y g:i a"
+    SHORT_DATETIME_FORMAT: "Y-m-d H:i"
