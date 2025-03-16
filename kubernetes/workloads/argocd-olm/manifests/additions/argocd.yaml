@@ -5,9 +5,18 @@ metadata:
   name: argocd
   namespace: argocd
 spec:
-  # https://quay.io/repository/argoproj/argocd?tab=tags
-  version: "sha256:8634a5b6e4f616932eeef85e79378e16dfa5714d23656417a9faf46721c5fce7" # v2.14.5
+  extraConfig:
+    # https://github.com/argoproj/argo-cd/issues/10456#issuecomment-1249381338
+    resource.exclusions: |
+      - apiGroups:
+          - cilium.io
+        kinds:
+          - CiliumIdentity
+        clusters:
+          - "*"
   server:
     ingress:
       enabled: false
     insecure: false
+  # https://quay.io/repository/argoproj/argocd?tab=tags
+  version: "sha256:8634a5b6e4f616932eeef85e79378e16dfa5714d23656417a9faf46721c5fce7" # v2.14.5
