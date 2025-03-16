@@ -8,7 +8,7 @@ shopt -s failglob
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
-export CILIUM_VERSION="1.17.1"
+export CILIUM_VERSION="1.17.2"
 export NAMESPACE=cilium
 
 helm repo update

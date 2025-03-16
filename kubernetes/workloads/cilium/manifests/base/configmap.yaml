@@ -61,6 +61,7 @@ data:
   bpf-lb-source-range-all-types: "false"
   bpf-lb-algorithm-annotation: "false"
   bpf-lb-mode-annotation: "false"
+  bpf-distributed-lru: "false"
   bpf-events-drop-enabled: "true"
   bpf-events-policy-verdict-enabled: "true"
   bpf-events-trace-enabled: "true"
@@ -69,6 +70,7 @@ data:
   cluster-id: "0"
   routing-mode: tunnel
   tunnel-protocol: geneve
+  tunnel-source-port-range: 0-0
   service-no-backend-response: reject
   enable-l7-proxy: "true"
   enable-ipv4-masquerade: "true"
