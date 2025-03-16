@@ -81,7 +81,7 @@ spec:
             - name: enable_endpointslices
               value: "true"
             - name: enableUPNP
-              value: false
+              value: "false"
           image: ghcr.io/kube-vip/kube-vip:v0.8.9
           imagePullPolicy: IfNotPresent
           name: kube-vip

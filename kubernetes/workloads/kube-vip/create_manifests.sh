@@ -55,7 +55,7 @@ yq -i 'del(.spec.template.spec.affinity.nodeAffinity.requiredDuringSchedulingIgn
 yq -i 'del(.spec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[1])' deployment.yaml
 
 # Explicitly disable UPnP
-yq -i '.spec.template.spec.containers[0].env += {"name":"enableUPNP","value":false}' daemonset.yaml
+yq -i '.spec.template.spec.containers[0].env += {"name":"enableUPNP","value":"false"}' daemonset.yaml
 
 # Iterate over each yaml file
 files=()
