@@ -28,8 +28,10 @@ content=$( \
         --interface eth0 \
         --arp \
         --controlplane \
+        --enableEndpointSlices \
         --enableLoadBalancer \
         --enableNodeLabeling \
+        --lbClassName="kube-vip.io/kube-vip-class" \
         --lbClassOnly \
         --leaderElection \
         --inCluster \
@@ -51,6 +53,10 @@ yq -i '.spec.template.spec.containers[0].env += [{"name":"KUBEVIP_ENABLE_LOADBAL
 # https://kubernetes.io/docs/reference/labels-annotations-taints/#node-role-kubernetes-io-master-taint
 yq -i 'del(.spec.template.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0])' daemonset.yaml
 yq -i 'del(.spec.template.spec.affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[1])' deployment.yaml
+
+# Explicitly disable UPnP
+yq -i '.spec.template.spec.containers[0].env += {"name":"enableUPNP","value":false}' daemonset.yaml
+
 # Iterate over each yaml file
 files=()
 for file in *.yaml; do

@@ -78,6 +78,10 @@ spec:
               value: 10.91.1.8
             - name: prometheus_server
               value: :2112
+            - name: enable_endpointslices
+              value: "true"
+            - name: enableUPNP
+              value: false
           image: ghcr.io/kube-vip/kube-vip:v0.8.9
           imagePullPolicy: IfNotPresent
           name: kube-vip
