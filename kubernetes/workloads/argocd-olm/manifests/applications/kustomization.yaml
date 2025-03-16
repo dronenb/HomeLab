@@ -10,6 +10,7 @@ resources:
   - kubernetes-nmstate.yaml
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
+  - percona-postgresql.yaml
   - registry.yaml
   - system-upgrade-controller.yaml
   - valkey-operator.yaml
