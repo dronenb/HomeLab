@@ -3,7 +3,7 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: release-name-pg-operator
+  name: percona-postgresql
   namespace: percona-postgresql
   labels:
     helm.sh/chart: pg-operator-2.5.1

@@ -24,7 +24,7 @@ helm template percona/pg-operator \
     --version "${VERSION}" \
     --namespace "${NAMESPACE}" \
     --include-crds \
-    --set "fullNameOverride=${NAMESPACE}" | \
+    --set "fullnameOverride=${NAMESPACE}" | \
     yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 

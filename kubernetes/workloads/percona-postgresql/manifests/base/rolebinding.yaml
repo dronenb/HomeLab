@@ -3,7 +3,7 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: release-name-pg-operator
+  name: percona-postgresql
   namespace: percona-postgresql
   labels:
     helm.sh/chart: pg-operator-2.5.1
@@ -15,8 +15,8 @@ metadata:
     meta.helm.sh/release-namespace: percona-postgresql
 subjects:
   - kind: ServiceAccount
-    name: release-name-pg-operator
+    name: percona-postgresql
 roleRef:
   kind: Role
-  name: release-name-pg-operator
+  name: percona-postgresql
   apiGroup: rbac.authorization.k8s.io
