@@ -1,0 +1,64 @@
+---
+# yamllint disable rule:line-length
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: keydb-operator
+    control-plane: controller-manager
+  name: keydb-operator-controller-manager
+  namespace: keydb-operator-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+        - args:
+            - --metrics-require-rbac
+            - --metrics-secure
+            - --metrics-bind-address=:8443
+            - --leader-elect
+            - --leader-election-id=keydb-operator
+            - --health-probe-bind-address=:6789
+          env:
+            - name: ANSIBLE_GATHERING
+              value: explicit
+          image: quay.io/krestomatio/keydb-operator:0.3.22
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6789
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 6789
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 1
+              memory: 2Gi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: keydb-operator-controller-manager
+      terminationGracePeriodSeconds: 10
