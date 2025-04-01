@@ -1,0 +1,11 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  - ../../base
+  - ./certificate.yaml
+  - ./secret.yaml
+components:
+  - ../../components/dragonfly
+  - ../../components/external-secrets
+  - ../../components/percona-postgresql
