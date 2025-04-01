@@ -7,7 +7,6 @@ resources:
   - dragonfly-operator.yaml
   - external-secrets.yaml
   - gateway-api.yaml
-  - keydb-operator.yaml
   - kube-vip.yaml
   - kubernetes-nmstate.yaml
   - nfs-subdir-external-provisioner.yaml
@@ -15,4 +14,3 @@ resources:
   - percona-postgresql.yaml
   - registry.yaml
   - system-upgrade-controller.yaml
-  - valkey-operator.yaml
