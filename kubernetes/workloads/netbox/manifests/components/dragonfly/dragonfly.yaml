@@ -4,15 +4,16 @@ metadata:
   name: netbox-redis
   namespace: netbox
 spec:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 15m
-      memory: 50Mi
-    limits:
-      cpu: 500m
-      memory: 750Mi
   authentication:
     passwordFromSecret:
       name: redis-password
       key: redis-password
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.28.1
+  replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 750Mi
+    requests:
+      cpu: 15m
+      memory: 50Mi
