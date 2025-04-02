@@ -11,13 +11,10 @@ resource "google_secret_manager_secret" "email" {
   }
 }
 
-data "google_client_openid_userinfo" "me" {}
-
 resource "google_secret_manager_secret_version" "email" {
   secret      = google_secret_manager_secret.email.id
-  secret_data = data.google_client_openid_userinfo.me.email
+  secret_data = var.user_email
 }
-
 resource "google_secret_manager_secret" "cert_manager_cloudflare_token" {
   project   = var.homelab_project_id
   secret_id = "cert-manager-cloudflare-token"

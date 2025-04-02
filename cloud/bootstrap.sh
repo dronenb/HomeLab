@@ -28,7 +28,9 @@ auths=$(gcloud auth list --format=json)
 if [[ $(echo "${auths}" | jq -r "${login_filter}") -le 0 ]]; then
     gcloud auth application-default login
 fi
-
+auths=$(gcloud auth list --format=json)
+TF_VAR_user_email=$(echo "${auths}" | jq -r '.[] | select(.status=="ACTIVE") | .account')
+export TF_VAR_user_email
 # Get list of projects
 projects=$(gcloud projects list --format=json)
 proj_id_filter='.[] |select(.name=="'"${PROJECT_NAME}"'") | .projectId'
