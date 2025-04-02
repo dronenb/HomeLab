@@ -3,6 +3,11 @@ provider "google" {
   billing_project       = var.homelab_project_id
 }
 
+provider "netbox" {
+  api_token  = data.bitwarden_item_login.netbox_creds.field[index(data.bitwarden_item_login.netbox_creds.field.*.name, "api_token")].hidden
+  server_url = data.bitwarden_item_login.netbox_creds.uri[0].value
+}
+
 provider "bitwarden" {}
 
 provider "azuread" {}

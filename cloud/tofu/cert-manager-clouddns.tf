@@ -1,5 +1,5 @@
 resource "google_dns_managed_zone" "dronen_house" {
-  project = var.homelab_project_id
+  project     = var.homelab_project_id
   name        = "dronen-house"
   dns_name    = "dronen.house."
   description = "Public DNS zone for ACME DNS Challenges"
