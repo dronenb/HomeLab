@@ -4,3 +4,6 @@ var_naming_pattern: "^[a-z_][a-z0-9_]*$"
 use_default_rules: true
 skip_list:
   - name[template]
+  - yaml[line-length]
+exclude_paths:
+  - "kubernetes/**"

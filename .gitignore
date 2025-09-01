@@ -37,3 +37,5 @@ terraform.rc
 cloud/tofu/killswitch-source/killswitch-source.zip
 
 node_modules/*
+
+megalinter-reports/
