@@ -1,41 +1,12 @@
 ---
 repos:
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: 77c3c6a34b2577d71083442326c60b8fd58926ec # frozen: v8.18.4
+  - repo: https://github.com/oxsecurity/megalinter
+    rev: e08c2b05e3dbc40af4c23f41172ef1e068a7d651 # frozen: v8.8.0
     hooks:
-      - id: gitleaks
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: a23f6b85d0fdd5bb9d564e2579e678033debbdff # frozen: v0.10.0.1
-    hooks:
-      - id: shellcheck
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: f12edd9c7be1c20cfa42420fd0e6df71e42b51ea # frozen: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
+      - id: megalinter-full # Slower, more thorough
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: 4efeb931d635ed3e57749de4326b752b345c8372 # frozen: v3.2.0
+    rev: 7c1022b54dcb1d1911e6c885089940e8499f0253 # frozen: v4.2.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: []
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: f295829140d25717bc79368d3f966fc1f67a824f # frozen: v0.41.0
-    hooks:
-      - id: markdownlint
-  # - repo: https://github.com/bridgecrewio/checkov.git
-  #   rev: '3.1.38'
-  #   hooks:
-  #     - id: checkov
-  #       verbose: false
-  # v3.1.0 https://api.github.com/repos/compilerla/conventional-pre-commit/tags
-  # - repo: https://github.com/ansible/ansible-lint.git
-  #   rev: v6.22.1
-  #   hooks:
-  #     - id: ansible-lint
-  #       files: \.(yaml|yml)$
-  #       name: Ansible Lint
-  #       description: Run configurations on .ansible-lint file
-  #       entry: python3 -m ansiblelint --force-color
-  #       always_run: false
-  #       additional_dependencies:
-  #         - "jmespath"
