@@ -1,7 +1,10 @@
 FROM quay.io/centos-bootc/centos-bootc:c10s
 
+ARG MICROSHIFT_VERSION=4.18.0_3-1.el10
+
 RUN set -ex && \
     dnf copr enable --assumeyes owenh/micro-okd centos-stream-10-x86_64 && \
-    dnf install microshift --assumeyes
+    dnf install "microshift-${MICROSHIFT_VERSION}" --assumeyes && \
+    dnf clean all
 
 CMD ["/sbin/init"]
