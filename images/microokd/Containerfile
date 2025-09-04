@@ -1,0 +1,7 @@
+FROM quay.io/centos-bootc/centos-bootc:c10s
+
+RUN set -ex && \
+    dnf copr enable --assumeyes owenh/micro-okd centos-stream-10-x86_64 && \
+    dnf install microshift --assumeyes
+
+CMD ["/sbin/init"]
