@@ -13,7 +13,8 @@ spec:
       password:
         type: ASCII
       secretName: "netbox-postgresql-credentials"
-  image: percona/percona-postgresql-operator:2.5.1-ppg16.8-postgres
+  # https://hub.docker.com/r/percona/percona-postgresql-operator/tags
+  image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg13.21-postgres-gis3.3.8@sha256:3df44c1089563b42198ef929e27b9797ef2b04d92736293952163fa7541c0068
   imagePullPolicy: Always
   postgresVersion: 16
   instances:

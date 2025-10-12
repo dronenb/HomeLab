@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.2.6
-    helm.sh/chart: netbox-5.0.57
+    app.kubernetes.io/version: v4.4.2
+    helm.sh/chart: netbox-7.1.4
     app.kubernetes.io/component: netbox
 spec:
   replicas: 1
@@ -23,13 +23,13 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 91fdead49ebebd2f99c46014ab7b2d4162e1db01605e0fcf36bb1b9f5e025ec2
+        checksum/config: d235fa79c932be322423638e76203c23569dd1ae41509f6f7a8241c7f3b2e949
       labels:
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: netbox
-        app.kubernetes.io/version: v4.2.6
-        helm.sh/chart: netbox-5.0.57
+        app.kubernetes.io/version: v4.4.2
+        helm.sh/chart: netbox-7.1.4
         app.kubernetes.io/component: netbox
     spec:
       serviceAccountName: netbox
@@ -86,7 +86,7 @@ spec:
             seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
-          image: ghcr.io/netbox-community/netbox:v4.2.6
+          image: ghcr.io/netbox-community/netbox:v4.4.2
           imagePullPolicy: IfNotPresent
           env:
             - name: SUPERUSER_NAME
@@ -206,12 +206,12 @@ spec:
                   name: redis-password
                   items:
                     - key: redis-password
-                      path: redis_tasks_password
+                      path: tasks_password
               - secret:
                   name: redis-password
                   items:
                     - key: redis-password
-                      path: redis_cache_password
+                      path: cache_password
         - name: netbox-tmp
           emptyDir:
             medium: Memory
@@ -231,8 +231,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.2.6
-    helm.sh/chart: netbox-5.0.57
+    app.kubernetes.io/version: v4.4.2
+    helm.sh/chart: netbox-7.1.4
     app.kubernetes.io/component: worker
 spec:
   replicas: 1
@@ -247,22 +247,58 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 416ba3b8f2ce732eb113192af86447584b5784c7d2272ad5ba75e0f744771f11
+        checksum/config: c4b62b6f7a7fa3ddceed462b1d6f0e4577e1a3c709dc0afdd374af72349e6f6c
       labels:
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: netbox
-        app.kubernetes.io/version: v4.2.6
-        helm.sh/chart: netbox-5.0.57
+        app.kubernetes.io/version: v4.4.2
+        helm.sh/chart: netbox-7.1.4
         app.kubernetes.io/component: worker
     spec:
       serviceAccountName: netbox
-      automountServiceAccountToken: false
+      automountServiceAccountToken: true
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: Always
         supplementalGroups: []
         sysctls: []
+      initContainers:
+        - name: wait-for-backend
+          image: docker.io/rancher/kubectl:v1.34.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/kubectl
+          args:
+            - rollout
+            - status
+            - deployment
+            - $(DEPLOYMENT_NAME)
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 150m
+              ephemeral-storage: 2Gi
+              memory: 192Mi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 128Mi
+          env:
+            - name: DEPLOYMENT_NAME
+              value: netbox
       containers:
         - name: netbox-worker
           securityContext:
@@ -278,7 +314,7 @@ spec:
             seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
-          image: ghcr.io/netbox-community/netbox:v4.2.6
+          image: ghcr.io/netbox-community/netbox:v4.4.2
           imagePullPolicy: IfNotPresent
           command:
             - /opt/netbox/venv/bin/python
@@ -334,12 +370,12 @@ spec:
                   name: redis-password
                   items:
                     - key: redis-password
-                      path: redis_tasks_password
+                      path: tasks_password
               - secret:
                   name: redis-password
                   items:
                     - key: redis-password
-                      path: redis_cache_password
+                      path: cache_password
         - name: netbox-tmp
           emptyDir:
             medium: Memory
