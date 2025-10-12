@@ -5,7 +5,8 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-VERSION=1.1.10
+# https://github.com/dragonflydb/dragonfly-operator/releases/latest
+VERSION=1.3.0
 # NAMESPACE=dragonfly-operator-system
 
 mkdir -p manifests/base
