@@ -5,10 +5,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: percona-postgresql
   labels:
-    helm.sh/chart: pg-operator-2.5.1
+    helm.sh/chart: pg-operator-2.7.0
     app.kubernetes.io/name: pg-operator
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: 2.5.1
+    app.kubernetes.io/version: 2.7.0
     app.kubernetes.io/managed-by: Helm
     meta.helm.sh/release-name: release-name
     meta.helm.sh/release-namespace: percona-postgresql
@@ -18,7 +18,9 @@ rules:
     resources:
       - configmaps
       - persistentvolumeclaims
+      - pods
       - secrets
+      - serviceaccounts
       - services
     verbs:
       - create
@@ -54,26 +56,6 @@ rules:
     verbs:
       - create
       - patch
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - delete
-      - get
-      - list
-      - patch
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - serviceaccounts
-    verbs:
-      - create
-      - get
-      - list
-      - patch
-      - watch
   - apiGroups:
       - apps
     resources:
@@ -128,14 +110,19 @@ rules:
       - delete
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
       - pgv2.percona.com
     resources:
       - perconapgbackups/finalizers
-      - perconapgclusters/finalizers
+      - perconapgclusters/status
+      - perconapgrestores/status
+      - perconapgupgrades/finalizers
+      - perconapgupgrades/status
     verbs:
+      - patch
       - update
   - apiGroups:
       - pgv2.percona.com
@@ -160,12 +147,8 @@ rules:
   - apiGroups:
       - pgv2.percona.com
     resources:
-      - perconapgclusters/status
-      - perconapgrestores/status
-      - perconapgupgrades/finalizers
-      - perconapgupgrades/status
+      - perconapgclusters/finalizers
     verbs:
-      - patch
       - update
   - apiGroups:
       - pgv2.percona.com
@@ -175,6 +158,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - watch
   - apiGroups:
       - policy
@@ -256,6 +240,18 @@ rules:
       - roles
     verbs:
       - create
+      - delete
+      - get
+      - list
+      - patch
+      - watch
+  - apiGroups:
+      - snapshot.storage.k8s.io
+    resources:
+      - volumesnapshots
+    verbs:
+      - create
+      - delete
       - get
       - list
       - patch

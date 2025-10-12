@@ -6,10 +6,10 @@ metadata:
   name: percona-postgresql
   namespace: percona-postgresql
   labels:
-    helm.sh/chart: pg-operator-2.5.1
+    helm.sh/chart: pg-operator-2.7.0
     app.kubernetes.io/name: pg-operator
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: 2.5.1
+    app.kubernetes.io/version: 2.7.0
     app.kubernetes.io/managed-by: Helm
     meta.helm.sh/release-name: release-name
     meta.helm.sh/release-namespace: percona-postgresql
@@ -37,9 +37,9 @@ spec:
       serviceAccountName: percona-postgresql
       terminationGracePeriodSeconds: 600
       containers:
-        - name: percona-postgresql-operator
-          image: percona/percona-postgresql-operator:2.5.1
-          imagePullPolicy: IfNotPresent
+        - name: operator
+          image: docker.io/percona/percona-postgresql-operator:2.7.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: metrics
