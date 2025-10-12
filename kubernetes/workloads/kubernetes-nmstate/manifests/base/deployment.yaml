@@ -12,6 +12,9 @@ spec:
       name: kubernetes-nmstate-operator
   template:
     metadata:
+      annotations:
+        target.workload.openshift.io/management: |
+          {"effect": "PreferredDuringScheduling"}
       labels:
         app: kubernetes-nmstate-operator
         name: kubernetes-nmstate-operator
@@ -46,8 +49,8 @@ spec:
         - name: nmstate-operator
           args:
             - --zap-time-encoding=iso8601
-          image: quay.io/nmstate/kubernetes-nmstate-operator:v0.83.0
-          imagePullPolicy: Always
+          image: quay.io/nmstate/kubernetes-nmstate-operator:v0.84.0
+          imagePullPolicy: IfNotPresent
           command:
             - manager
           securityContext:
@@ -55,10 +58,34 @@ spec:
             capabilities:
               drop:
                 - ALL
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: healthprobe
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthprobe
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          ports:
+            - containerPort: 8081
+              name: healthprobe
           resources:
             requests:
               cpu: 60m
               memory: 30Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
           env:
             - name: WATCH_NAMESPACE
               value: ""
@@ -71,9 +98,9 @@ spec:
             - name: RUN_OPERATOR
               value: ""
             - name: RELATED_IMAGE_HANDLER_IMAGE
-              value: quay.io/nmstate/kubernetes-nmstate-handler:v0.83.0
+              value: quay.io/nmstate/kubernetes-nmstate-handler:v0.84.0
             - name: HANDLER_IMAGE_PULL_POLICY
-              value: Always
+              value: IfNotPresent
             - name: HANDLER_NAMESPACE
               value: nmstate
             - name: MONITORING_NAMESPACE

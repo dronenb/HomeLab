@@ -10,7 +10,7 @@ mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 # curl -sL https://api.github.com/repos/nmstate/kubernetes-nmstate/releases | jq -r ".[0].name"
-KUBERNETES_NMSTATE_VERSION=v0.83.0
+KUBERNETES_NMSTATE_VERSION=v0.84.0
 
 # Download manifests and separate into separate files
 content=''
