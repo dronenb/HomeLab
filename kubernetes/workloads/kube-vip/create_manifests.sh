@@ -28,7 +28,6 @@ content=$( \
         --interface eth0 \
         --arp \
         --controlplane \
-        --enableEndpointSlices \
         --enableLoadBalancer \
         --enableNodeLabeling \
         --lbClassName="kube-vip.io/kube-vip-class" \
