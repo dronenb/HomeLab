@@ -5,7 +5,8 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-GATEWAY_API_VERSION=v1.2.1
+# https://github.com/kubernetes-sigs/gateway-api/releases/latest
+GATEWAY_API_VERSION=v1.4.0
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
