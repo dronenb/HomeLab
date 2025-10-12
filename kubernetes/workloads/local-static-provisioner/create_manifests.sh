@@ -7,8 +7,9 @@ set -o nounset
 set -o pipefail
 shopt -s failglob
 
-VERSION=2.0.0
-NAMESPACE=local-volume-provisioner
+# helm search repo sig-storage-local-static-provisioner/local-static-provisioner
+VERSION=2.8.0
+NAMESPACE=local-static-provisioner
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1

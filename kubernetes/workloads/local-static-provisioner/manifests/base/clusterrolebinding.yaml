@@ -5,14 +5,14 @@ kind: ClusterRoleBinding
 metadata:
   name: local-static-provisioner-node-binding
   labels:
-    helm.sh/chart: local-static-provisioner-2.0.0
+    helm.sh/chart: local-static-provisioner-2.8.0
     app.kubernetes.io/name: local-static-provisioner
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: local-static-provisioner
 subjects:
   - kind: ServiceAccount
     name: local-static-provisioner
-    namespace: local-volume-provisioner
+    namespace: local-static-provisioner
 roleRef:
   kind: ClusterRole
   name: local-static-provisioner-node-clusterrole
