@@ -6,6 +6,7 @@ metadata:
   name: cilium-secrets
   labels:
     app.kubernetes.io/part-of: cilium
+  annotations:
 ---
 apiVersion: v1
 kind: Namespace
