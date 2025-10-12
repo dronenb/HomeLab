@@ -7,9 +7,9 @@ metadata:
     app.kubernetes.io/name: cainjector
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cainjector
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -28,9 +28,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -49,9 +49,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -70,9 +70,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -91,9 +91,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -112,9 +112,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -133,9 +133,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -154,9 +154,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cert-manager
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -175,9 +175,9 @@ metadata:
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: cert-manager
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -196,9 +196,9 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: v1.17.1
+    app.kubernetes.io/version: v1.19.0
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.17.1
+    helm.sh/chart: cert-manager-v1.19.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
