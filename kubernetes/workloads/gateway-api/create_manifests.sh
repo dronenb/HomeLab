@@ -37,6 +37,9 @@ resources:
 $(printf "  - %s\n" "${files[@]}")
 EOF
 
+# enable server side apply for ArgoCD
+yq -i '.metadata.annotations."argocd.argoproj.io/sync-options"="ServerSideApply=true"' customresourcedefinition.yaml
+
 # Format YAML
 prettier . --write
 popd > /dev/null || exit 1
