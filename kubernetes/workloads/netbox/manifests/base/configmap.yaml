@@ -7,10 +7,11 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.2.6
-    helm.sh/chart: netbox-5.0.57
+    app.kubernetes.io/version: v4.4.2
+    helm.sh/chart: netbox-7.1.4
 data:
   configuration.py: |2-
+
     """
     This file serves as a base configuration for Netbox
     https://netboxlabs.com/docs/netbox/en/stable/configuration/
@@ -64,7 +65,7 @@ data:
 
 
     CORS_ORIGIN_REGEX_WHITELIST = []
-    DATABASE = {}
+    DATABASES = {}
     EMAIL = {}
     REDIS = {}
 
@@ -72,10 +73,10 @@ data:
 
     provided_secret_name = os.getenv("SECRET_NAME", "netbox")
 
-    DATABASE["PASSWORD"] = _read_secret(provided_secret_name, "db_password")
+    DATABASES["default"]["PASSWORD"] = _read_secret(provided_secret_name, "db_password")
     EMAIL["PASSWORD"] = _read_secret(provided_secret_name, "email_password")
-    REDIS["tasks"]["PASSWORD"] = _read_secret(provided_secret_name, "redis_tasks_password")
-    REDIS["caching"]["PASSWORD"] = _read_secret(provided_secret_name, "redis_cache_password")
+    REDIS["tasks"]["PASSWORD"] = _read_secret(provided_secret_name, "tasks_password")
+    REDIS["caching"]["PASSWORD"] = _read_secret(provided_secret_name, "cache_password")
     SECRET_KEY = _read_secret(provided_secret_name, "secret_key")
 
     # Post-process certain values
@@ -90,16 +91,18 @@ data:
     ALLOWED_HOSTS: ["*"]
     ALLOWED_HOSTS_INCLUDES_POD_ID: true
 
-    DATABASE:
-      HOST: "netbox-postgresql-ha.netbox.svc"
-      USER: "netbox"
-      NAME: "netbox"
-      PORT: 5432
-      OPTIONS:
-        sslmode: prefer
-        target_session_attrs: read-write
-      CONN_MAX_AGE: 300
-      DISABLE_SERVER_SIDE_CURSORS: false
+    DATABASES:
+      default:
+        HOST: "netbox-postgresql-ha.netbox.svc"
+        USER: "netbox"
+        NAME: "netbox"
+        PORT: 5432
+        ENGINE: "django.db.backends.postgresql"
+        OPTIONS:
+          sslmode: prefer
+          target_session_attrs: read-write
+        CONN_MAX_AGE: 300
+        DISABLE_SERVER_SIDE_CURSORS: false
 
     ADMINS: []
     ALLOW_TOKEN_RETRIEVAL: false
@@ -148,6 +151,7 @@ data:
     MAPS_URL: "https://maps.google.com/?q="
     MAX_PAGE_SIZE: 1000
     MEDIA_ROOT: /opt/netbox/netbox/media
+    STORAGES: {}
     METRICS_ENABLED: false
     PAGINATE_COUNT: 50
     PLUGINS: []
@@ -179,7 +183,7 @@ data:
 
     REDIS:
       tasks:
-        HOST: "netbox-redis"
+        HOST: "netbox-kv"
         PORT: 6379
         USERNAME: ""
         DATABASE: 0
@@ -187,7 +191,7 @@ data:
         INSECURE_SKIP_TLS_VERIFY: false
         CA_CERT_PATH: ""
       caching:
-        HOST: "netbox-redis"
+        HOST: "netbox-kv"
         PORT: 6379
         USERNAME: ""
         DATABASE: 1

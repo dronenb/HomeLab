@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.2.6
-    helm.sh/chart: netbox-5.0.57
+    app.kubernetes.io/version: v4.4.2
+    helm.sh/chart: netbox-7.1.4
     app.kubernetes.io/component: housekeeping
 spec:
   concurrencyPolicy: Forbid
@@ -20,10 +20,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: netbox
-        helm.sh/chart: netbox-5.0.57
+        helm.sh/chart: netbox-7.1.4
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: v4.2.6
+        app.kubernetes.io/version: v4.4.2
     spec:
       template:
         metadata:
@@ -31,8 +31,8 @@ spec:
             app.kubernetes.io/instance: netbox
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: netbox
-            app.kubernetes.io/version: v4.2.6
-            helm.sh/chart: netbox-5.0.57
+            app.kubernetes.io/version: v4.4.2
+            helm.sh/chart: netbox-7.1.4
             app.kubernetes.io/component: housekeeping
         spec:
           serviceAccountName: netbox
@@ -57,7 +57,7 @@ spec:
                 seLinuxOptions: {}
                 seccompProfile:
                   type: RuntimeDefault
-              image: ghcr.io/netbox-community/netbox:v4.2.6
+              image: ghcr.io/netbox-community/netbox:v4.4.2
               imagePullPolicy: IfNotPresent
               command:
                 - /opt/netbox/venv/bin/python
@@ -106,12 +106,12 @@ spec:
                       name: redis-password
                       items:
                         - key: redis-password
-                          path: redis_tasks_password
+                          path: tasks_password
                   - secret:
                       name: redis-password
                       items:
                         - key: redis-password
-                          path: redis_cache_password
+                          path: cache_password
             - name: netbox-tmp
               emptyDir:
                 medium: Memory

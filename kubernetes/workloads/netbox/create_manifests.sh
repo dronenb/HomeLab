@@ -30,11 +30,13 @@ helm template netbox oci://ghcr.io/netbox-community/netbox-chart/netbox \
     --set 'ingress.tls[0].hosts[0]=netbox.fh.dronen.house' \
     --set 'ingress.tls[0].secretName=netbox-server-tls' \
     --set 'postgresql.enabled=false' \
-    --set 'redis.enabled=false' \
+    --set 'valkey.enabled=false' \
     --set 'startupProbe.failureThreshold=60' \
     --set 'superuser.existingSecret=netbox-superuser' \
-    --set 'tasksRedis.existingSecretKey=redis-password' \
-    --set 'tasksRedis.existingSecretName=redis-password' | \
+    --set 'cachingDatabase.existingSecretName=redis-password' \
+    --set 'tasksDatabase.existingSecretName=redis-password' \
+    --set 'cachingDatabase.existingSecretKey=redis-password' \
+    --set 'tasksDatabase.existingSecretKey=redis-password' | \
     yq --no-colors --prettyPrint '... comments=""' | \
     kubectl-slice -o . --template "{{ .kind | lower }}.yaml"
 
