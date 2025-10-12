@@ -13,7 +13,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 # helm search repo jetstack/cert-manager
-CERT_MANAGER_VERSION=1.17.1
+CERT_MANAGER_VERSION=1.19.0
 NAMESPACE=cert-manager
 
 # Download manifests and separate into separate files
