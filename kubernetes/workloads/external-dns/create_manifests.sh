@@ -9,7 +9,7 @@ shopt -s failglob
 
 NAMESPACE=external-dns
 # helm search repo external-dns/external-dns
-EXTERNAL_DNS_CHART_VERSION=1.15.2
+EXTERNAL_DNS_CHART_VERSION=1.19.0
 
 mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
