@@ -13,11 +13,9 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      nodePort:
     - name: https
       port: 443
       protocol: TCP
-      nodePort:
   type: LoadBalancer
   loadBalancerClass: kube-vip.io/kube-vip-class
   allocateLoadBalancerNodePorts: false

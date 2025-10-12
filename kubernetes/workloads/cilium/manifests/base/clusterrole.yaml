@@ -297,7 +297,6 @@ rules:
       - ciliumendpoints.cilium.io
       - ciliumendpointslices.cilium.io
       - ciliumenvoyconfigs.cilium.io
-      - ciliumexternalworkloads.cilium.io
       - ciliumidentities.cilium.io
       - ciliumlocalredirectpolicies.cilium.io
       - ciliumnetworkpolicies.cilium.io
@@ -306,6 +305,7 @@ rules:
       - ciliumcidrgroups.cilium.io
       - ciliuml2announcementpolicies.cilium.io
       - ciliumpodippools.cilium.io
+      - ciliumgatewayclassconfigs.cilium.io
   - apiGroups:
       - cilium.io
     resources:
@@ -371,11 +371,32 @@ rules:
   - apiGroups:
       - gateway.networking.k8s.io
     resources:
+      - gatewayclasses
+    verbs:
+      - patch
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
       - gatewayclasses/status
       - gateways/status
       - httproutes/status
       - grpcroutes/status
       - tlsroutes/status
+    verbs:
+      - update
+      - patch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumgatewayclassconfigs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumgatewayclassconfigs/status
     verbs:
       - update
       - patch
