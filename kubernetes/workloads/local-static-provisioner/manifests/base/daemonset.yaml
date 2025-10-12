@@ -4,9 +4,9 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: local-static-provisioner
-  namespace: local-volume-provisioner
+  namespace: local-static-provisioner
   labels:
-    helm.sh/chart: local-static-provisioner-2.0.0
+    helm.sh/chart: local-static-provisioner-2.8.0
     app.kubernetes.io/name: local-static-provisioner
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: local-static-provisioner
@@ -15,20 +15,25 @@ spec:
     matchLabels:
       app.kubernetes.io/name: local-static-provisioner
       app.kubernetes.io/instance: local-static-provisioner
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: local-static-provisioner
         app.kubernetes.io/instance: local-static-provisioner
       annotations:
-        checksum/config: b1c2fffb323c72ce448a52fc7a462c7647704bd500daea357a7d19016f5cabe6
+        checksum/config: 2d16550f1f9f5c341d037a01823daeb16cae8ec3d68b89da56fd3908dc3fd52f
     spec:
+      hostPID: false
       serviceAccountName: local-static-provisioner
       nodeSelector:
         kubernetes.io/os: linux
       containers:
         - name: provisioner
-          image: registry.k8s.io/sig-storage/local-volume-provisioner:v2.6.0
+          image: registry.k8s.io/sig-storage/local-volume-provisioner:v2.7.0
           securityContext:
             privileged: true
           env:
@@ -41,7 +46,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: JOB_CONTAINER_IMAGE
-              value: registry.k8s.io/sig-storage/local-volume-provisioner:v2.6.0
+              value: registry.k8s.io/sig-storage/local-volume-provisioner:v2.7.0
           ports:
             - name: metrics
               containerPort: 8080
