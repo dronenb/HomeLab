@@ -30,6 +30,9 @@ kubectl create namespace "${NAMESPACE}" -o yaml --dry-run=client | \
 
 kustomize create --autodetect
 
+# Enable server side apply for CRD's
+yq -i '.metadata.annotations."argocd.argoproj.io/sync-options"="ServerSideApply=true"' customresourcedefinition.yaml
+
 # Format YAML
 prettier . --write
 popd > /dev/null || exit 1
