@@ -24,13 +24,20 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: olm-operator-serviceaccount
+      volumes:
+        - name: tmpfs
+          emptyDir: {}
       containers:
         - name: olm-operator
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
+          volumeMounts:
+            - name: tmpfs
+              mountPath: /tmp
           command:
             - /bin/olm
           args:
@@ -38,7 +45,7 @@ spec:
             - $(OPERATOR_NAMESPACE)
             - --writeStatusName
             - ""
-          image: quay.io/operator-framework/olm@sha256:661791b83dbef3260cd1a466d59869f7d27847b86f82b28bae168a37f542f9e2
+          image: quay.io/operator-framework/olm@sha256:8c8638691a5ebce3522523b7ae17840949f0a4d070a290f8a826d9e3c48fb011
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -92,24 +99,31 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: olm-operator-serviceaccount
+      volumes:
+        - name: tmpfs
+          emptyDir: {}
       containers:
         - name: catalog-operator
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
+          volumeMounts:
+            - name: tmpfs
+              mountPath: /tmp
           command:
             - /bin/catalog
           args:
             - --namespace
             - olm
             - --configmapServerImage=quay.io/operator-framework/configmap-operator-registry:latest
-            - --opmImage=quay.io/operator-framework/opm@sha256:4ca0379d9fcca63d5a85defabb38ee843ad74a7bff8e5d47b0c8c1bc8076c1eb
+            - --opmImage=quay.io/operator-framework/opm@sha256:1fcb79e61beaf642a4833b2056a2909f7b2043cc538e93b4a565251d14e7bae4
             - --util-image
-            - quay.io/operator-framework/olm@sha256:661791b83dbef3260cd1a466d59869f7d27847b86f82b28bae168a37f542f9e2
+            - quay.io/operator-framework/olm@sha256:8c8638691a5ebce3522523b7ae17840949f0a4d070a290f8a826d9e3c48fb011
             - --set-workload-user-id=true
-          image: quay.io/operator-framework/olm@sha256:661791b83dbef3260cd1a466d59869f7d27847b86f82b28bae168a37f542f9e2
+          image: quay.io/operator-framework/olm@sha256:8c8638691a5ebce3522523b7ae17840949f0a4d070a290f8a826d9e3c48fb011
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

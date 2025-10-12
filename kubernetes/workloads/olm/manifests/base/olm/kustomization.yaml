@@ -8,6 +8,7 @@ resources:
   - clusterserviceversion.yaml
   - deployment.yaml
   - namespace.yaml
+  - networkpolicy.yaml
   - olmconfig.yaml
   - operatorgroup.yaml
   - serviceaccount.yaml

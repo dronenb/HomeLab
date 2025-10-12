@@ -6,7 +6,7 @@ set -o pipefail
 shopt -s failglob
 
 # https://github.com/operator-framework/operator-lifecycle-manager/releases
-OLM_RELEASE=v0.30.0
+OLM_RELEASE=v0.34.0
 
 folders=("crds" "olm")
 
