@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multus-cni
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/dronenb/HomeLab.git"
+    targetRevision: HEAD
+    path: kubernetes/workloads/multus-cni/manifests/overlays/fh
+  destination:
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

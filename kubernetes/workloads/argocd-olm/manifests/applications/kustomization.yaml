@@ -9,6 +9,7 @@ resources:
   - gateway-api.yaml
   - kube-vip.yaml
   - kubernetes-nmstate.yaml
+  - multus-cni.yaml
   - nfs-subdir-external-provisioner.yaml
   - olm.yaml
   - percona-postgresql.yaml

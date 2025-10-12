@@ -71,6 +71,8 @@ spec:
             - name: hostroot
               mountPath: /hostroot
               mountPropagation: HostToContainer
+            - mountPath: /etc/cni/multus/net.d
+              name: multus-conf-dir
           env:
             - name: MULTUS_NODE_NAME
               valueFrom:
@@ -80,9 +82,9 @@ spec:
         - name: install-multus-binary
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:snapshot-thick
           command:
-            - cp
-            - /usr/src/multus-cni/bin/multus-shim
-            - /host/opt/cni/bin/multus-shim
+            - sh
+            - -c
+            - cp /usr/src/multus-cni/bin/multus-shim /host/opt/cni/bin/multus-shim && cp /usr/src/multus-cni/bin/passthru /host/opt/cni/bin/passthru
           resources:
             requests:
               cpu: 10m
@@ -95,7 +97,7 @@ spec:
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
         - name: cni-plugins
-          image: rancher/hardened-cni-plugins:v1.6.0-build20241022
+          image: rancher/hardened-cni-plugins:v1.8.0-build20251007
           securityContext:
             privileged: true
           volumeMounts:
@@ -133,3 +135,6 @@ spec:
         - name: host-run-netns
           hostPath:
             path: /run/netns/
+        - name: multus-conf-dir
+          hostPath:
+            path: /etc/cni/multus/net.d
