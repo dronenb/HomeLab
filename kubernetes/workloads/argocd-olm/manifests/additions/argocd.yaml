@@ -19,4 +19,4 @@ spec:
       enabled: false
     insecure: false
   # https://quay.io/repository/argoproj/argocd?tab=tags
-  version: "sha256:8634a5b6e4f616932eeef85e79378e16dfa5714d23656417a9faf46721c5fce7" # v2.14.5
+  version: "sha256:19ba7f44cba487c4a0c98ac336327c4df04383dff84f87ea1a578972eb62dd17" # v3.1.8
