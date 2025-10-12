@@ -6,7 +6,7 @@ set -o pipefail
 shopt -s failglob
 
 # helm search repo percona/pg-operator
-VERSION=2.5.1
+VERSION=2.7.0
 NAMESPACE=percona-postgresql
 
 helm repo add percona https://percona.github.io/percona-helm-charts/
