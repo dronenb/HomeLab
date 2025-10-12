@@ -10,7 +10,7 @@ mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 # helm search repo external-secrets/external-secrets
-export VERSION="0.14.4"
+export VERSION="0.20.2"
 export NAMESPACE=external-secrets
 
 helm repo add external-secrets https://charts.external-secrets.io
