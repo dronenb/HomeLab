@@ -1,7 +1,8 @@
 apiVersion: cilium.io/v2alpha1
 kind: CiliumGatewayClassConfig
 metadata:
-  name: default
+  name: kube-vip
+  namespace: cilium
 spec:
   service:
     type: LoadBalancer

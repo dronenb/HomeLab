@@ -6,6 +6,7 @@ sortOptions:
 resources:
   - ../../base
   - ./ciliumgatewayclassconfig.yaml
+  - ./gatewayclass.yaml
   - ./gateway.yaml
   - ./ingress.yaml
   # - ./certificate.yaml
