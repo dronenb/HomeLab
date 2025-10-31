@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.4.2
-    helm.sh/chart: netbox-7.1.4
+    app.kubernetes.io/version: v4.4.5
+    helm.sh/chart: netbox-7.1.18
     app.kubernetes.io/component: netbox
 spec:
   replicas: 1
@@ -28,8 +28,8 @@ spec:
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: netbox
-        app.kubernetes.io/version: v4.4.2
-        helm.sh/chart: netbox-7.1.4
+        app.kubernetes.io/version: v4.4.5
+        helm.sh/chart: netbox-7.1.18
         app.kubernetes.io/component: netbox
     spec:
       serviceAccountName: netbox
@@ -86,7 +86,7 @@ spec:
             seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
-          image: ghcr.io/netbox-community/netbox:v4.4.2
+          image: ghcr.io/netbox-community/netbox:v4.4.5
           imagePullPolicy: IfNotPresent
           env:
             - name: SUPERUSER_NAME
@@ -231,8 +231,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.4.2
-    helm.sh/chart: netbox-7.1.4
+    app.kubernetes.io/version: v4.4.5
+    helm.sh/chart: netbox-7.1.18
     app.kubernetes.io/component: worker
 spec:
   replicas: 1
@@ -247,13 +247,13 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: c4b62b6f7a7fa3ddceed462b1d6f0e4577e1a3c709dc0afdd374af72349e6f6c
+        checksum/config: 54edbdfe549b1c8bfdc45157182702a7475952155df08d0f35307f5bc3fae2ce
       labels:
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: netbox
-        app.kubernetes.io/version: v4.4.2
-        helm.sh/chart: netbox-7.1.4
+        app.kubernetes.io/version: v4.4.5
+        helm.sh/chart: netbox-7.1.18
         app.kubernetes.io/component: worker
     spec:
       serviceAccountName: netbox
@@ -314,7 +314,7 @@ spec:
             seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
-          image: ghcr.io/netbox-community/netbox:v4.4.2
+          image: ghcr.io/netbox-community/netbox:v4.4.5
           imagePullPolicy: IfNotPresent
           command:
             - /opt/netbox/venv/bin/python

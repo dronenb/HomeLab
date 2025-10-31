@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: netbox
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: netbox
-    app.kubernetes.io/version: v4.4.2
-    helm.sh/chart: netbox-7.1.4
+    app.kubernetes.io/version: v4.4.5
+    helm.sh/chart: netbox-7.1.18
     app.kubernetes.io/component: housekeeping
 spec:
   concurrencyPolicy: Forbid
@@ -20,10 +20,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: netbox
-        helm.sh/chart: netbox-7.1.4
+        helm.sh/chart: netbox-7.1.18
         app.kubernetes.io/instance: netbox
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: v4.4.2
+        app.kubernetes.io/version: v4.4.5
     spec:
       template:
         metadata:
@@ -31,8 +31,8 @@ spec:
             app.kubernetes.io/instance: netbox
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: netbox
-            app.kubernetes.io/version: v4.4.2
-            helm.sh/chart: netbox-7.1.4
+            app.kubernetes.io/version: v4.4.5
+            helm.sh/chart: netbox-7.1.18
             app.kubernetes.io/component: housekeeping
         spec:
           serviceAccountName: netbox
@@ -57,7 +57,7 @@ spec:
                 seLinuxOptions: {}
                 seccompProfile:
                   type: RuntimeDefault
-              image: ghcr.io/netbox-community/netbox:v4.4.2
+              image: ghcr.io/netbox-community/netbox:v4.4.5
               imagePullPolicy: IfNotPresent
               command:
                 - /opt/netbox/venv/bin/python
