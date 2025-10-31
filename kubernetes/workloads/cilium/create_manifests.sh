@@ -9,7 +9,7 @@ mkdir -p manifests/base
 pushd manifests/base > /dev/null || exit 1
 
 # https://github.com/cilium/cilium/releases/latest
-export CILIUM_VERSION="1.18.2"
+export CILIUM_VERSION="1.18.3"
 export NAMESPACE=cilium
 
 helm repo update
