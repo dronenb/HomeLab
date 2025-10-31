@@ -13,10 +13,11 @@ spec:
       password:
         type: ASCII
       secretName: "netbox-postgresql-credentials"
-  # https://hub.docker.com/r/percona/percona-postgresql-operator/tags
-  # image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg13.21-postgres-gis3.3.8@sha256:3df44c1089563b42198ef929e27b9797ef2b04d92736293952163fa7541c0068
+  # https://docs.percona.com/percona-operator-for-postgresql/2.0/images.html
+  # curl -sL curl https://check.percona.com/versions/v1/pg-operator/2.7.0 | jq
+  image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg17.5.2-postgres@sha256:cfb99ebeec00ab6efb4fca4a8da2b8c3b489dd792bd2f907848197ba09bc9553
   imagePullPolicy: Always
-  postgresVersion: 16
+  postgresVersion: 17
   instances:
     - name: instance1
       replicas: 1
@@ -39,7 +40,8 @@ spec:
   proxy:
     pgBouncer:
       replicas: 1
-      # image: percona/percona-postgresql-operator:2.5.1-ppg16.8-pgbouncer1.24.0
+      # https://docs.percona.com/percona-operator-for-postgresql/2.0/images.html
+      image: docker.io/percona/percona-pgbouncer:1.24.1@sha256:451431afa3cd288ecda92b6446bec8833fbf376fbd1b7c7e314fc42f3355255f
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -51,7 +53,8 @@ spec:
                 topologyKey: kubernetes.io/hostname
   backups:
     pgbackrest:
-      # image: percona/percona-postgresql-operator:2.5.1-ppg16.8-pgbackrest2.54.2
+      # https://docs.percona.com/percona-operator-for-postgresql/2.0/images.html
+      image: docker.io/percona/percona-pgbackrest:2.55.0@sha256:b0d2defbc7a07cf395b1fa6c6e13d9d3267c3a2d3c52362ac440db26ea4a4bad
       repoHost:
         affinity:
           podAntiAffinity:
