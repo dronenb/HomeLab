@@ -6,32 +6,32 @@ terraform {
   required_providers {
     archive = {
       source  = "hashicorp/archive"
-      version = "2.7.0"
+      version = "2.7.1"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "5.93.0"
+      version = "6.19.0"
     }
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "3.2.0"
+      version = "3.6.0"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.25.0"
+      version = "4.51.0"
     }
     bitwarden = {
       source  = "maxlaverse/bitwarden"
-      version = "0.13.5"
+      version = "0.16.0"
     }
     google = {
       source  = "hashicorp/google"
-      version = "6.28.0"
+      version = "7.9.0"
     }
     netbox = {
       source  = "e-breuninger/netbox"
-      version = "3.10.0"
+      version = "5.0.0"
     }
   }
 }
