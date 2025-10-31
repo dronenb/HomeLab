@@ -1,0 +1,14 @@
+---
+# yamllint disable rule:line-length
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: kube-vip
+spec:
+  controllerName: io.cilium/gateway-controller
+  description: Uses kube-vip as the LoadBalancer provider for Cilium GatewayClass
+  parametersRef:
+    group: cilium.io
+    kind: CiliumGatewayClassConfig
+    name: kube-vip
+    namespace: cilium

@@ -5,7 +5,7 @@ metadata:
   name: cilium-https-gateway
   namespace: cilium
 spec:
-  gatewayClassName: cilium
+  gatewayClassName: kube-vip
   listeners:
     - allowedRoutes:
         namespaces:
