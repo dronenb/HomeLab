@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumGatewayClassConfig
+metadata:
+  name: default
+spec:
+  service:
+    type: LoadBalancer
+    loadBalancerClass: "kube-vip.io/kube-vip-class"
+    allocateLoadBalancerNodePorts: false
+    internalTrafficPolicy: Cluster
+    externalTrafficPolicy: Cluster
+    ipFamilies:
+      - IPv4
+    ipFamilyPolicy: SingleStack
