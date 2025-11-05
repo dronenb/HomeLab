@@ -8,7 +8,6 @@ spec:
     type: LoadBalancer
     loadBalancerClass: "kube-vip.io/kube-vip-class"
     allocateLoadBalancerNodePorts: false
-    internalTrafficPolicy: Cluster
     externalTrafficPolicy: Cluster
     ipFamilies:
       - IPv4
