@@ -6,7 +6,7 @@ metadata:
   name: kube-vip
 spec:
   controllerName: io.cilium/gateway-controller
-  description: Uses kube-vip as the LoadBalancer provider for Cilium GatewayClass
+  description: Uses kube-vip as LoadBalancer provider
   parametersRef:
     group: cilium.io
     kind: CiliumGatewayClassConfig
