@@ -1,6 +1,11 @@
 ---
-plugin: cloud.terraform.terraform_provider
-project_path: "../kubernetes/cluster-bootstrap/k3s/tofu"
-state_file: ""
-search_child_modules: true
-binary_path: /opt/homebrew/bin/tofu
+# Terraform inventory disabled; kept for reference
+# plugin: cloud.terraform.terraform_provider
+# project_path: "../kubernetes/cluster-bootstrap/k3s/tofu"
+# state_file: "../kubernetes/cluster-bootstrap/k3s/tofu/.terraform/terraform.tfstate"
+# search_child_modules: true
+# binary_path: /opt/homebrew/bin/tofu
+
+# Empty inventory placeholder
+all:
+  children: {}
